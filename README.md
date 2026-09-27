@@ -8,8 +8,8 @@ Dépôt du cours **Methodologie algorithmique** (amphithéâtre, grand groupe) �
 
 ## Accès rapide aux contenus
 
-- Landing page GitHub Pages : [https://sylvainhx.github.io/methodo-algo/](https://sylvainhx.github.io/methodo-algo/)  
-  *(dépôt actuel : `sylvainHX/methodo-algo` — si le dépôt est un jour sous `ISIBrussels`, l’URL devient `https://isibrussels.github.io/methodo-algo/`)*
+- Landing page GitHub Pages : [https://isibrussels.github.io/methodo-algo/](https://isibrussels.github.io/methodo-algo/)  
+  *(dépôt : [`ISIBrussels/methodo-algo`](https://github.com/ISIBrussels/methodo-algo))*
 - Slides de cours et quiz : liens ci-dessous
 
 ## Plan des séances
