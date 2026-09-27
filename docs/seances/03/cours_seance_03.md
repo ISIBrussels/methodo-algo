@@ -16,33 +16,4 @@ Boucles (1) : WHILE / REPEAT … UNTIL
 
 ---
 
-## Objectifs de la séance
-
-- Expliquer itération, condition d'arrêt, **infinite loop**
-- Différencier `WHILE … DO … END WHILE` et `REPEAT … UNTIL`
-- Appliquer **counter**, **accumulator**, **sentinel value**
-- Mettre en place une **input validation**
-- Chercher **min / max** sur des saisies successives
-
----
-
 ## Contenu à venir
-
-Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
-
----
-
-## Notions (outline)
-
-1. Principe de l'itération ; infinite loop sur un flowchart
-2. `WHILE` vs `REPEAT … UNTIL` (flowchart + pseudocode)
-3. Patterns : counter, accumulator, sentinel
-4. Input validation (saisie contrôlée)
-5. Min / max sur saisies successives
-
----
-
-## Pour la prochaine séance
-
-- Refaire un `REPEAT` de validation + un accumulateur
-- **Séance 4 :** `FOR`, `STEP` et boucles imbriquées (*nested loops*)

@@ -16,33 +16,4 @@ Tableaux (arrays)
 
 ---
 
-## Objectifs de la séance
-
-- Déclarer et indexer : `ARRAY values[1..N]`
-- Remplir et parcourir avec `FOR`
-- Patterns : somme, moyenne, min/max, **index of max**, comptage
-- Réaliser décalage et inversion d'éléments
-- Expliquer et éviter **index out of bounds**
-
----
-
 ## Contenu à venir
-
-Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
-
----
-
-## Notions (outline)
-
-1. Déclaration, indices, taille
-2. Remplissage / parcours
-3. Patterns sur tableau
-4. Décalage, inversion
-5. Index out of bounds
-
----
-
-## Pour la prochaine séance
-
-- Parcourir un petit tableau sans sortir des bornes
-- **Séance 6 :** fonctions et procédures

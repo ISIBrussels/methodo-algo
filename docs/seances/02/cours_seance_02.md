@@ -16,33 +16,4 @@ Instructions conditionnelles
 
 ---
 
-## Objectifs de la séance
-
-- Représenter une **decision** (losange **Yes / No**)
-- Écrire `IF … THEN … ELSE … END IF` et `ELSE IF`
-- Utiliser comparaisons et `AND` / `OR` / `NOT` ; lire une truth table
-- Imbriquer / cascader des conditions
-- Concevoir **test cases** et **edge cases**
-
----
-
 ## Contenu à venir
-
-Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
-
----
-
-## Notions (outline)
-
-1. Losange Yes / No ; premier `IF` (flowchart + miroir pseudocode)
-2. `ELSE IF` ; opérateurs ; truth tables
-3. Conditions imbriquées vs en cascade
-4. Test cases et edge cases
-5. Erreurs typiques (branche No oubliée)
-
----
-
-## Pour la prochaine séance
-
-- S'entraîner sur un `IF`/`ELSE IF` + 2 jeux de test
-- **Séance 3 :** boucles `WHILE` / `REPEAT … UNTIL`

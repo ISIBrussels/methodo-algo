@@ -16,31 +16,4 @@ Boucles (2) : FOR et boucles imbriquées
 
 ---
 
-## Objectifs de la séance
-
-- Écrire `FOR i ← 1 TO N … END FOR` avec `STEP` éventuel
-- **Choisir** entre `FOR`, `WHILE` et `REPEAT` selon le problème
-- Construire des **nested loops** (tables, grilles, motifs)
-- Éviter les erreurs **off-by-one** et les bornes incorrectes
-
----
-
 ## Contenu à venir
-
-Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
-
----
-
-## Notions (outline)
-
-1. `FOR` / `TO` / `STEP` / `END FOR`
-2. Critères de choix `FOR` / `WHILE` / `REPEAT`
-3. Nested loops (table, motif)
-4. Off-by-one ; bornes
-
----
-
-## Pour la prochaine séance
-
-- Justifier les bornes d'un `FOR` et d'un nested simple
-- **Séance 5 :** tableaux (*arrays*)
