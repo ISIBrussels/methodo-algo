@@ -209,11 +209,12 @@ Compétence d'examen : vérifier un algorithme **sans machine**.
 
 ## Exercices
 
-À faire sur papier — fiche complète : [Exercices](exercices_seance_01.html)
+À faire sur papier — **un énoncé par slide**.  
+Fiche complète + corrigé : [Exercices](exercices_seance_01.html)
 
 ---
 
-## Classer : algorithme, programme ou ni l'un ni l'autre ?
+## Exercice 1.A — Classer
 
 Pour chaque item : *algorithm* / *program* / *neither* ?
 
@@ -226,20 +227,7 @@ Pour chaque item : *algorithm* / *program* / *neither* ?
 
 ---
 
-## Correction
-
-| Item | Classe | Pourquoi |
-| --- | --- |
-| Recette | *algorithm* | Étapes précises, sans machine |
-| App installée | *program* | Code déjà écrit / exécutable |
-| Itinéraire GPS | *algorithm* *(ou résultat)* | Suite d'étapes pour aller d'A à B |
-| Python | *neither* | C'est un *programming language* |
-
-Nuance : le GPS *produit* un algorithme (l'itinéraire).
-
----
-
-## Lire et tracer
+## Exercice 1.B — Lire et tracer
 
 Flowchart : somme de 2 nombres.
 
@@ -252,21 +240,7 @@ Compléter une mini *trace table* sur papier.
 
 ---
 
-## Correction — somme de 2 nombres
-
-- **Entrées :** `a`, `b` — **Sortie :** `sum`
-- **Ordre :** `START` → `INPUT` → process → `OUTPUT` → `END`
-- Pour `a = 3`, `b = 5` : `sum ← 3 + 5` → **OUTPUT 8**
-
-| step | a | b | sum | OUTPUT |
-| :---: | :---: | :---: | :---: | :---: |
-| INPUT | 3 | 5 | — | |
-| process | 3 | 5 | 8 | |
-| OUTPUT | 3 | 5 | 8 | 8 |
-
----
-
-## Trace table — `DIV` et `MOD`
+## Exercice 1.C — Trace table (`DIV` et `MOD`)
 
 ```text
 a ← 10
@@ -281,20 +255,7 @@ Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
 
 ---
 
-## Correction — `DIV` et `MOD`
-
-| step | a | b | result | OUTPUT |
-| --- | :---: | :---: | :---: | :---: |
-| `a ← 10` | 10 | — | — | |
-| `b ← 4` | 10 | 4 | — | |
-| `result ← …` | 10 | 4 | **4** | |
-| `OUTPUT result` | 10 | 4 | 4 | **4** |
-
-Rappel : `10 DIV 4 = 2`, `10 MOD 4 = 2` → `2 + 2 = 4`.
-
----
-
-## Dessiner un *flowchart*
+## Exercice 1.D — Dessiner un *flowchart*
 
 > Lire un prix HT (`priceHT`) et un taux (`rate`)  
 > Calculer le prix TTC  
@@ -304,17 +265,3 @@ Formule : `priceTTC ← priceHT * (1 + rate)`
 (ex. `rate = 0.21` pour 21 %)
 
 → [Exercices](exercices_seance_01.html) § 1.D
-
----
-
-## Correction — prix TTC
-
-```mermaid
-flowchart TB
-  A([START]) --> B[/INPUT priceHT, rate/]
-  B --> C["priceTTC ← priceHT * (1 + rate)"]
-  C --> D[/OUTPUT priceTTC/]
-  D --> E([END])
-```
-
-Variante : moyenne de 2 nombres — même squelette (entrée → traitement → sortie).
