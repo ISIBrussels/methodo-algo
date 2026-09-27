@@ -198,7 +198,7 @@ section .two-cols pre {
 }
 
 section .two-cols table {
-  font-size: 0.72em;
+  /* Same size as full-width tables (e.g. slide trace somme); shrink code via pre only */
   margin: 0;
 }
 
