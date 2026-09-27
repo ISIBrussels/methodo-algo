@@ -1,6 +1,6 @@
-# Méthodologie Algorithmique
+# Methodologie algorithmique
 
-Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage **Méthodologie Algorithmique** à l'**ISIB** (HE2B).
+Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage **Methodologie algorithmique** à l'**ISIB** (HE2B).
 
 Cours en **amphithéâtre** (grand groupe) — **7 séances de 1 h 30** (total **10 h 30**). Pas de séances de laboratoire machine.
 

@@ -1,9 +1,9 @@
 ---
 marp: true
-theme: methodologie-algo
+theme: methodo-algo
 title: "Séance 5 — Complexité : temps, espace, notation O"
 paginate: true
-header: "Méthodologie Algorithmique — Séance 5 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Methodologie algorithmique — Séance 5 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 

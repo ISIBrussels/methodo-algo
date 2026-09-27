@@ -1,6 +1,6 @@
-# Méthodologie Algorithmique
+# Methodologie algorithmique
 
-Dépôt du cours **Méthodologie Algorithmique** (amphithéâtre, grand groupe) à l'ISIB - HE2B.
+Dépôt du cours **Methodologie algorithmique** (amphithéâtre, grand groupe) à l'ISIB - HE2B.
 
 - **Durée totale** : 10 h 30
 - **Organisation** : 7 séances de 1 h 30
@@ -9,7 +9,7 @@ Dépôt du cours **Méthodologie Algorithmique** (amphithéâtre, grand groupe) 
 ## Accès rapide aux contenus
 
 - Landing page GitHub Pages : *(à activer après création du dépôt distant — voir le guide Pages)*  
-  URL prévue : `https://isibrussels.github.io/methodologie-algorithmique/`
+  URL prévue : `https://isibrussels.github.io/methodo-algo/`
 - Slides de cours et quiz : liens ci-dessous
 
 ## Plan des séances

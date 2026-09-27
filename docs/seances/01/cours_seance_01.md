@@ -1,9 +1,9 @@
 ---
 marp: true
-theme: methodologie-algo
+theme: methodo-algo
 title: "Séance 1 — Problème, algorithme, programme — la démarche"
 paginate: true
-header: "Méthodologie Algorithmique — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Methodologie algorithmique — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
