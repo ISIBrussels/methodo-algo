@@ -318,11 +318,3 @@ flowchart TB
 ```
 
 Variante : moyenne de 2 nombres — même squelette (entrée → traitement → sortie).
-
----
-
-## Pour la prochaine séance
-
-- Relire entrée / traitement / sortie + symboles de base
-- S'entraîner à une *trace table* courte
-- **Séance 2 :** instructions conditionnelles — losange *Yes / No*, `IF` / `ELSE`
