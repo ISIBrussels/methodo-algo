@@ -207,6 +207,14 @@ Compétence d'examen : vérifier un algorithme **sans machine**.
 
 ---
 
+## Quiz
+
+Dix questions pour vérifier les notions de la séance — puis on passe aux exercices papier.
+
+[→ Quiz](quiz_seance_01.html)
+
+---
+
 ## Exercices
 
 À faire sur papier — **un énoncé par slide**.  

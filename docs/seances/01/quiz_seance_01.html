@@ -12,8 +12,13 @@
         --color-text: #212121;
         --color-border: #e0e0e0;
         --color-row-alt: #f5f5f5;
+        --color-error: #f23646;
       }
-      * { box-sizing: border-box; }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         max-width: 920px;
         margin: 0 auto;
@@ -23,6 +28,7 @@
         color: var(--color-text);
         background: var(--color-bg);
       }
+
       h1 {
         margin: 0 0 1.25rem;
         font-size: 1.85rem;
@@ -31,19 +37,31 @@
         padding-bottom: 0.6rem;
         border-bottom: 2px solid var(--color-primary);
       }
+
       h2 {
-        margin: 2rem 0 0.75rem;
-        font-size: 1.15rem;
+        margin: 0 0 0.75rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--color-secondary);
       }
-      p { margin: 0 0 1rem; color: var(--color-secondary); }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
       .page-nav {
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
-        margin: 1.25rem 0 1.75rem;
+        margin: 0 0 1.25rem;
       }
+
       .page-nav a {
         display: inline-block;
         padding: 0.3rem 0.7rem;
@@ -51,18 +69,144 @@
         font-weight: 600;
         color: var(--color-primary);
         text-decoration: none;
+        background: transparent;
         border: 1px solid var(--color-primary);
       }
+
       .page-nav a:hover {
         background: var(--color-primary);
         color: #ffffff;
+        text-decoration: none;
       }
-      .placeholder {
-        background: var(--color-row-alt);
+
+      .progress {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        color: var(--color-secondary);
+      }
+
+      .question {
         border: 1px solid var(--color-border);
-        padding: 1.25rem 1.5rem;
-        margin: 1.5rem 0;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: var(--color-bg);
       }
+
+      .answers {
+        display: grid;
+        gap: 0;
+        margin: 1rem 0 0;
+        border: 1px solid var(--color-border);
+      }
+
+      .answers label {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+        cursor: pointer;
+      }
+
+      .answers label:last-child {
+        border-bottom: none;
+      }
+
+      .answers label:nth-child(even) {
+        background: var(--color-row-alt);
+      }
+
+      .answers label.correct {
+        background: var(--color-row-alt);
+        color: var(--color-primary);
+        font-weight: 600;
+      }
+
+      .answers label.wrong {
+        color: var(--color-error);
+        text-decoration: line-through;
+      }
+
+      .answers label.checked-mode {
+        cursor: default;
+      }
+
+      .option-tag {
+        display: inline-block;
+        margin-left: 0.35rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-secondary);
+      }
+
+      button {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid var(--color-primary);
+        background: transparent;
+        color: var(--color-primary);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        background: var(--color-primary);
+        color: #ffffff;
+      }
+
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1.25rem;
+      }
+
+      #reset-btn {
+        margin-left: auto;
+      }
+
+      .result {
+        font-weight: 600;
+        margin-top: 1rem;
+      }
+
+      .ok {
+        color: var(--color-primary);
+      }
+
+      .ko {
+        color: var(--color-error);
+      }
+
+      .muted {
+        color: var(--color-secondary);
+      }
+
+      .question-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .status {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.88em;
+        background: var(--color-row-alt);
+        color: var(--color-secondary);
+        padding: 0.1em 0.35em;
+      }
+
+      em {
+        font-style: italic;
+      }
+
       .site-footer {
         margin-top: 2.5rem;
         padding-top: 1rem;
@@ -71,11 +215,16 @@
         font-size: 0.9rem;
         color: var(--color-secondary);
       }
+
       .site-footer a {
         color: var(--color-secondary);
         text-decoration: underline;
+        font-weight: 400;
       }
-      .site-footer a:hover { color: var(--color-primary); }
+
+      .site-footer a:hover {
+        color: var(--color-primary);
+      }
     </style>
   </head>
   <body>
@@ -86,16 +235,314 @@
       <a href="exercices_seance_01.html">Exercices →</a>
       <a href="../../index.html">Accueil</a>
     </nav>
-    <div class="placeholder">
-      <h2>Placeholder</h2>
-      <p>
-        Quiz à rédiger (QCM / vrai-faux), centré sur les <strong>flowcharts</strong>,
-        le <strong>pseudocode</strong> et les patterns de la séance — pas sur un langage
-        de programmation.
-      </p>
+    <p class="muted">10 questions sur le cours de la séance 1.</p>
+    <p class="progress" id="progress"></p>
+    <div id="quiz"></div>
+
+    <div class="actions">
+      <button id="check-btn" type="button">Valider les réponses</button>
+      <button id="reset-btn" type="button">Réinitialiser</button>
     </div>
-    <footer class="site-footer">
-      <a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a>
-    </footer>
+    <p class="status" id="status" aria-live="polite"></p>
+    <div id="summary" class="result" aria-live="polite"></div>
+
+    <script>
+      const storageKey = "quiz_seance_01_answers_v1";
+      const checkedKey = "quiz_seance_01_checked_v1";
+
+      const questions = [
+        {
+          id: "q1",
+          text: "Un <em>algorithm</em> (algorithme), c'est surtout…",
+          options: [
+            { value: "A", label: "un programme déjà écrit en Python ou en C++" },
+            { value: "B", label: "une suite finie d'étapes précises pour résoudre un problème" },
+            { value: "C", label: "un langage de programmation" },
+            { value: "D", label: "un fichier exécutable sur une machine" },
+          ],
+          correct: "B",
+          feedback: "L'algorithme décrit la méthode (les étapes) ; il précède le programme et reste indépendant du langage.",
+        },
+        {
+          id: "q2",
+          text: "Quelle distinction est correcte ?",
+          options: [
+            { value: "A", label: "un <em>program</em> est la méthode ; un <em>algorithm</em> est le code exécutable" },
+            { value: "B", label: "un <em>algorithm</em> est la démarche ; un <em>program</em> est cette démarche écrite dans un langage" },
+            { value: "C", label: "<em>algorithm</em> et <em>program</em> désignent exactement la même chose" },
+            { value: "D", label: "un <em>programming language</em> est une suite d'étapes sur papier" },
+          ],
+          correct: "B",
+          feedback: "L'algorithme précède le programme. Le langage (<em>programming language</em>) sert à écrire le programme.",
+        },
+        {
+          id: "q3",
+          text: "Dans la démarche entrée → traitement → sortie, l'<em>input</em> désigne…",
+          options: [
+            { value: "A", label: "le résultat affiché à la fin" },
+            { value: "B", label: "les calculs et transformations" },
+            { value: "C", label: "les données d'entrée du traitement" },
+            { value: "D", label: "uniquement le symbole <code>START</code>" },
+          ],
+          correct: "C",
+          feedback: "Entrée (<em>input</em>) = données fournies ; traitement (<em>process</em>) = ce qu'on en fait ; sortie (<em>output</em>) = le résultat.",
+        },
+        {
+          id: "q4",
+          text: "Dans un <em>flowchart</em> de séquence, quel symbole représente une entrée ou une sortie (<code>INPUT</code> / <code>OUTPUT</code>) ?",
+          options: [
+            { value: "A", label: "un rectangle" },
+            { value: "B", label: "un losange" },
+            { value: "C", label: "un ovale (<code>START</code> / <code>END</code>)" },
+            { value: "D", label: "un parallélogramme" },
+          ],
+          correct: "D",
+          feedback: "Ovale = début/fin ; rectangle = traitement ; parallélogramme = entrée/sortie. Le losange (Yes/No) vient en séance 2.",
+        },
+        {
+          id: "q5",
+          text: "Un <em>flowchart</em> purement séquentiel…",
+          options: [
+            { value: "A", label: "comporte plusieurs chemins selon des conditions Yes/No" },
+            { value: "B", label: "suit un seul chemin, de haut en bas, sans branche" },
+            { value: "C", label: "n'a jamais de symbole <code>OUTPUT</code>" },
+            { value: "D", label: "commence toujours par un rectangle de traitement" },
+          ],
+          correct: "B",
+          feedback: "En séquence : un seul chemin (<code>START</code> → … → <code>END</code>), sans décision.",
+        },
+        {
+          id: "q6",
+          text: "Quelle valeur a typiquement le type <code>REAL</code> ?",
+          options: [
+            { value: "A", label: "<code>42</code>" },
+            { value: "B", label: "<code>TRUE</code>" },
+            { value: "C", label: "<code>3.14</code>" },
+            { value: "D", label: "<code>\"hello\"</code>" },
+          ],
+          correct: "C",
+          feedback: "<code>REAL</code> = nombre réel (virgule). <code>42</code> est un <code>INTEGER</code> ; <code>TRUE</code> un <code>BOOLEAN</code> ; <code>\"hello\"</code> un <code>STRING</code>.",
+        },
+        {
+          id: "q7",
+          text: "Dans <code>total ← a + b</code>, le symbole <code>←</code> signifie…",
+          options: [
+            { value: "A", label: "une égalité mathématique à vérifier" },
+            { value: "B", label: "une affectation : on calcule <code>a + b</code> et on place le résultat dans <code>total</code>" },
+            { value: "C", label: "une comparaison entre <code>total</code> et <code>a + b</code>" },
+            { value: "D", label: "une entrée clavier dans <code>total</code>" },
+          ],
+          correct: "B",
+          feedback: "À gauche : la variable qui reçoit ; à droite : l'expression calculée. Ce n'est pas l'égalité mathématique.",
+        },
+        {
+          id: "q8",
+          text: "Que vaut <code>17 DIV 5</code> ?",
+          options: [
+            { value: "A", label: "<code>3.4</code>" },
+            { value: "B", label: "<code>2</code>" },
+            { value: "C", label: "<code>3</code>" },
+            { value: "D", label: "<code>5</code>" },
+          ],
+          correct: "C",
+          feedback: "<code>DIV</code> donne le quotient entier : 17 = 3×5 + 2, donc <code>17 DIV 5</code> = <code>3</code>.",
+        },
+        {
+          id: "q9",
+          text: "Que vaut <code>17 MOD 5</code> ?",
+          options: [
+            { value: "A", label: "<code>3</code>" },
+            { value: "B", label: "<code>2</code>" },
+            { value: "C", label: "<code>0</code>" },
+            { value: "D", label: "<code>17</code>" },
+          ],
+          correct: "B",
+          feedback: "<code>MOD</code> donne le reste de la division entière : 17 = 3×5 + 2, donc <code>17 MOD 5</code> = <code>2</code>.",
+        },
+        {
+          id: "q10",
+          text: "Une <em>trace table</em> sert surtout à…",
+          options: [
+            { value: "A", label: "dessiner les symboles d'un <em>flowchart</em>" },
+            { value: "B", label: "simuler l'exécution ligne par ligne et suivre les variables (<em>dry run</em>)" },
+            { value: "C", label: "choisir un langage de programmation" },
+            { value: "D", label: "remplacer complètement le symbole <code>OUTPUT</code>" },
+          ],
+          correct: "B",
+          feedback: "On remplit une colonne par variable, une ligne par étape, en ne mettant à jour que ce qui change — sans machine.",
+        },
+      ];
+
+      const quizEl = document.getElementById("quiz");
+      const progressEl = document.getElementById("progress");
+      const statusEl = document.getElementById("status");
+      const summaryEl = document.getElementById("summary");
+      const checkBtn = document.getElementById("check-btn");
+      const resetBtn = document.getElementById("reset-btn");
+
+      let checked = false;
+      const answers = {};
+
+      function loadState() {
+        const rawAnswers = localStorage.getItem(storageKey);
+        const rawChecked = localStorage.getItem(checkedKey);
+
+        if (rawAnswers) {
+          try {
+            Object.assign(answers, JSON.parse(rawAnswers));
+          } catch {
+            localStorage.removeItem(storageKey);
+          }
+        }
+
+        checked = rawChecked === "1";
+      }
+
+      function saveState() {
+        localStorage.setItem(storageKey, JSON.stringify(answers));
+        localStorage.setItem(checkedKey, checked ? "1" : "0");
+      }
+
+      function answeredCount() {
+        return questions.filter((question) => answers[question.id]).length;
+      }
+
+      function updateProgress() {
+        progressEl.textContent = `${answeredCount()} / ${questions.length} réponse(s) cochée(s)`;
+      }
+
+      function renderQuiz() {
+        quizEl.innerHTML = questions
+          .map((question, index) => {
+            const selected = answers[question.id] || null;
+            let feedbackHtml = "";
+
+            if (checked) {
+              const isCorrect = selected === question.correct;
+              const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
+              const verdictText = !selected
+                ? "Non répondue."
+                : isCorrect
+                  ? `Correct. ${question.feedback}`
+                  : `Incorrect. ${question.feedback}`;
+              feedbackHtml = `<p class="question-feedback ${verdictClass}">${verdictText}</p>`;
+            }
+
+            const optionsHtml = question.options
+              .map((option) => {
+                const isCorrect = option.value === question.correct;
+                const isChosen = option.value === selected;
+                const classes = [];
+                if (checked) classes.push("checked-mode");
+                if (checked && isCorrect) classes.push("correct");
+                if (checked && isChosen && !isCorrect) classes.push("wrong");
+
+                let tag = "";
+                if (checked && isCorrect) tag = '<span class="option-tag">bonne réponse</span>';
+                else if (checked && isChosen) tag = '<span class="option-tag">réponse sélectionnée</span>';
+
+                return `
+                  <label class="${classes.join(" ")}">
+                    <input
+                      type="radio"
+                      name="${question.id}"
+                      value="${option.value}"
+                      ${selected === option.value ? "checked" : ""}
+                      ${checked ? "disabled" : ""}
+                    />
+                    ${option.value}. ${option.label}${tag}
+                  </label>
+                `;
+              })
+              .join("");
+
+            return `
+              <section class="question" data-question-id="${question.id}">
+                <h2>Question ${index + 1}</h2>
+                <p><strong>${question.text}</strong></p>
+                <div class="answers">${optionsHtml}</div>
+                ${feedbackHtml}
+              </section>
+            `;
+          })
+          .join("");
+
+        if (!checked) {
+          quizEl.querySelectorAll('input[type="radio"]').forEach((input) => {
+            input.addEventListener("change", () => {
+              answers[input.name] = input.value;
+              statusEl.textContent = "";
+              statusEl.className = "status";
+              summaryEl.innerHTML = "";
+              summaryEl.className = "result";
+              saveState();
+              updateProgress();
+            });
+          });
+        }
+
+        checkBtn.hidden = checked;
+        updateProgress();
+
+        if (checked) {
+          renderSummary();
+        } else {
+          summaryEl.innerHTML = "";
+          summaryEl.className = "result";
+        }
+      }
+
+      function renderSummary() {
+        let score = 0;
+        questions.forEach((question) => {
+          if (answers[question.id] === question.correct) score += 1;
+        });
+
+        summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;
+        summaryEl.className = "result";
+      }
+
+      function checkAll() {
+        const unanswered = questions.filter((question) => !answers[question.id]);
+        if (unanswered.length > 0) {
+          statusEl.textContent = `Il reste ${unanswered.length} question(s) sans réponse.`;
+          statusEl.className = "status ko";
+          const firstMissing = quizEl.querySelector(
+            `[data-question-id="${unanswered[0].id}"]`
+          );
+          if (firstMissing) firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        checked = true;
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        saveState();
+        renderQuiz();
+        summaryEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function resetQuiz() {
+        for (const key of Object.keys(answers)) {
+          delete answers[key];
+        }
+        checked = false;
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(checkedKey);
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        summaryEl.innerHTML = "";
+        summaryEl.className = "result";
+        renderQuiz();
+      }
+
+      checkBtn.addEventListener("click", checkAll);
+      resetBtn.addEventListener("click", resetQuiz);
+
+      loadState();
+      renderQuiz();
+    </script>
+
+    <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>
   </body>
 </html>
