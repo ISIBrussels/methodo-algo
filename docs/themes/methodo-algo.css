@@ -183,3 +183,43 @@ section .mermaid-diagram svg {
   max-height: 460px;
   width: auto;
 }
+
+/* Layout 2 colonnes (ex. pseudocode | tableau) */
+section .two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  align-items: start;
+}
+
+section .two-cols pre {
+  margin: 0;
+  font-size: 0.85em;
+}
+
+section .two-cols table {
+  font-size: 0.72em;
+  margin: 0;
+}
+
+/* Ligne symbole flowchart : libellé | forme Mermaid */
+section .symbol-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1em;
+  align-items: center;
+  margin: 0.25em 0;
+}
+
+section .symbol-row > p {
+  margin: 0;
+}
+
+section .symbol-row .mermaid-diagram {
+  margin: 0;
+  justify-content: flex-end;
+}
+
+section .symbol-row .mermaid-diagram svg {
+  max-height: 64px;
+}

@@ -9,42 +9,7 @@
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 1.A — Classer (algorithme / programme / ni l'un ni l'autre)
-
-Pour chaque item, indiquer *algorithm*, *program* ou *neither*, et justifier en une phrase.
-
-1. Une recette de cuisine détaillée
-2. Une application mobile déjà installée sur le téléphone
-3. L'itinéraire affiché par un GPS
-4. Le langage Python lui-même
-
----
-
-## 1.B — Lire un *flowchart* + tracer
-
-Soit le *flowchart* séquentiel suivant (somme de deux nombres) :
-
-```mermaid
-flowchart TB
-  A([START]) --> B[/INPUT a, b/]
-  B --> C["sum = a + b"]
-  C --> D[/OUTPUT sum/]
-  D --> E([END])
-```
-
-1. Quelles sont les **entrées** ? la **sortie** ? l'**ordre** des étapes ?
-2. Pour `a = 3` et `b = 5`, que produit l'algorithme ?
-3. Compléter la *trace table* :
-
-| step | a | b | sum | OUTPUT |
-| --- | --- | --- | --- | --- |
-| INPUT | | | | |
-| process | | | | |
-| OUTPUT | | | | |
-
----
-
-## 1.C — Compléter une *trace table*
+## 1.A — Compléter une *trace table*
 
 Exécuter « à la main » l'algorithme suivant :
 
@@ -69,7 +34,7 @@ Rappel : `=` est une **affectation**, pas une égalité mathématique.
 
 ---
 
-## 1.D — Produire un *flowchart*
+## 1.B — Produire un *flowchart* (prix TTC)
 
 Dessiner un *flowchart* (symboles `START` / `END`, `INPUT` / `OUTPUT`, process) pour :
 
@@ -77,7 +42,37 @@ Dessiner un *flowchart* (symboles `START` / `END`, `INPUT` / `OUTPUT`, process) 
 > Calculer le prix TTC : `priceTTC = priceHT * (1 + rate)`.  
 > Afficher `priceTTC`.
 
-**Variante :** *flowchart* de la moyenne de deux nombres (`avg = (a + b) / 2`).
+---
+
+## 1.C — *Trace table* (heures et minutes)
+
+Exécuter « à la main » l'algorithme suivant, avec `totalMinutes = 135` :
+
+```text
+totalMinutes = 135
+hours = totalMinutes DIV 60
+minutes = totalMinutes MOD 60
+OUTPUT hours, minutes
+```
+
+Compléter :
+
+| step | totalMinutes | hours | minutes | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `totalMinutes = 135` | | | | |
+| `hours = …` | | | | |
+| `minutes = …` | | | | |
+| `OUTPUT hours, minutes` | | | | |
+
+---
+
+## 1.D — Produire un *flowchart* (moyenne)
+
+Dessiner un *flowchart* pour :
+
+> Lire deux notes (`a`, `b`).  
+> Calculer la moyenne : `avg = (a + b) / 2`.  
+> Afficher `avg`.
 
 ---
 
@@ -85,23 +80,32 @@ Dessiner un *flowchart* (symboles `START` / `END`, `INPUT` / `OUTPUT`, process) 
 
 ### 1.A
 
-| Item | Classe |
-| --- | --- |
-| Recette | *algorithm* |
-| App installée | *program* |
-| Itinéraire GPS | *algorithm* (ou résultat d'un *algorithm*) |
-| Python | *neither* (*programming language*) |
+`10 DIV 4 = 2`, `10 MOD 4 = 2` → `result = 4` → **OUTPUT 4**.
+
+| step | a | b | result | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `a = 10` | 10 | | | |
+| `b = 4` | 10 | 4 | | |
+| `result = (a DIV b) + (a MOD b)` | 10 | 4 | 4 | |
+| `OUTPUT result` | 10 | 4 | 4 | 4 |
 
 ### 1.B
 
-Entrées `a`, `b` ; sortie `sum` ; pour `3` et `5` → **OUTPUT 8**.
+`START` → `INPUT priceHT, rate` → `priceTTC = priceHT * (1 + rate)` → `OUTPUT priceTTC` → `END`.
 
 ### 1.C
 
-`10 DIV 4 = 2`, `10 MOD 4 = 2` → `result = 4` → **OUTPUT 4**.
+`135 DIV 60 = 2`, `135 MOD 60 = 15` → **OUTPUT 2, 15**.
+
+| step | totalMinutes | hours | minutes | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `totalMinutes = 135` | 135 | | | |
+| `hours = totalMinutes DIV 60` | 135 | 2 | | |
+| `minutes = totalMinutes MOD 60` | 135 | 2 | 15 | |
+| `OUTPUT hours, minutes` | 135 | 2 | 15 | 2, 15 |
 
 ### 1.D
 
-`START` → `INPUT priceHT, rate` → `priceTTC = priceHT * (1 + rate)` → `OUTPUT priceTTC` → `END`.
+`START` → `INPUT a, b` → `avg = (a + b) / 2` → `OUTPUT avg` → `END`.
 
 <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>

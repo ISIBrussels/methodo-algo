@@ -36,7 +36,7 @@ Exemples : recette de cuisine, itinéraire GPS, mode d'emploi.
 | Programme (*program*) | Algorithme **écrit** dans un langage, exécutable par une machine |
 | Langage de programmation (*programming language*) | Langage formel pour écrire des programmes (Python, C++…) |
 
-L'algorithme **précède** le programme. Ce cours s'arrête volontairement avant le code.
+L'algorithme **précède** le programme. Ce cours s'arrête à l'**algorithme** : on n'écrit pas encore un programme dans un langage.
 
 ---
 
@@ -48,7 +48,7 @@ Tout traitement suit la même démarche :
 2. Traitement (*process*) — calculs, transformations, enchaînement d'étapes
 3. Sortie (*output*) — résultat affiché ou produit
 
-Avant de dessiner : qu'est-ce qui entre ? que fait-on ? que sort-on ?
+Avant de concevoir l'algorithme : qu'est-ce qui entre ? que fait-on ? que sort-on ?
 
 ---
 
@@ -70,16 +70,38 @@ Un *flowchart* (organigramme) est un **dessin** de l'algorithme : des **boîtes*
 
 Chaque forme a un rôle fixe :
 
+<div class="symbol-row">
+
+**Ovale** : début / fin
+
 ```mermaid
 flowchart LR
   T([START / END])
+```
+
+</div>
+
+<div class="symbol-row">
+
+**Parallélogramme** : entrée / sortie
+
+```mermaid
+flowchart LR
   I[/INPUT / OUTPUT/]
+```
+
+</div>
+
+<div class="symbol-row">
+
+**Rectangle** : traitement (*process*)
+
+```mermaid
+flowchart LR
   P[process]
 ```
 
-- Ovale : début / fin
-- Parallélogramme : entrée / sortie
-- Rectangle : traitement (*process*)
+</div>
 
 ---
 
@@ -219,6 +241,10 @@ On ne réécrit une case que quand la variable **change**.
 
 ## Exemple : *trace table* — `DIV` et `MOD`
 
+<div class="two-cols">
+
+<div>
+
 ```text
 a = 17
 b = 5
@@ -226,6 +252,10 @@ q = a DIV b
 r = a MOD b
 OUTPUT q, r
 ```
+
+</div>
+
+<div>
 
 | step | a | b | q | r | OUTPUT |
 | --- | --- | --- | --- | --- | --- |
@@ -235,44 +265,21 @@ OUTPUT q, r
 | `r = a MOD b` | 17 | 5 | 3 | 2 | |
 | `OUTPUT q, r` | 17 | 5 | 3 | 2 | 3, 2 |
 
+</div>
+
+</div>
+
 ---
 
 ## Quiz
 
-Dix questions pour vérifier les notions de la séance — puis on passe aux exercices papier.
+Dix questions pour vérifier les notions de la séance.
 
 [→ Quiz](quiz_seance_01.html)
-[→ Exercices](exercices_seance_01.html)
 
 ---
 
-## Exercice 1.A — Classer
-
-Pour chaque item : *algorithm* / *program* / *neither* ?
-
-1. Une recette de cuisine détaillée
-2. Une application mobile déjà installée sur le téléphone
-3. L'itinéraire affiché par un GPS
-4. Le langage Python lui-même
-
-→ [Exercices](exercices_seance_01.html) § 1.A
-
----
-
-## Exercice 1.B — Lire et tracer
-
-Flowchart : somme de 2 nombres.
-
-1. Quelles sont les entrées ? la sortie ? l'ordre des étapes ?
-2. Pour `a = 3`, `b = 5` : que produit l'algorithme ?
-
-Compléter une mini *trace table* sur papier.
-
-→ [Exercices](exercices_seance_01.html) § 1.B
-
----
-
-## Exercice 1.C — Trace table (`DIV` et `MOD`)
+## Exercice 1.A — Trace table (`DIV` et `MOD`)
 
 ```text
 a = 10
@@ -283,11 +290,11 @@ OUTPUT result
 
 Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
 
-→ [Exercices](exercices_seance_01.html) § 1.C
+→ [Exercices](exercices_seance_01.html) § 1.A
 
 ---
 
-## Exercice 1.D — Dessiner un *flowchart*
+## Exercice 1.B — Dessiner un *flowchart* (TTC)
 
 > Lire un prix HT (`priceHT`) et un taux (`rate`)  
 > Calculer le prix TTC  
@@ -295,5 +302,32 @@ Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
 
 Formule : `priceTTC = priceHT * (1 + rate)`  
 (ex. `rate = 0.21` pour 21 %)
+
+→ [Exercices](exercices_seance_01.html) § 1.B
+
+---
+
+## Exercice 1.C — Trace table (heures et minutes)
+
+```text
+totalMinutes = 135
+hours = totalMinutes DIV 60
+minutes = totalMinutes MOD 60
+OUTPUT hours, minutes
+```
+
+Compléter la *trace table* (colonnes : step, `totalMinutes`, `hours`, `minutes`, OUTPUT).
+
+→ [Exercices](exercices_seance_01.html) § 1.C
+
+---
+
+## Exercice 1.D — Dessiner un *flowchart* (moyenne)
+
+> Lire deux notes (`a`, `b`)  
+> Calculer la moyenne  
+> Afficher la moyenne
+
+Formule : `avg = (a + b) / 2`
 
 → [Exercices](exercices_seance_01.html) § 1.D
