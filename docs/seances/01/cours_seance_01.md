@@ -279,7 +279,7 @@ OUTPUT q, r
 
 ---
 
-## Exercice 1.A — Trace table (`DIV` et `MOD`)
+## Exercice 1.A — `DIV` et `MOD`
 
 ```text
 a = 10
@@ -288,13 +288,14 @@ result = (a DIV b) + (a MOD b)
 OUTPUT result
 ```
 
-Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
+1. Compléter la *trace table* (step, `a`, `b`, `result`, OUTPUT).
+2. Dessiner le *flowchart*.
 
 → [Exercices](exercices_seance_01.html) § 1.A
 
 ---
 
-## Exercice 1.B — Dessiner un *flowchart* (TTC)
+## Exercice 1.B — Prix TTC
 
 > Lire un prix HT (`priceHT`) et un taux (`rate`)  
 > Calculer le prix TTC  
@@ -303,11 +304,14 @@ Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
 Formule : `priceTTC = priceHT * (1 + rate)`  
 (ex. `rate = 0.21` pour 21 %)
 
+1. Dessiner le *flowchart*.
+2. Compléter la *trace table* pour `priceHT = 100`, `rate = 0.21`.
+
 → [Exercices](exercices_seance_01.html) § 1.B
 
 ---
 
-## Exercice 1.C — Trace table (heures et minutes)
+## Exercice 1.C — Heures et minutes
 
 ```text
 totalMinutes = 135
@@ -316,18 +320,7 @@ minutes = totalMinutes MOD 60
 OUTPUT hours, minutes
 ```
 
-Compléter la *trace table* (colonnes : step, `totalMinutes`, `hours`, `minutes`, OUTPUT).
+1. Compléter la *trace table* (step, `totalMinutes`, `hours`, `minutes`, OUTPUT).
+2. Dessiner le *flowchart*.
 
 → [Exercices](exercices_seance_01.html) § 1.C
-
----
-
-## Exercice 1.D — Dessiner un *flowchart* (moyenne)
-
-> Lire deux notes (`a`, `b`)  
-> Calculer la moyenne  
-> Afficher la moyenne
-
-Formule : `avg = (a + b) / 2`
-
-→ [Exercices](exercices_seance_01.html) § 1.D
