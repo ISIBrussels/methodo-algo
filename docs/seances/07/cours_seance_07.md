@@ -1,15 +1,15 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 7 — Synthèse, études de cas, bonnes pratiques"
+title: "Séance 7 — Searching, sorting & efficiency"
 paginate: true
-header: "Methodologie algorithmique — Séance 7 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodologie algorithmique — Séance 7 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
 ## Séance 7
 
-Synthèse, études de cas, bonnes pratiques
+Searching, sorting & efficiency
 
 [→ Quiz](quiz_seance_07.html)
 [→ Questions amphi](questions_seance_07.html)
@@ -18,34 +18,35 @@ Synthèse, études de cas, bonnes pratiques
 
 ## Objectifs de la séance
 
-- Relier les séances 1–6
-- Mener une étude de cas **entièrement en logigrammes**
-- Formuler une **checklist** (exercices / examen)
-- Se projeter vers Arduino / Python **sans** syntaxe
+- **Linear search** avec early exit
+- **Binary search** sur tableau trié
+- **Selection sort** et **bubble sort** (arrêt anticipé)
+- Compter comparaisons et échanges
+- Situer N, N², log N ; **Big O** sans formalisme ; best / worst case
 
-**Livrable mental :** checklist + logigramme propre sur un nouvel énoncé court (comme à l'examen).
+**Livrable mental :** linear vs binary (prérequis) + pourquoi bubble/selection ~N².
 
 ---
 
 ## Outline
 
-1. Fil conducteur : spécifier → logigramme → structures → coût → stratégie
-2. Étude de cas plénière (étapes chronométrées au tableau)
-3. Anti-patterns graphiques (flèches, décisions, monolithe illisible)
-4. Checklist amphi à emporter
-5. Ouverture cursus : où ces idées reviendront
+1. Linear search + early exit
+2. Binary search (sorted) ; intuition log N
+3. Selection sort ; bubble sort + early exit
+4. Compter comparisons / swaps
+5. Croissance N / N² / log N ; best vs worst
 
 ---
 
 ## Points clés à retenir
 
-- La méthode se répète ; le langage change
-- À l'examen : **lire et produire des logigrammes**, pas du code
-- Réflexe : **penser (et dessiner) avant de coder**
+- Binary search exige un tableau **trié**
+- Compter les opérations = première lecture de l'efficacité
+- Big O = ordre de grandeur, pas une preuve
 
 ---
 
-## Fin du module
+## Pour la suite
 
-- Relire la checklist et un organigramme type
-- S'entraîner sur papier avec la légende des symboles
+- Relire search & sort + un comptage de comparaisons
+- Séance 8 *(optionnelle)* : review & mock exam

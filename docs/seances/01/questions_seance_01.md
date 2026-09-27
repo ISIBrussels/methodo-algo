@@ -1,26 +1,26 @@
 # Séance 1 — Questions / activités amphithéâtre
 
-**Thème :** Problème, algorithme, programme — la démarche  
+**Thème :** Algorithms & sequential processing  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
+**Support :** flowcharts + trace table (convention FR / EN)
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. Vote : « ceci est-il un algorithme ? » (recette de cuisine, itinéraire GPS, formule Excel).
-2. Premier contact : lire collectivement un mini-logigramme à 4 boîtes (sans légende complète encore).
+1. Vote : « algorithm / program / neither ? » (recette, GPS, app compilée).
+2. Premier contact : lire collectivement un mini-flowchart IPO à 4–5 boîtes.
 
 ## Activité principale
 
-1. Transformer un énoncé flou en entrées / sorties / contraintes.
-2. Esquisser au tableau un logigramme à 3–5 boîtes pour le même problème.
-3. Question méthode : « que feriez-vous en premier ? » (spec vs dessin vs « code »).
+1. **Lire** un flowchart séquentiel → entrées / sorties / ordre.
+2. **Tracer** : remplir une trace table (3 affectations + 1 `OUTPUT`).
+3. **Produire** : flowchart IPO simple (ex. average of 2 numbers / prix TTC).
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
-- Annonce du fil rouge vers la séance suivante.
+- Synthèse orale : IPO + symbole process + dry run.
+- Annonce séance 2 : conditional statements.
 
 <nav class="page-nav">
   <a href="cours_seance_01.html">← Cours</a>

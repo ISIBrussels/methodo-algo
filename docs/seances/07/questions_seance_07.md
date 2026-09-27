@@ -1,26 +1,27 @@
 # Séance 7 — Questions / activités amphithéâtre
 
-**Thème :** Synthèse, études de cas, bonnes pratiques  
+**Thème :** Searching, sorting & efficiency  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
+**Support :** pseudocode + trace table (compteurs)
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. Checklist projetée : ce qu'on attend à l'examen (logigrammes).
-2. Rappeler la légende des symboles en 1 minute.
+1. Vote : trouver une valeur dans une liste non triée — quelle approche ?
+2. Relier un parcours `FOR` S5 à une linear search.
 
 ## Activité principale
 
-1. Étude de cas chronométrée : spec → logigramme → structure → coût qualititatif.
-2. Chasse aux erreurs sur un faux logigramme (anti-patterns).
-3. Quiz de synthèse éventuel / questions ouvertes restantes.
+1. **Tracer** linear search + compter les comparaisons (présent / absent).
+2. **Tracer** binary search (N=7) — étapes mid.
+3. **Compléter** selection sort ; bubble sort avec flag d'arrêt.
+4. Classer 3 algos : O(N) / O(N²) / O(log N) ; best/worst pour search.
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
-- Annonce du fil rouge vers la séance suivante.
+- Synthèse : search / sort / ordres de grandeur.
+- Annonce séance 8 *(optionnelle)* : blanc d'examen.
 
 <nav class="page-nav">
   <a href="cours_seance_07.html">← Cours</a>

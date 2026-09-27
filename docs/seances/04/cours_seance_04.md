@@ -1,15 +1,15 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 4 — Structures de données et choix méthodologiques"
+title: "Séance 4 — Loops (2) : FOR & nested loops"
 paginate: true
-header: "Methodologie algorithmique — Séance 4 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodologie algorithmique — Séance 4 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
 ## Séance 4
 
-Structures de données et choix méthodologiques
+Loops (2) : FOR & nested loops
 
 [→ Quiz](quiz_seance_04.html)
 [→ Questions amphi](questions_seance_04.html)
@@ -18,33 +18,34 @@ Structures de données et choix méthodologiques
 
 ## Objectifs de la séance
 
-- Associer **besoin du problème** ↔ structure
-- Comparer tableau / liste, pile, file, dictionnaire (vue méthodologique)
-- Justifier un choix ; indiquer dans le **logigramme** où la structure intervient
+- Écrire `FOR i ← 1 TO N … END FOR` avec `STEP`
+- **Choisir** entre `FOR`, `WHILE` et `REPEAT`
+- Construire des **nested loops** (tables, grilles, motifs)
+- Éviter **off-by-one** et bornes incorrectes
 
-**Livrable mental :** choisir une structure, justifier, annoter un logigramme en conséquence.
+**Livrable mental :** un `FOR` simple + un nested (pseudocode) avec bornes justifiées.
 
 ---
 
 ## Outline
 
-1. Stocker vs accéder : quelles opérations comptent ?
-2. Tableau / liste : accès par position, parcours
-3. Pile (LIFO) et file (FIFO) — exemples du quotidien + schéma
-4. Dictionnaire : clé → valeur
-5. Impact du choix sur le logigramme (sans syntaxe de langage)
+1. `FOR i ← 1 TO N` ; `STEP` ; lien avec compteur `WHILE`
+2. Grille de choix : FOR / WHILE / REPEAT
+3. Nested loops : tables, grilles, motifs
+4. Trace table de boucles imbriquées
+5. Off-by-one et bornes
 
 ---
 
 ## Points clés à retenir
 
-- On choisit une structure pour les **opérations** qu'elle rend naturelles
-- Même problème, structures différentes → logigrammes différents
-- L'implémentation viendra avec les langages du cursus (hors ce cours)
+- `FOR` quand le nombre d'itérations est **connu**
+- Nested loops → attention à l'ordre d'exécution (tracer !)
+- Off-by-one = erreur classique d'examen
 
 ---
 
 ## Pour la prochaine séance
 
-- Relire pile / file / dictionnaire avec un exemple chacun
-- On parlera de **coût** en lisant la forme du logigramme
+- Refaire une table de multiplication en nested `FOR`
+- On aborde les **arrays**

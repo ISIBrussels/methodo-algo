@@ -1,26 +1,27 @@
 # Séance 5 — Questions / activités amphithéâtre
 
-**Thème :** Complexité : temps, espace, notation O  
+**Thème :** Arrays  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
+**Support :** pseudocode + flowchart de parcours + trace table
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. Compter à voix haute les passages dans un petit logigramme.
-2. Deviner : O(1), O(n) ou O(n²) ?
+1. Tableau donné : que vaut `values[3]` ? Taille ? Dernier index ?
+2. Relier un `FOR` S4 au parcours d'un tableau.
 
 ## Activité principale
 
-1. Classer 4 logigrammes du moins au plus coûteux.
-2. Relier boucles imbriquées visibles sur le schéma à O(n²).
-3. Discussion : micro-optimisation vs changer d'algorithme.
+1. **Produire** sum + average + countAbove(limit).
+2. **Produire** + **tracer** index of max (N=5).
+3. **Compléter** / **corriger** un reverse in-place ; edge case N=1.
+4. Diagnostiquer index out of bounds (`FOR i ← 1 TO N+1`).
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
-- Annonce du fil rouge vers la séance suivante.
+- Synthèse : patterns tableau + bornes.
+- Annonce séance 6 : Functions & procedures.
 
 <nav class="page-nav">
   <a href="cours_seance_05.html">← Cours</a>

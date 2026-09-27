@@ -1,26 +1,27 @@
 # Séance 3 — Questions / activités amphithéâtre
 
-**Thème :** Structures de contrôle et décomposition  
+**Thème :** Loops (1) : WHILE / REPEAT … UNTIL  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
+**Support :** flowchart + pseudocode (patterns de boucle)
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. « Quelle structure ? » sur 3 mini-énoncés (séquence / sélection / itération).
-2. Montrer le motif graphique correspondant.
+1. Vote : où est l'infinite loop sur ce flowchart ?
+2. Relire un `IF` S2 → « et si on devait répéter la saisie ? »
 
 ## Activité principale
 
-1. Dessiner le motif SI / SINON puis TANT QUE pour le même problème.
-2. Détecter une boucle infinie sur un organigramme projeté.
-3. Refactoriser un gros logigramme en 2–3 blocs / sous-logigrammes nommés.
+1. **Corriger** une boucle infinie ; proposer la sortie.
+2. **Lire** : lequel teste avant / après (`WHILE` vs `REPEAT`) ?
+3. **Produire** : input validation mark in 0..20 ; accumulator jusqu'à sentinel `-1`.
+4. **Tracer** min/max sur 5 saisies (trace table).
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
-- Annonce du fil rouge vers la séance suivante.
+- Synthèse : WHILE vs REPEAT + 3 patterns.
+- Annonce séance 4 : FOR & nested loops.
 
 <nav class="page-nav">
   <a href="cours_seance_03.html">← Cours</a>

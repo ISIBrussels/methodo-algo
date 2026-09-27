@@ -1,17 +1,17 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 1 — Problème, algorithme, programme — la démarche"
+title: "Séance 1 — Algorithms & sequential processing"
 paginate: true
-header: "Methodologie algorithmique — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodologie algorithmique — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
 ## Séance 1
 
-Problème, algorithme, programme — la démarche
+Algorithms & sequential processing
 
-Support : **concepts + logigrammes** (langage-agnostique)
+Support : **flowcharts** (convention FR explications / EN code)
 
 [→ Quiz](quiz_seance_01.html)
 [→ Questions amphi](questions_seance_01.html)
@@ -20,34 +20,36 @@ Support : **concepts + logigrammes** (langage-agnostique)
 
 ## Objectifs de la séance
 
-- Distinguer **problème**, **algorithme** et **programme**
-- Décrire les étapes d'une **démarche méthodique**
-- Identifier **entrées**, **sorties** et **contraintes**
-- Lire un **premier logigramme** très simple
+- Distinguer **algorithm**, **program** et **programming language**
+- Appliquer **Input → Process → Output**
+- Utiliser `START`/`END`, `INPUT`/`OUTPUT`, process
+- Variables et types : `INTEGER`, `REAL`, `BOOLEAN`, `STRING`
+- Affectation `←`, opérateurs `+ - * /`, `DIV`, `MOD`
+- Remplir une **trace table** (dry run)
 
-**Livrable mental :** pour un petit problème, 2 lignes de formulation + esquisse de logigramme (3–5 boîtes).
+**Livrable mental :** flowchart séquentiel (5–7 boîtes) + une ligne de trace.
 
 ---
 
 ## Outline
 
-1. Pourquoi une méthode avant le code ?
-2. Trois niveaux : besoin → algorithme → programme
-3. Critères d'un bon algorithme (finitude, clarté, déterminisme utile)
-4. Premier exemple **dessiné en logigramme** (ex. moyenne de notes / « faire la monnaie »)
-5. Ambiguïtés d'un énoncé : ce qui manque pour pouvoir résoudre
+1. Algorithm vs program vs programming language
+2. Démarche Input → Process → Output
+3. Symboles flowchart (séquence)
+4. Variables, types, affectation, opérateurs
+5. Trace table (dry run)
 
 ---
 
 ## Points clés à retenir
 
-- Un algorithme n'est **pas** encore du code
-- Le **logigramme** est le langage de travail de ce cours (exercices, examen)
-- La suite du cursus (Arduino, Python…) appliquera cette démarche dans un langage
+- Un algorithm n'est **pas** encore du code
+- Le **flowchart** est le support de départ (pseudocode progressif ensuite)
+- Toujours pouvoir **tracer** un algorithme sur papier
 
 ---
 
 ## Pour la prochaine séance
 
-- Relire le triptyque problème / algorithme / programme
-- On fige la **légende des logigrammes** et la spécification
+- Relire IPO + symboles de base
+- On aborde les **conditional statements** (losange Yes/No)

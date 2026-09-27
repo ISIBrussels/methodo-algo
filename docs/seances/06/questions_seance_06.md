@@ -1,26 +1,27 @@
 # Séance 6 — Questions / activités amphithéâtre
 
-**Thème :** Stratégies algorithmiques  
+**Thème :** Functions & procedures  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
+**Support :** pseudocode (modular design)
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. Montrer un logigramme : force brute, glouton ou diviser pour régner ?
-2. Vote éclair sur 3 schémas.
+1. Relire un parcours tableau S5 → « pourrait-on le réutiliser ? »
+2. Vote : 3 extraits → FUNCTION ou PROCEDURE ?
 
 ## Activité principale
 
-1. Même problème, deux logigrammes (deux stratégies) au tableau.
-2. Vote : « laquelle prototyper d'abord ? » + arguments.
-3. Contre-exemple où un glouton échoue.
+1. **Produire** `FUNCTION maxOf(a, b) RETURN …`.
+2. **Corriger** un bug de scope (globale écrasée).
+3. **Produire** `average(values, n)` + `countAbove(values, n, limit)`.
+4. Refactoriser un monolithe « notes » en main + 2 fonctions.
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
-- Annonce du fil rouge vers la séance suivante.
+- Synthèse : function vs procedure + main.
+- Annonce séance 7 : searching, sorting & efficiency.
 
 <nav class="page-nav">
   <a href="cours_seance_06.html">← Cours</a>

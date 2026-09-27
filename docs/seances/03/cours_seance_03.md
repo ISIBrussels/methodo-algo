@@ -1,15 +1,15 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 3 — Structures de contrôle et décomposition"
+title: "Séance 3 — Loops (1) : WHILE / REPEAT … UNTIL"
 paginate: true
-header: "Methodologie algorithmique — Séance 3 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodologie algorithmique — Séance 3 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
 ## Séance 3
 
-Structures de contrôle et décomposition
+Loops (1) : WHILE / REPEAT … UNTIL
 
 [→ Quiz](quiz_seance_03.html)
 [→ Questions amphi](questions_seance_03.html)
@@ -18,33 +18,35 @@ Structures de contrôle et décomposition
 
 ## Objectifs de la séance
 
-- Représenter **séquence**, **sélection**, **itération** dans un logigramme
-- Imbriquer sans se perdre ; détecter une boucle dangereuse **sur le schéma**
-- **Décomposer** en sous-problèmes / sous-logigrammes
+- Expliquer itération, condition d'arrêt, **infinite loop**
+- Différencier `WHILE … DO … END WHILE` et `REPEAT … UNTIL`
+- Appliquer **counter**, **accumulator**, **sentinel value**
+- Mettre en place une **input validation**
+- Chercher **min / max** sur des saisies successives
 
-**Livrable mental :** logigramme principal + un sous-logigramme pour un problème en 2–3 parties.
+**Livrable mental :** saisie contrôlée + accumulateur, avec condition d'arrêt claire.
 
 ---
 
 ## Outline
 
-1. Motifs de logigramme : SI / SINON, TANT QUE, POUR
-2. Ordre des conditions, imbrications, boucles infinies visibles
-3. Décomposition top-down
-4. Procédures : contrat entrée → sortie et appel dans le schéma
-5. Refactoriser un gros logigramme en blocs nommés
+1. Principe de l'itération ; infinite loop sur un flowchart
+2. `WHILE` vs `REPEAT … UNTIL` (flowchart + pseudocode)
+3. Patterns : counter, accumulator, sentinel
+4. Input validation (saisie contrôlée)
+5. Min / max sur saisies successives
 
 ---
 
 ## Points clés à retenir
 
-- Chaque structure a un **motif graphique** reconnaissable
-- Nommer des sous-problèmes clarifie avant d'ajouter des boîtes
-- Une boucle doit avoir une condition de fin **crédible** sur le dessin
+- Toute boucle a une **condition de sortie crédible**
+- `WHILE` teste **avant** ; `REPEAT` teste **après**
+- Sentinel / validation = patterns d'examen fréquents
 
 ---
 
 ## Pour la prochaine séance
 
-- S'entraîner à dessiner les trois motifs
-- On abordera les **structures de données** (choix méthodologiques)
+- Refaire un `REPEAT` de validation + un accumulateur
+- On aborde `FOR`, `STEP` et les **nested loops**

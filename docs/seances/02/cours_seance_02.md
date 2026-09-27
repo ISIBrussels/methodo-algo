@@ -1,15 +1,15 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 2 — Spécification et logigrammes"
+title: "Séance 2 — Conditional statements"
 paginate: true
-header: "Methodologie algorithmique — Séance 2 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodologie algorithmique — Séance 2 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
 ## Séance 2
 
-Spécification et logigrammes
+Conditional statements
 
 [→ Quiz](quiz_seance_02.html)
 [→ Questions amphi](questions_seance_02.html)
@@ -18,34 +18,35 @@ Spécification et logigrammes
 
 ## Objectifs de la séance
 
-- Passer d'un énoncé informel à une **spécification**
-- Maîtriser la **légende** des logigrammes du cours
-- Lire, compléter et **produire** un organigramme
-- Utiliser le pseudo-code seulement en **appui ponctuel**
+- Représenter une **decision** (losange **Yes / No**)
+- Écrire `IF … THEN … ELSE … END IF` et `ELSE IF`
+- Utiliser comparaisons et `AND` / `OR` / `NOT` ; lire une truth table
+- Imbriquer / cascader des conditions
+- Concevoir **test cases** et **edge cases**
 
-**Livrable mental :** spécifier + logigramme complet d'un algorithme à une seule boucle simple.
+**Livrable mental :** un `IF`/`ELSE IF` (flowchart + pseudocode) + 3 test cases dont 1 edge case.
 
 ---
 
 ## Outline
 
-1. Spécification : entrées, sorties, contraintes, cas limites
-2. Légende des symboles (terminal, traitement, décision, connecteurs)
-3. Parcourir un logigramme avec un jeu de test mental
-4. Erreurs typiques (flèche manquante, décision mal formée)
-5. Pseudo-code : un seul miroir optionnel d'un exemple (complément)
+1. Losange Yes / No ; premier `IF` (flowchart + miroir pseudocode)
+2. `ELSE IF` ; opérateurs ; truth tables
+3. Conditions imbriquées vs en cascade
+4. Test cases et edge cases
+5. Erreurs typiques (branche No oubliée)
 
 ---
 
 ## Points clés à retenir
 
-- La spécification précède le dessin détaillé
-- Le logigramme est le format **central** (exercices + examen)
-- Les cas limites font partie de la spec
+- Toute décision a **deux** sorties explicites (Yes / No)
+- Le pseudocode commence à **miroiter** le flowchart
+- Les edge cases font partie de la validation
 
 ---
 
 ## Pour la prochaine séance
 
-- Relire / mémoriser la légende des symboles
-- On enchaîne sur **structures de contrôle** dans le logigramme
+- S'entraîner sur un `IF`/`ELSE IF` + 2 jeux de test
+- On aborde les boucles : **WHILE** / **REPEAT … UNTIL**

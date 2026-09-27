@@ -1,26 +1,27 @@
 # Séance 4 — Questions / activités amphithéâtre
 
-**Thème :** Structures de données et choix méthodologiques  
+**Thème :** Loops (2) : FOR & nested loops  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
+**Support :** pseudocode (FOR / nested) + trace table
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. Matching rapide : énoncé du quotidien → pile / file / liste / dictionnaire.
-2. Schéma pile vs file avec post-it ou tableau.
+1. Relire un compteur `WHILE` S3 → équivalent `FOR` ?
+2. Vote : afficher 2, 4, …, 20 — quelles bornes / `STEP` ?
 
 ## Activité principale
 
-1. Débat : liste vs dictionnaire pour un même besoin.
-2. Annoter un logigramme : où la structure choisie intervient.
-3. Justifier le choix en 2–3 arguments (accès, ordre, clés).
+1. **Compléter** un `FOR` avec `STEP` (y compris compte à rebours).
+2. Matching 4 énoncés → `FOR` / `WHILE` / `REPEAT`.
+3. **Produire** nested loops (multiplication table ou motif).
+4. **Tracer** i, j pour N=3 ; **corriger** un off-by-one.
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
-- Annonce du fil rouge vers la séance suivante.
+- Synthèse : choix de boucle + off-by-one.
+- Annonce séance 5 : Arrays.
 
 <nav class="page-nav">
   <a href="cours_seance_04.html">← Cours</a>

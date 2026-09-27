@@ -1,15 +1,15 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 6 — Stratégies algorithmiques"
+title: "Séance 6 — Functions & procedures"
 paginate: true
-header: "Methodologie algorithmique — Séance 6 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodologie algorithmique — Séance 6 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
 ## Séance 6
 
-Stratégies algorithmiques
+Functions & procedures
 
 [→ Quiz](quiz_seance_06.html)
 [→ Questions amphi](questions_seance_06.html)
@@ -18,33 +18,36 @@ Stratégies algorithmiques
 
 ## Objectifs de la séance
 
-- Reconnaître **force brute**, **glouton**, **diviser pour régner**
-- Comparer deux stratégies via **deux logigrammes**
-- Discuter compromis (simplicité vs performance)
+- Découper un problème (**modular design**)
+- Distinguer `FUNCTION … RETURN` et `PROCEDURE` ; utiliser `CALL`
+- Parameters / arguments ; valeur de retour
+- Portée **local / global**
+- Fonctions sur tableaux : `average(values, n)`, `countAbove(values, n, limit)`
+- Structure **main program + functions**
 
-**Livrable mental :** nommer la stratégie d'un logigramme et citer un avantage / un risque.
+**Livrable mental :** main qui lit un tableau, appelle `average` et `countAbove`.
 
 ---
 
 ## Outline
 
-1. Force brute : logigramme « explorer (presque) tout »
-2. Glouton : choix local à chaque étape — schéma type
-3. Diviser pour régner : idée + 1 organigramme (ex. dichotomie conceptuelle)
-4. Même problème, deux logigrammes au tableau
-5. Culture (hors programme) : backtracking / prog. dynamique — juste nommer
+1. Pourquoi modulariser ?
+2. `FUNCTION` vs `PROCEDURE` ; `CALL` / `RETURN`
+3. Parameters, arguments, return value
+4. Local / global scope
+5. Main + functions sur tableaux
 
 ---
 
 ## Points clés à retenir
 
-- Prototyper en force brute peut être rationnel si n est petit
-- Un glouton doit être justifié (contre-exemples)
-- La stratégie se lit souvent dans la **forme** du logigramme
+- Une function **retourne** ; une procedure **fait**
+- Préférer le local au global
+- Le programme se lit depuis le **main**
 
 ---
 
 ## Pour la prochaine séance
 
-- Relier stratégie ↔ coût sur un organigramme du cours
-- Séance 7 : **synthèse** et checklist type examen (logigrammes)
+- Refactoriser un monolithe « notes » en 2 fonctions
+- On aborde **searching, sorting & efficiency**

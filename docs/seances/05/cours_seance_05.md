@@ -1,15 +1,15 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 5 — Complexité : temps, espace, notation O"
+title: "Séance 5 — Arrays"
 paginate: true
-header: "Methodologie algorithmique — Séance 5 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodologie algorithmique — Séance 5 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
 ## Séance 5
 
-Complexité : temps, espace, notation O
+Arrays
 
 [→ Quiz](quiz_seance_05.html)
 [→ Questions amphi](questions_seance_05.html)
@@ -18,35 +18,35 @@ Complexité : temps, espace, notation O
 
 ## Objectifs de la séance
 
-- Expliquer **temps** et **espace** en termes intuitifs
-- Lire O(1), O(n), O(n²) (log n en option)
-- Relier la **forme du logigramme** (boucles) au coût
+- Déclarer et indexer : `ARRAY values[1..N]`
+- Remplir et parcourir avec `FOR`
+- Patterns : somme, moyenne, min/max, **index of max**, comptage
+- Décalage et inversion d'éléments
+- Éviter **index out of bounds**
 
-**Livrable mental :** devant un logigramme à une/deux boucles, dire O(1) / O(n) / O(n²) et pourquoi.
+**Livrable mental :** moyenne + index du maximum, sans dépasser les bornes.
 
 ---
 
 ## Outline
 
-1. Compter les passages dans un logigramme
-2. Croissance : constant, linéaire, quadratique
-3. O(…) = ordre de grandeur (lecture, pas preuves)
-4. Espace mémoire : idée sommaire
-5. Piège : micro-optimisation vs changer d'algorithme / de schéma
-
-**Hors séance :** NP-complet, preuves formelles.
+1. Déclaration, indices, taille
+2. Remplissage et parcours `FOR`
+3. Patterns sur tableau (sum, average, min/max, index of max, count)
+4. Décalage et inversion
+5. Index out of bounds
 
 ---
 
 ## Points clés à retenir
 
-- On compare des **ordres de grandeur**, pas des millisecondes isolées
-- Boucles imbriquées visibles sur le logigramme → souvent O(n²)
-- Un meilleur algorithme bat une optimisation locale
+- Indices de `1` à `N` (convention du cours)
+- Un parcours = presque toujours un `FOR`
+- Toujours vérifier les **bornes** avant d'accéder
 
 ---
 
 ## Pour la prochaine séance
 
-- Classer 3–4 logigrammes vus au cours
-- On abordera des **stratégies** (chacune illustrée par un organigramme)
+- Refaire index of max + countAbove sur papier
+- On aborde **functions & procedures**
