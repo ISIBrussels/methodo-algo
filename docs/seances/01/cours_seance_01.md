@@ -11,7 +11,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 Algorithmes et traitement séquentiel
 
-Support : **flowcharts** (prose FR ; flowcharts + pseudocode EN)
+Support : *flowcharts* (prose FR — flowcharts + pseudocode EN)
 
 [→ Quiz](quiz_seance_01.html)
 [→ Exercices](exercices_seance_01.html)
@@ -20,22 +20,20 @@ Support : **flowcharts** (prose FR ; flowcharts + pseudocode EN)
 
 ## Objectifs de la séance
 
-- Distinguer **algorithm**, **program** et **programming language**
-- Appliquer **Input → Process → Output**
+- Distinguer algorithme, programme et langage de programmation
+- Appliquer *Input → Process → Output*
 - Utiliser `START` / `END`, `INPUT` / `OUTPUT`, process
 - Variables et types : `INTEGER`, `REAL`, `BOOLEAN`, `STRING`
 - Affectation `←`, opérateurs `+ - * /`, `DIV`, `MOD`
-- Remplir une **trace table** (dry run)
-
-**Livrable mental :** flowchart séquentiel (5–7 boîtes) + une ligne de trace.
+- Remplir une *trace table* (*dry run*)
 
 ---
 
 ## Cadre du cours
 
 - Penser **avant** de coder — pas de langage d'enseignement ici
-- Support principal : **flowcharts** (organigrammes)
-- Le **pseudocode** viendra progressivement (dès S2–S3)
+- Support principal : *flowcharts* (organigrammes)
+- Le *pseudocode* viendra progressivement (dès S2–S3)
 - Travail sur **papier** : lire, tracer, produire
 
 ---
@@ -80,9 +78,9 @@ Exemples de la vie courante : recette de cuisine, itinéraire GPS, mode d'emploi
 
 | Terme | Sens |
 | --- | --- |
-| **Algorithm** | Méthode / démarche (idées, étapes) |
-| **Program** | Algorithme **écrit** dans un langage, exécutable par une machine |
-| **Programming language** | Langage formel pour écrire des programmes (Python, C++…) |
+| *Algorithm* | Méthode / démarche (idées, étapes) |
+| *Program* | Algorithme **écrit** dans un langage, exécutable par une machine |
+| *Programming language* | Langage formel pour écrire des programmes (Python, C++…) |
 
 L'algorithme **précède** le programme. Ce cours s'arrête volontairement avant le code.
 
@@ -92,9 +90,9 @@ L'algorithme **précède** le programme. Ce cours s'arrête volontairement avant
 
 Tout traitement informatisé suit cette démarche (**IPO**) :
 
-1. **Input** — données d'entrée (saisie, valeurs connues)
-2. **Process** — calculs, transformations, enchaînement d'étapes
-3. **Output** — résultat affiché ou produit
+1. *Input* — données d'entrée (saisie, valeurs connues)
+2. *Process* — calculs, transformations, enchaînement d'étapes
+3. *Output* — résultat affiché ou produit
 
 Avant de dessiner : *qu'est-ce qui entre ? que fait-on ? que sort-on ?*
 
@@ -118,7 +116,7 @@ Même idée pour un prix TTC, une conversion, une somme…
 
 **Classer** — format *Lire* — ≈ 8–10 min
 
-Pour chaque item : **algorithm** / **program** / **neither** ?
+Pour chaque item : *algorithm* / *program* / *neither* ?
 
 1. Une recette de cuisine détaillée
 2. Une application mobile déjà installée sur le téléphone
@@ -133,10 +131,10 @@ Pour chaque item : **algorithm** / **program** / **neither** ?
 
 | Item | Classe | Pourquoi |
 | --- | --- |
-| Recette | **algorithm** | Étapes précises, sans machine |
-| App installée | **program** | Code déjà écrit / exécutable |
-| Itinéraire GPS | **algorithm** *(ou résultat)* | Suite d'étapes pour aller d'A à B |
-| Python | **neither** | C'est un *programming language* |
+| Recette | *algorithm* | Étapes précises, sans machine |
+| App installée | *program* | Code déjà écrit / exécutable |
+| Itinéraire GPS | *algorithm* *(ou résultat)* | Suite d'étapes pour aller d'A à B |
+| Python | *neither* | C'est un *programming language* |
 
 Nuance admissible : le GPS *produit* un algorithme (l'itinéraire).
 
@@ -199,7 +197,7 @@ Flowchart fourni (somme de 2 nombres) :
 1. Quelles sont les entrées ? la sortie ? l'ordre des étapes ?
 2. Pour `a = 3`, `b = 5` : que produit l'algorithme ?
 
-Compléter mentalement (ou sur papier) une mini **trace table**.
+Compléter mentalement (ou sur papier) une mini *trace table*.
 
 → [Exercices](exercices_seance_01.html) § 1.B
 
@@ -304,7 +302,7 @@ result ← (a DIV b) + (a MOD b)
 OUTPUT result
 ```
 
-Compléter la **trace table** (colonnes : step, `a`, `b`, `result`, OUTPUT).
+Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
 
 → [Exercices](exercices_seance_01.html) § 1.C
 
@@ -325,7 +323,7 @@ Rappel : `10 DIV 4 = 2`, `10 MOD 4 = 2` → `2 + 2 = 4`.
 
 ## Trace table = dry run
 
-Une **trace table** simule l'exécution **ligne par ligne**.
+Une *trace table* simule l'exécution **ligne par ligne**.
 
 - Une colonne par variable (+ OUTPUT si besoin)
 - Une ligne par étape
@@ -376,12 +374,12 @@ Variante OK : moyenne de 2 nombres (même squelette IPO).
 
 ## Points clés à retenir
 
-- **Algorithm** ≠ **program** ≠ **programming language**
-- Toujours cadrer avec **Input → Process → Output**
+- *Algorithm* ≠ *program* ≠ *programming language*
+- Toujours cadrer avec *Input → Process → Output*
 - Symboles : `START`/`END`, `INPUT`/`OUTPUT`, process
 - Types : `INTEGER`, `REAL`, `BOOLEAN`, `STRING`
 - Affectation `←` ; `DIV` / `MOD` pour le quotient et le reste
-- **Trace table** = dry run sur papier
+- *Trace table* = *dry run* sur papier
 
 ---
 
@@ -400,4 +398,4 @@ Exemple : moyenne de 2 nombres, ou conversion minutes → heures + minutes (`DIV
 
 - Relire IPO + symboles de base
 - S'entraîner à une trace table courte
-- **Séance 2 :** instructions conditionnelles — losange **Yes / No**, `IF` / `ELSE`
+- **Séance 2 :** instructions conditionnelles — losange *Yes / No*, `IF` / `ELSE`

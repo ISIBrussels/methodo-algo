@@ -2,7 +2,7 @@
 
 **Thème :** Algorithmes et traitement séquentiel  
 **Durée indicative :** intégré au cours (entrelacé avec les slides)  
-**Support :** flowcharts + trace table (prose FR ; flowcharts + pseudocode EN)
+**Support :** *flowcharts* + *trace table* (prose FR — flowcharts + pseudocode EN)
 
 <nav class="page-nav">
   <a href="cours_seance_01.html">← Cours</a>
@@ -12,7 +12,7 @@
 
 ## 1.A — Classer (algorithm / program / neither)
 
-Pour chaque item, indiquer **algorithm**, **program** ou **neither**, et justifier en une phrase.
+Pour chaque item, indiquer *algorithm*, *program* ou *neither*, et justifier en une phrase.
 
 1. Une recette de cuisine détaillée
 2. Une application mobile déjà installée sur le téléphone
