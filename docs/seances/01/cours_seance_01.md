@@ -21,8 +21,6 @@ footer: "[← Retour à l'accueil](../../index.html)"
 | Thèmes, consignes, explications | **français** |
 | Flowcharts, *pseudocode* | **anglais** |
 
-Les termes anglais dans le texte sont en *italique*.
-
 ---
 
 ## Séance 1
