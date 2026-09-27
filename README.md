@@ -5,7 +5,7 @@ Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) 
 - **Durée totale** : 10 h 30 (+ 1 h 30 optionnelle)
 - **Organisation** : 7 séances de 1 h 30 + 1 séance optionnelle (révision / examen blanc)
 - **Format** : cours magistral en amphithéâtre (pas de laboratoire / TP machine)
-- **Support** : **flowcharts** avec passage progressif au **pseudocode** ; prose FR ; flowcharts + pseudocode EN
+- **Support** : **flowcharts** avec passage progressif au **pseudocode** ; texte FR ; flowcharts + *pseudocode* EN
 
 ## Accès rapide aux contenus
 

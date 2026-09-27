@@ -24,13 +24,11 @@ Fonctions et procédures
 - Expliquer la portée (**local / global scope**)
 - Écrire des fonctions sur tableaux ; structurer **main + functions**
 
-**Livrable mental :** main qui lit un tableau, appelle `average` et `countAbove`.
-
 ---
 
 ## Contenu à venir
 
-Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
 
 ---
 

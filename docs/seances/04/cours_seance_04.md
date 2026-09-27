@@ -23,13 +23,11 @@ Boucles (2) : FOR et boucles imbriquées
 - Construire des **nested loops** (tables, grilles, motifs)
 - Éviter les erreurs **off-by-one** et les bornes incorrectes
 
-**Livrable mental :** un `FOR` simple + un exemple nested (pseudocode) avec bornes justifiées.
-
 ---
 
 ## Contenu à venir
 
-Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
 
 ---
 

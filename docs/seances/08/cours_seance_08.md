@@ -22,8 +22,6 @@ Révision et examen blanc
 - S'entraîner sur un **sujet blanc** au format de l'examen, puis correction
 - Consolider les erreurs fréquentes ; questions libres
 
-**Livrable mental :** un blanc complet + 3 erreurs personnelles à surveiller.
-
 ---
 
 ## Contenu à venir

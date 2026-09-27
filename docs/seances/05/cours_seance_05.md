@@ -24,13 +24,11 @@ Tableaux (arrays)
 - Réaliser décalage et inversion d'éléments
 - Expliquer et éviter **index out of bounds**
 
-**Livrable mental :** moyenne + index du maximum, sans dépasser les bornes.
-
 ---
 
 ## Contenu à venir
 
-Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
 
 ---
 

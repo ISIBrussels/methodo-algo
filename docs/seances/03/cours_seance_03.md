@@ -24,13 +24,11 @@ Boucles (1) : WHILE / REPEAT … UNTIL
 - Mettre en place une **input validation**
 - Chercher **min / max** sur des saisies successives
 
-**Livrable mental :** saisie contrôlée + accumulateur, avec condition d'arrêt claire.
-
 ---
 
 ## Contenu à venir
 
-Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
 
 ---
 

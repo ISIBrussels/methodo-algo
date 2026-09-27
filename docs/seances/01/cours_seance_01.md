@@ -12,16 +12,16 @@ footer: "[← Retour à l'accueil](../../index.html)"
 **Méthodologie algorithmique** — 1<sup>e</sup> bachelier ISIB
 
 - Apprendre à **penser** un traitement avant de coder
-- Pas de langage d'enseignement ici (ni Python, ni C++)
+- Cours **indépendant du langage** : sans se rattacher à un langage de programmation particulier (ni Python, ni C++)
 - Support : *flowcharts*, puis *pseudocode* progressivement
 - Travail sur **papier** : lire, tracer, produire
 
 | Élément | Langue |
 | --- | --- |
-| Prose, consignes, thèmes | **français** |
-| Flowcharts, pseudocode | **anglais** |
+| Thèmes, consignes, explications | **français** |
+| Flowcharts, *pseudocode* | **anglais** |
 
-Dans la prose, les termes EN sont en *italique* : *array*, *dry run*…
+Les termes anglais dans le texte sont en *italique*.
 
 ---
 
@@ -34,7 +34,7 @@ Algorithmes et traitement séquentiel
 
 ---
 
-## Qu'est-ce qu'un *algorithm* ?
+## Qu'est-ce qu'un algorithme (*algorithm*) ?
 
 Une **suite finie d'étapes** précises pour résoudre un problème.
 
@@ -46,41 +46,15 @@ Exemples : recette de cuisine, itinéraire GPS, mode d'emploi.
 
 ---
 
-## *Algorithm*, *program*, *programming language*
+## Algorithme, programme, langage de programmation
 
 | Terme | Sens |
 | --- | --- |
-| *Algorithm* | Méthode / démarche (idées, étapes) |
-| *Program* | Algorithme **écrit** dans un langage, exécutable par une machine |
-| *Programming language* | Langage formel pour écrire des programmes (Python, C++…) |
+| Algorithme (*algorithm*) | Méthode / démarche (idées, étapes) |
+| Programme (*program*) | Algorithme **écrit** dans un langage, exécutable par une machine |
+| Langage de programmation (*programming language*) | Langage formel pour écrire des programmes (Python, C++…) |
 
 L'algorithme **précède** le programme. Ce cours s'arrête volontairement avant le code.
-
----
-
-## Classer : *algorithm*, *program* ou *neither* ?
-
-Pour chaque item : *algorithm* / *program* / *neither* ?
-
-1. Une recette de cuisine détaillée
-2. Une application mobile déjà installée sur le téléphone
-3. L'itinéraire affiché par un GPS
-4. Le langage Python lui-même
-
-→ [Exercices](exercices_seance_01.html) § 1.A
-
----
-
-## Correction
-
-| Item | Classe | Pourquoi |
-| --- | --- |
-| Recette | *algorithm* | Étapes précises, sans machine |
-| App installée | *program* | Code déjà écrit / exécutable |
-| Itinéraire GPS | *algorithm* *(ou résultat)* | Suite d'étapes pour aller d'A à B |
-| Python | *neither* | C'est un *programming language* |
-
-Nuance : le GPS *produit* un algorithme (l'itinéraire).
 
 ---
 
@@ -88,9 +62,9 @@ Nuance : le GPS *produit* un algorithme (l'itinéraire).
 
 Tout traitement suit la même démarche :
 
-1. *Input* — données d'entrée (saisie, valeurs connues)
-2. *Process* — calculs, transformations, enchaînement d'étapes
-3. *Output* — résultat affiché ou produit
+1. Entrée (*input*) — données d'entrée (saisie, valeurs connues)
+2. Traitement (*process*) — calculs, transformations, enchaînement d'étapes
+3. Sortie (*output*) — résultat affiché ou produit
 
 Avant de dessiner : qu'est-ce qui entre ? que fait-on ? que sort-on ?
 
@@ -100,9 +74,9 @@ Avant de dessiner : qu'est-ce qui entre ? que fait-on ? que sort-on ?
 
 | Étape | Contenu |
 | --- | --- |
-| *Input* | deux notes |
-| *Process* | les additionner, diviser par 2 |
-| *Output* | la moyenne |
+| Entrée (*input*) | deux notes |
+| Traitement (*process*) | les additionner, diviser par 2 |
+| Sortie (*output*) | la moyenne |
 
 Même idée pour un prix TTC, une conversion, une somme…
 
@@ -149,33 +123,6 @@ Un *flowchart* séquentiel = **un seul chemin**, sans branche.
 
 ---
 
-## Lire et tracer
-
-Flowchart : somme de 2 nombres.
-
-1. Quelles sont les entrées ? la sortie ? l'ordre des étapes ?
-2. Pour `a = 3`, `b = 5` : que produit l'algorithme ?
-
-Compléter une mini *trace table* sur papier.
-
-→ [Exercices](exercices_seance_01.html) § 1.B
-
----
-
-## Correction — somme de 2 nombres
-
-- **Entrées :** `a`, `b` — **Sortie :** `sum`
-- **Ordre :** `START` → `INPUT` → process → `OUTPUT` → `END`
-- Pour `a = 3`, `b = 5` : `sum ← 3 + 5` → **OUTPUT 8**
-
-| step | a | b | sum | OUTPUT |
-| :---: | :---: | :---: | :---: | :---: |
-| INPUT | 3 | 5 | — | |
-| process | 3 | 5 | 8 | |
-| OUTPUT | 3 | 5 | 8 | 8 |
-
----
-
 ## Variables
 
 Une **variable** est une case nommée qui contient une valeur.
@@ -191,7 +138,7 @@ En *flowchart* / *pseudocode* : noms en anglais simples (`sum`, `price`, `mark`)
 ## Types de base
 
 | Type | Contenu | Exemples |
-| --- | --- | --- |
+| --- | --- |
 | `INTEGER` | entier | `3`, `-1`, `42` |
 | `REAL` | réel (virgule) | `3.14`, `-0.5` |
 | `BOOLEAN` | vrai / faux | `TRUE`, `FALSE` |
@@ -248,6 +195,77 @@ Choisir le type selon le besoin : une moyenne est souvent un `REAL`.
 
 ---
 
+## Table de trace (*trace table*) = exécution à la main (*dry run*)
+
+Une *trace table* simule l'exécution **ligne par ligne**.
+
+- Une colonne par variable (+ OUTPUT si besoin)
+- Une ligne par étape
+- On met à jour **seulement** ce qui change
+
+Compétence d'examen : vérifier un algorithme **sans machine**.
+
+---
+
+## Exercices
+
+À faire sur papier — fiche complète : [Exercices](exercices_seance_01.html)
+
+---
+
+## Classer : algorithme, programme ou ni l'un ni l'autre ?
+
+Pour chaque item : *algorithm* / *program* / *neither* ?
+
+1. Une recette de cuisine détaillée
+2. Une application mobile déjà installée sur le téléphone
+3. L'itinéraire affiché par un GPS
+4. Le langage Python lui-même
+
+→ [Exercices](exercices_seance_01.html) § 1.A
+
+---
+
+## Correction
+
+| Item | Classe | Pourquoi |
+| --- | --- |
+| Recette | *algorithm* | Étapes précises, sans machine |
+| App installée | *program* | Code déjà écrit / exécutable |
+| Itinéraire GPS | *algorithm* *(ou résultat)* | Suite d'étapes pour aller d'A à B |
+| Python | *neither* | C'est un *programming language* |
+
+Nuance : le GPS *produit* un algorithme (l'itinéraire).
+
+---
+
+## Lire et tracer
+
+Flowchart : somme de 2 nombres.
+
+1. Quelles sont les entrées ? la sortie ? l'ordre des étapes ?
+2. Pour `a = 3`, `b = 5` : que produit l'algorithme ?
+
+Compléter une mini *trace table* sur papier.
+
+→ [Exercices](exercices_seance_01.html) § 1.B
+
+---
+
+## Correction — somme de 2 nombres
+
+- **Entrées :** `a`, `b` — **Sortie :** `sum`
+- **Ordre :** `START` → `INPUT` → process → `OUTPUT` → `END`
+- Pour `a = 3`, `b = 5` : `sum ← 3 + 5` → **OUTPUT 8**
+
+| step | a | b | sum | OUTPUT |
+| :---: | :---: | :---: | :---: | :---: |
+| INPUT | 3 | 5 | — | |
+| process | 3 | 5 | 8 | |
+| OUTPUT | 3 | 5 | 8 | 8 |
+
+---
+
 ## Trace table — `DIV` et `MOD`
 
 ```text
@@ -276,18 +294,6 @@ Rappel : `10 DIV 4 = 2`, `10 MOD 4 = 2` → `2 + 2 = 4`.
 
 ---
 
-## *Trace table* = *dry run*
-
-Une *trace table* simule l'exécution **ligne par ligne**.
-
-- Une colonne par variable (+ OUTPUT si besoin)
-- Une ligne par étape
-- On met à jour **seulement** ce qui change
-
-Compétence d'examen : vérifier un algorithme **sans machine**.
-
----
-
 ## Dessiner un *flowchart*
 
 > Lire un prix HT (`priceHT`) et un taux (`rate`)  
@@ -311,7 +317,7 @@ flowchart TB
   D --> E([END])
 ```
 
-Variante : moyenne de 2 nombres — même squelette (*input* → *process* → *output*).
+Variante : moyenne de 2 nombres — même squelette (entrée → traitement → sortie).
 
 ---
 

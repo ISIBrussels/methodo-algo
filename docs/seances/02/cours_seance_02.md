@@ -24,13 +24,11 @@ Instructions conditionnelles
 - Imbriquer / cascader des conditions
 - Concevoir **test cases** et **edge cases**
 
-**Livrable mental :** un `IF`/`ELSE IF` (flowchart + pseudocode) + 3 test cases dont 1 edge case.
-
 ---
 
 ## Contenu à venir
 
-Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
 
 ---
 

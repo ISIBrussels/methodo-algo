@@ -1,7 +1,7 @@
 # Séance 1 — Exercices
 
 **Thème :** Algorithmes et traitement séquentiel  
-**Support :** *flowcharts* + *trace table* (prose FR — flowcharts + pseudocode EN)
+**Support :** *flowcharts* + *trace table* (texte FR — flowcharts + *pseudocode* EN)
 
 <nav class="page-nav">
   <a href="cours_seance_01.html">← Cours</a>
@@ -9,7 +9,7 @@
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 1.A — Classer (*algorithm* / *program* / *neither*)
+## 1.A — Classer (algorithme / programme / ni l'un ni l'autre)
 
 Pour chaque item, indiquer *algorithm*, *program* ou *neither*, et justifier en une phrase.
 

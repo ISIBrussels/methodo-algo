@@ -24,13 +24,11 @@ Recherche, tri et efficacité
 - Compter comparaisons et échanges
 - Situer N, N², log N ; **Big O** sans formalisme ; best / worst case
 
-**Livrable mental :** linear vs binary + pourquoi bubble/selection ~ N².
-
 ---
 
 ## Contenu à venir
 
-Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+Contenu pédagogique complet à rédiger (bloc cours, puis exercices en fin de séance).
 
 ---
 
