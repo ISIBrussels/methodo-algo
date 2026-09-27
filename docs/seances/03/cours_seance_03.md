@@ -3,7 +3,7 @@ marp: true
 theme: methodo-algo
 title: "Séance 3 — Loops (1) : WHILE / REPEAT … UNTIL"
 paginate: true
-header: "Méthodologie algorithmique — Séance 3 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodo Algo — Séance 3 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 

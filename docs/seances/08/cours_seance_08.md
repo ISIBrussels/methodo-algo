@@ -3,7 +3,7 @@ marp: true
 theme: methodo-algo
 title: "Séance 8 (optionnelle) — Review & mock exam"
 paginate: true
-header: "Méthodologie algorithmique — Séance 8 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodo Algo — Séance 8 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 

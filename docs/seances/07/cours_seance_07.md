@@ -3,7 +3,7 @@ marp: true
 theme: methodo-algo
 title: "Séance 7 — Searching, sorting & efficiency"
 paginate: true
-header: "Méthodologie algorithmique — Séance 7 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodo Algo — Séance 7 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 

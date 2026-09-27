@@ -3,7 +3,7 @@ marp: true
 theme: methodo-algo
 title: "Séance 4 — Loops (2) : FOR & nested loops"
 paginate: true
-header: "Méthodologie algorithmique — Séance 4 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodo Algo — Séance 4 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 

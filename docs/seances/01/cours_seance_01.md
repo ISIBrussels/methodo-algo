@@ -3,7 +3,7 @@ marp: true
 theme: methodo-algo
 title: "Séance 1 — Algorithms & sequential processing"
 paginate: true
-header: "Méthodologie algorithmique — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
+header: "Méthodo Algo — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
