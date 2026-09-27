@@ -2,6 +2,14 @@
 
 Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage **Méthodologie algorithmique** du **1e bachelier** à l'**ISIB** (HE2B).
 
+Ce cours vise à apprendre à **penser** un traitement avant de coder :
+
+- cours **indépendant du langage** : sans se rattacher à un langage de programmation particulier (ni Python, ni C++)
+- support : *flowcharts*, puis *pseudocode* progressivement
+- travail sur **papier** : lire, tracer, produire
+
+Thèmes, consignes et explications en **français** ; *flowcharts* et *pseudocode* en **anglais**.
+
 Vous y trouverez :
 
 - les **slides de cours**

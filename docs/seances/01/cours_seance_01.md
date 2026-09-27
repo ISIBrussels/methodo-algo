@@ -7,22 +7,6 @@ header: "Méthodo Algo — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shura
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
-## Cadre général
-
-**Méthodologie algorithmique** — 1<sup>e</sup> bachelier ISIB
-
-- Apprendre à **penser** un traitement avant de coder
-- Cours **indépendant du langage** : sans se rattacher à un langage de programmation particulier (ni Python, ni C++)
-- Support : *flowcharts*, puis *pseudocode* progressivement
-- Travail sur **papier** : lire, tracer, produire
-
-| Élément | Langue |
-| --- | --- |
-| Thèmes, consignes, explications | **français** |
-| Flowcharts, *pseudocode* | **anglais** |
-
----
-
 ## Séance 1
 
 Algorithmes et traitement séquentiel
