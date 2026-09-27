@@ -1,0 +1,4 @@
+themeSet:
+  - docs/themes
+theme: methodologie-algo
+html: true

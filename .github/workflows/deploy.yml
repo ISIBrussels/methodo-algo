@@ -1,0 +1,383 @@
+name: Build and Deploy Marp Slides
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Marp CLI
+        run: npm install -g @marp-team/marp-cli marked
+
+      - name: Build Marp slides
+        run: |
+          mkdir -p dist
+          cp -r docs/* dist/
+
+          for file in docs/seances/*/cours_seance_*.md; do
+            if [ -f "$file" ]; then
+              out="dist/${file#docs/}"
+              out="${out%.md}.html"
+              mkdir -p "$(dirname "$out")"
+              marp "$file" --html --theme docs/themes/methodologie-algo.css -o "$out"
+            fi
+          done
+
+      - name: Build amphitheater question pages (Markdown to static HTML)
+        run: |
+          for file in docs/seances/*/questions_seance_*.md; do
+            if [ -f "$file" ]; then
+              out="dist/${file#docs/}"
+              out="${out%.md}.html"
+              mkdir -p "$(dirname "$out")"
+
+              body="$(marked "$file")"
+              session_num="${file##*_seance_}"
+              session_num="${session_num%.md}"
+              session_num=$((10#$session_num))
+              page_title="Séance ${session_num} — Questions amphi"
+              cat > "$out" <<EOF
+          <!doctype html>
+          <html lang="fr">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>${page_title}</title>
+              <style>
+                :root {
+                  --color-primary: #0075c9;
+                  --color-secondary: #757575;
+                  --color-bg: #ffffff;
+                  --color-text: #212121;
+                  --color-border: #e0e0e0;
+                  --color-row-alt: #f5f5f5;
+                }
+
+                * {
+                  box-sizing: border-box;
+                }
+
+                body {
+                  max-width: 920px;
+                  margin: 0 auto;
+                  padding: 2.5rem 1.5rem 3rem;
+                  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+                  line-height: 1.65;
+                  color: var(--color-text);
+                  background: var(--color-bg);
+                }
+
+                h1 {
+                  margin: 0 0 1.25rem;
+                  font-size: 1.85rem;
+                  font-weight: 700;
+                  color: var(--color-primary);
+                  padding-bottom: 0.6rem;
+                  border-bottom: 2px solid var(--color-primary);
+                }
+
+                h2 {
+                  margin: 2.25rem 0 1rem;
+                  font-size: 1.2rem;
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                }
+
+                h3 {
+                  margin: 1.5rem 0 0.5rem;
+                  font-size: 1.05rem;
+                  font-weight: 600;
+                  color: var(--color-text);
+                }
+
+                p {
+                  margin: 0 0 1rem;
+                }
+
+                ul, ol {
+                  margin: 0 0 1.5rem;
+                  padding-left: 1.4rem;
+                }
+
+                .page-nav {
+                  display: flex;
+                  gap: 0.75rem;
+                  flex-wrap: wrap;
+                  margin: 1.25rem 0 1.75rem;
+                }
+
+                .page-nav a {
+                  display: inline-block;
+                  padding: 0.3rem 0.7rem;
+                  font-size: 0.85rem;
+                  font-weight: 600;
+                  color: var(--color-primary);
+                  text-decoration: none;
+                  background: transparent;
+                  border: 1px solid var(--color-primary);
+                }
+
+                .page-nav a:hover {
+                  background: var(--color-primary);
+                  color: #ffffff;
+                }
+
+                .site-footer {
+                  margin-top: 2.5rem;
+                  padding-top: 1rem;
+                  border-top: 1px solid var(--color-border);
+                  text-align: center;
+                  font-size: 0.9rem;
+                  color: var(--color-secondary);
+                }
+
+                .site-footer a {
+                  color: var(--color-secondary);
+                  text-decoration: underline;
+                  font-weight: 400;
+                }
+
+                .site-footer a:hover {
+                  color: var(--color-primary);
+                }
+
+                code {
+                  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 0.88em;
+                  background: var(--color-row-alt);
+                  color: var(--color-secondary);
+                  padding: 0.1em 0.35em;
+                }
+
+                pre {
+                  background: var(--color-row-alt);
+                  padding: 0.75rem;
+                  overflow-x: auto;
+                }
+
+                pre code {
+                  background: transparent;
+                  padding: 0;
+                }
+              </style>
+            </head>
+            <body>
+          $body
+            </body>
+          </html>
+          EOF
+            fi
+          done
+
+      - name: Build landing page from docs/index.md
+        run: |
+          sed -E \
+            -e 's#(seances/[0-9]{2}/cours_seance_[0-9]{2})\.md#\1.html#g' \
+            -e 's#(seances/[0-9]{2}/questions_seance_[0-9]{2})\.md#\1.html#g' \
+            docs/index.md > /tmp/pages-index.md
+
+          body="$(marked /tmp/pages-index.md)"
+
+          cat > dist/index.html <<EOF
+          <!doctype html>
+          <html lang="fr">
+            <head>
+              <meta charset="utf-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <title>Méthodologie Algorithmique — ISIB</title>
+              <style>
+                :root {
+                  --color-primary: #0075c9;
+                  --color-secondary: #757575;
+                  --color-bg: #ffffff;
+                  --color-surface: #ffffff;
+                  --color-text: #212121;
+                  --color-border: #e0e0e0;
+                  --color-row-alt: #f5f5f5;
+                }
+
+                * {
+                  box-sizing: border-box;
+                }
+
+                body {
+                  max-width: 920px;
+                  margin: 0 auto;
+                  padding: 2.5rem 1.5rem 3rem;
+                  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+                  line-height: 1.65;
+                  color: var(--color-text);
+                  background: var(--color-bg);
+                }
+
+                h1 {
+                  margin: 0 0 1.25rem;
+                  font-size: 1.85rem;
+                  font-weight: 700;
+                  color: var(--color-primary);
+                  padding-bottom: 0.6rem;
+                  border-bottom: 2px solid var(--color-primary);
+                }
+
+                h2 {
+                  margin: 2.25rem 0 1rem;
+                  font-size: 1.2rem;
+                  font-weight: 600;
+                  color: var(--color-secondary);
+                }
+
+                p {
+                  margin: 0 0 1rem;
+                }
+
+                ul {
+                  margin: 0 0 1.5rem;
+                  padding-left: 1.4rem;
+                  color: var(--color-secondary);
+                }
+
+                li + li {
+                  margin-top: 0.35rem;
+                }
+
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-top: 0.5rem;
+                  background: var(--color-surface);
+                  border: 1px solid var(--color-border);
+                }
+
+                thead th {
+                  background: var(--color-primary);
+                  color: #ffffff;
+                  font-weight: 600;
+                  font-size: 0.9rem;
+                  letter-spacing: 0.03em;
+                  padding: 0.75rem 1rem;
+                  border: none;
+                }
+
+                tbody td {
+                  padding: 0.75rem 1rem;
+                  border-bottom: 1px solid var(--color-border);
+                  vertical-align: middle;
+                }
+
+                tbody tr:last-child td {
+                  border-bottom: none;
+                }
+
+                tbody tr:nth-child(even) {
+                  background: var(--color-row-alt);
+                }
+
+                tbody td:first-child {
+                  font-weight: 700;
+                  color: var(--color-primary);
+                  text-align: center;
+                  width: 4.5rem;
+                }
+
+                tbody td:nth-child(2) {
+                  font-size: 0.95rem;
+                }
+
+                tbody td:nth-child(n+3) {
+                  text-align: center;
+                  width: 7rem;
+                }
+
+                table a {
+                  display: inline-block;
+                  padding: 0.3rem 0.7rem;
+                  font-size: 0.85rem;
+                  font-weight: 600;
+                  color: var(--color-primary);
+                  text-decoration: none;
+                  background: transparent;
+                  border: 1px solid var(--color-primary);
+                }
+
+                table a:hover {
+                  background: var(--color-primary);
+                  color: #ffffff;
+                }
+
+                .site-footer {
+                  margin-top: 2.5rem;
+                  padding-top: 1rem;
+                  border-top: 1px solid var(--color-border);
+                  text-align: center;
+                  font-size: 0.9rem;
+                  color: var(--color-secondary);
+                }
+
+                .site-footer a {
+                  color: var(--color-secondary);
+                  text-decoration: underline;
+                  font-weight: 400;
+                }
+
+                .site-footer a:hover {
+                  color: var(--color-primary);
+                }
+
+                code {
+                  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 0.88em;
+                  background: var(--color-row-alt);
+                  color: var(--color-secondary);
+                  padding: 0.1em 0.35em;
+                }
+
+                pre {
+                  background: var(--color-row-alt);
+                  padding: 0.75rem;
+                  overflow-x: auto;
+                }
+              </style>
+            </head>
+            <body>
+          $body
+            </body>
+          </html>
+          EOF
+
+          rm -f dist/index.md
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
