@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 3 — Loops (1) : WHILE / REPEAT … UNTIL"
+title: "Séance 3 — Boucles (1) : WHILE / REPEAT … UNTIL"
 paginate: true
 header: "Méthodo Algo — Séance 3 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
@@ -9,7 +9,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 ## Séance 3
 
-Loops (1) : WHILE / REPEAT … UNTIL
+Boucles (1) : WHILE / REPEAT … UNTIL
 
 [→ Quiz](quiz_seance_03.html)
 [→ Exercices](exercices_seance_03.html)
@@ -28,7 +28,7 @@ Loops (1) : WHILE / REPEAT … UNTIL
 
 ---
 
-## Outline
+## Plan
 
 1. Principe de l'itération ; infinite loop sur un flowchart
 2. `WHILE` vs `REPEAT … UNTIL` (flowchart + pseudocode)
@@ -49,4 +49,4 @@ Loops (1) : WHILE / REPEAT … UNTIL
 ## Pour la prochaine séance
 
 - Refaire un `REPEAT` de validation + un accumulateur
-- On aborde `FOR`, `STEP` et les **nested loops**
+- On aborde `FOR`, `STEP` et les **boucles imbriquées (nested loops)**

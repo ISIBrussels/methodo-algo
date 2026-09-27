@@ -1,6 +1,6 @@
 # Séance 5 — Exercices
 
-**Thème :** Arrays  
+**Thème :** Tableaux (arrays)  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** pseudocode + flowchart de parcours + trace table
 
@@ -19,7 +19,7 @@
 ## Clôture
 
 - Synthèse : patterns tableau + bornes.
-- Annonce séance 6 : Functions & procedures.
+- Annonce séance 6 : Fonctions et procédures.
 
 <nav class="page-nav">
   <a href="cours_seance_05.html">← Cours</a>

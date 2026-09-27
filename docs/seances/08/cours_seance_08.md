@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 8 (optionnelle) — Review & mock exam"
+title: "Séance 8 (optionnelle) — Révision et examen blanc"
 paginate: true
 header: "Méthodo Algo — Séance 8 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
@@ -9,7 +9,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 ## Séance 8 *(optionnelle)*
 
-Review & mock exam
+Révision et examen blanc
 
 > Séance tampon : synthèse + sujet blanc. Hors volume minimal de 10 h 30.
 
@@ -28,10 +28,10 @@ Review & mock exam
 
 ---
 
-## Outline
+## Plan
 
 1. Carte mentale S1–S7
-2. Warm-up : mini-items (condition, borne, scope)
+2. Échauffement : mini-items (condition, borne, scope)
 3. Sujet blanc chronométré
 4. Correction collective ; erreurs fréquentes
 5. Questions libres et conseils de révision

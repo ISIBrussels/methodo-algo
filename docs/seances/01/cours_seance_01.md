@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 1 — Algorithms & sequential processing"
+title: "Séance 1 — Algorithmes et traitement séquentiel"
 paginate: true
 header: "Méthodo Algo — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
@@ -9,9 +9,9 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 ## Séance 1
 
-Algorithms & sequential processing
+Algorithmes et traitement séquentiel
 
-Support : **flowcharts** (convention FR explications / EN code)
+Support : **flowcharts** (prose FR ; flowcharts + pseudocode EN)
 
 [→ Quiz](quiz_seance_01.html)
 [→ Exercices](exercices_seance_01.html)
@@ -31,9 +31,9 @@ Support : **flowcharts** (convention FR explications / EN code)
 
 ---
 
-## Outline
+## Plan
 
-1. Algorithm vs program vs programming language
+1. Algorithme (*algorithm*) vs programme (*program*) vs langage (*programming language*)
 2. Démarche Input → Process → Output
 3. Symboles flowchart (séquence)
 4. Variables, types, affectation, opérateurs
@@ -43,7 +43,7 @@ Support : **flowcharts** (convention FR explications / EN code)
 
 ## Points clés à retenir
 
-- Un algorithm n'est **pas** encore du code
+- Un algorithme (*algorithm*) n'est **pas** encore du code
 - Le **flowchart** est le support de départ (pseudocode progressif ensuite)
 - Toujours pouvoir **tracer** un algorithme sur papier
 
@@ -52,4 +52,4 @@ Support : **flowcharts** (convention FR explications / EN code)
 ## Pour la prochaine séance
 
 - Relire IPO + symboles de base
-- On aborde les **conditional statements** (losange Yes/No)
+- On aborde les **instructions conditionnelles** (losange Yes/No)

@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 6 — Functions & procedures"
+title: "Séance 6 — Fonctions et procédures"
 paginate: true
 header: "Méthodo Algo — Séance 6 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
@@ -9,7 +9,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 ## Séance 6
 
-Functions & procedures
+Fonctions et procédures
 
 [→ Quiz](quiz_seance_06.html)
 [→ Exercices](exercices_seance_06.html)
@@ -20,7 +20,7 @@ Functions & procedures
 
 - Découper un problème (**modular design**)
 - Distinguer `FUNCTION … RETURN` et `PROCEDURE` ; utiliser `CALL`
-- Parameters / arguments ; valeur de retour
+- Paramètres / arguments ; valeur de retour
 - Portée **local / global**
 - Fonctions sur tableaux : `average(values, n)`, `countAbove(values, n, limit)`
 - Structure **main program + functions**
@@ -29,11 +29,11 @@ Functions & procedures
 
 ---
 
-## Outline
+## Plan
 
 1. Pourquoi modulariser ?
 2. `FUNCTION` vs `PROCEDURE` ; `CALL` / `RETURN`
-3. Parameters, arguments, return value
+3. Paramètres, arguments, valeur de retour
 4. Local / global scope
 5. Main + functions sur tableaux
 
@@ -50,4 +50,4 @@ Functions & procedures
 ## Pour la prochaine séance
 
 - Refactoriser un monolithe « notes » en 2 fonctions
-- On aborde **searching, sorting & efficiency**
+- On aborde **recherche, tri et efficacité**

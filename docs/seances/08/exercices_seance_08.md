@@ -1,6 +1,6 @@
 # Séance 8 *(optionnelle)* — Exercices
 
-**Thème :** Review & mock exam  
+**Thème :** Révision et examen blanc  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** mixte flowchart + pseudocode + trace table  
 **Statut :** séance **optionnelle** (hors volume minimal 10 h 30)

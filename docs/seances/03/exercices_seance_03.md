@@ -1,6 +1,6 @@
 # Séance 3 — Exercices
 
-**Thème :** Loops (1) : WHILE / REPEAT … UNTIL  
+**Thème :** Boucles (1) : WHILE / REPEAT … UNTIL  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** flowchart + pseudocode (patterns de boucle)
 
@@ -19,7 +19,7 @@
 ## Clôture
 
 - Synthèse : WHILE vs REPEAT + 3 patterns.
-- Annonce séance 4 : FOR & nested loops.
+- Annonce séance 4 : FOR et boucles imbriquées.
 
 <nav class="page-nav">
   <a href="cours_seance_03.html">← Cours</a>

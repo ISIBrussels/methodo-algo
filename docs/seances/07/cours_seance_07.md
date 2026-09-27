@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 7 — Searching, sorting & efficiency"
+title: "Séance 7 — Recherche, tri et efficacité"
 paginate: true
 header: "Méthodo Algo — Séance 7 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
@@ -9,7 +9,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 ## Séance 7
 
-Searching, sorting & efficiency
+Recherche, tri et efficacité
 
 [→ Quiz](quiz_seance_07.html)
 [→ Exercices](exercices_seance_07.html)
@@ -28,12 +28,12 @@ Searching, sorting & efficiency
 
 ---
 
-## Outline
+## Plan
 
 1. Linear search + early exit
 2. Binary search (sorted) ; intuition log N
 3. Selection sort ; bubble sort + early exit
-4. Compter comparisons / swaps
+4. Compter comparaisons / échanges (*swaps*)
 5. Croissance N / N² / log N ; best vs worst
 
 ---
@@ -48,5 +48,5 @@ Searching, sorting & efficiency
 
 ## Pour la suite
 
-- Relire search & sort + un comptage de comparaisons
-- Séance 8 *(optionnelle)* : review & mock exam
+- Relire recherche et tri (*search & sort*) + un comptage de comparaisons
+- Séance 8 *(optionnelle)* : révision et examen blanc

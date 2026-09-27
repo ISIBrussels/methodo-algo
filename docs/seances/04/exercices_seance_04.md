@@ -1,8 +1,8 @@
 # Séance 4 — Exercices
 
-**Thème :** Loops (2) : FOR & nested loops  
+**Thème :** Boucles (2) : FOR et boucles imbriquées  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** pseudocode (FOR / nested) + trace table
+**Support :** pseudocode (`FOR` / boucles imbriquées) + trace table
 
 ## Échauffement (5–10 min)
 
@@ -13,13 +13,13 @@
 
 1. **Compléter** un `FOR` avec `STEP` (y compris compte à rebours).
 2. Matching 4 énoncés → `FOR` / `WHILE` / `REPEAT`.
-3. **Produire** nested loops (multiplication table ou motif).
+3. **Produire** des boucles imbriquées (table de multiplication ou motif).
 4. **Tracer** i, j pour N=3 ; **corriger** un off-by-one.
 
 ## Clôture
 
 - Synthèse : choix de boucle + off-by-one.
-- Annonce séance 5 : Arrays.
+- Annonce séance 5 : Tableaux (arrays).
 
 <nav class="page-nav">
   <a href="cours_seance_04.html">← Cours</a>

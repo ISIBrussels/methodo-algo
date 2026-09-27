@@ -1,6 +1,6 @@
 # Séance 6 — Exercices
 
-**Thème :** Functions & procedures  
+**Thème :** Fonctions et procédures  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** pseudocode (modular design)
 
@@ -19,7 +19,7 @@
 ## Clôture
 
 - Synthèse : function vs procedure + main.
-- Annonce séance 7 : searching, sorting & efficiency.
+- Annonce séance 7 : recherche, tri et efficacité.
 
 <nav class="page-nav">
   <a href="cours_seance_06.html">← Cours</a>

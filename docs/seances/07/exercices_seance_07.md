@@ -1,6 +1,6 @@
 # Séance 7 — Exercices
 
-**Thème :** Searching, sorting & efficiency  
+**Thème :** Recherche, tri et efficacité  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** pseudocode + trace table (compteurs)
 

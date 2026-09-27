@@ -1,8 +1,8 @@
 # Séance 1 — Exercices
 
-**Thème :** Algorithms & sequential processing  
+**Thème :** Algorithmes et traitement séquentiel  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
-**Support :** flowcharts + trace table (convention FR / EN)
+**Support :** flowcharts + trace table (prose FR ; flowcharts + pseudocode EN)
 
 ## Échauffement (5–10 min)
 
@@ -13,12 +13,12 @@
 
 1. **Lire** un flowchart séquentiel → entrées / sorties / ordre.
 2. **Tracer** : remplir une trace table (3 affectations + 1 `OUTPUT`).
-3. **Produire** : flowchart IPO simple (ex. average of 2 numbers / prix TTC).
+3. **Produire** : flowchart IPO simple (ex. moyenne de 2 nombres / prix TTC).
 
 ## Clôture
 
 - Synthèse orale : IPO + symbole process + dry run.
-- Annonce séance 2 : conditional statements.
+- Annonce séance 2 : instructions conditionnelles.
 
 <nav class="page-nav">
   <a href="cours_seance_01.html">← Cours</a>

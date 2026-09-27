@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 5 — Arrays"
+title: "Séance 5 — Tableaux (arrays)"
 paginate: true
 header: "Méthodo Algo — Séance 5 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
@@ -9,7 +9,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 ## Séance 5
 
-Arrays
+Tableaux (arrays)
 
 [→ Quiz](quiz_seance_05.html)
 [→ Exercices](exercices_seance_05.html)
@@ -28,7 +28,7 @@ Arrays
 
 ---
 
-## Outline
+## Plan
 
 1. Déclaration, indices, taille
 2. Remplissage et parcours `FOR`
@@ -49,4 +49,4 @@ Arrays
 ## Pour la prochaine séance
 
 - Refaire index of max + countAbove sur papier
-- On aborde **functions & procedures**
+- On aborde les **fonctions et procédures**

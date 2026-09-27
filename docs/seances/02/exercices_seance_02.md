@@ -1,6 +1,6 @@
 # Séance 2 — Exercices
 
-**Thème :** Conditional statements  
+**Thème :** Instructions conditionnelles  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** flowchart (losange Yes/No) + pseudocode miroir
 
