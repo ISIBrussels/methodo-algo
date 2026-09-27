@@ -273,7 +273,7 @@ OUTPUT q, r
 
 ## Quiz
 
-Dix questions pour vérifier les notions de la séance.
+10 questions pour tester sa compréhension du contenu de la séance.
 
 [→ Quiz](quiz_seance_01.html)
 
