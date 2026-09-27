@@ -27,7 +27,7 @@ Soit le *flowchart* séquentiel suivant (somme de deux nombres) :
 ```mermaid
 flowchart TB
   A([START]) --> B[/INPUT a, b/]
-  B --> C["sum ← a + b"]
+  B --> C["sum = a + b"]
   C --> D[/OUTPUT sum/]
   D --> E([END])
 ```
@@ -49,9 +49,9 @@ flowchart TB
 Exécuter « à la main » l'algorithme suivant :
 
 ```text
-a ← 10
-b ← 4
-result ← (a DIV b) + (a MOD b)
+a = 10
+b = 4
+result = (a DIV b) + (a MOD b)
 OUTPUT result
 ```
 
@@ -59,12 +59,13 @@ Compléter :
 
 | step | a | b | result | OUTPUT |
 | --- | --- | --- | --- | --- |
-| `a ← 10` | | | | |
-| `b ← 4` | | | | |
-| `result ← …` | | | | |
+| `a = 10` | | | | |
+| `b = 4` | | | | |
+| `result = …` | | | | |
 | `OUTPUT result` | | | | |
 
-Rappel : `DIV` = quotient entier ; `MOD` = reste.
+Rappel : `DIV` = quotient entier ; `MOD` = reste.  
+Rappel : `=` est une **affectation**, pas une égalité mathématique.
 
 ---
 
@@ -73,10 +74,10 @@ Rappel : `DIV` = quotient entier ; `MOD` = reste.
 Dessiner un *flowchart* (symboles `START` / `END`, `INPUT` / `OUTPUT`, process) pour :
 
 > Lire un prix hors taxes (`priceHT`) et un taux (`rate`).  
-> Calculer le prix TTC : `priceTTC ← priceHT * (1 + rate)`.  
+> Calculer le prix TTC : `priceTTC = priceHT * (1 + rate)`.  
 > Afficher `priceTTC`.
 
-**Variante :** *flowchart* de la moyenne de deux nombres (`avg ← (a + b) / 2`).
+**Variante :** *flowchart* de la moyenne de deux nombres (`avg = (a + b) / 2`).
 
 ---
 
@@ -101,6 +102,6 @@ Entrées `a`, `b` ; sortie `sum` ; pour `3` et `5` → **OUTPUT 8**.
 
 ### 1.D
 
-`START` → `INPUT priceHT, rate` → `priceTTC ← priceHT * (1 + rate)` → `OUTPUT priceTTC` → `END`.
+`START` → `INPUT priceHT, rate` → `priceTTC = priceHT * (1 + rate)` → `OUTPUT priceTTC` → `END`.
 
 <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>

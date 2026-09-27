@@ -64,7 +64,11 @@ Même idée pour un prix TTC, une conversion, une somme…
 
 ---
 
-## Symboles *flowchart* (séquence)
+## Qu'est-ce qu'un *flowchart* ?
+
+Un *flowchart* (organigramme) est un **dessin** de l'algorithme : des **boîtes** reliées par des **flèches**, lues dans l'ordre.
+
+Chaque forme a un rôle fixe :
 
 ```mermaid
 flowchart LR
@@ -73,7 +77,9 @@ flowchart LR
   P[process]
 ```
 
-Aujourd'hui : **séquence** uniquement (pas encore de losange Yes/No → S2).
+- Ovale : début / fin
+- Parallélogramme : entrée / sortie
+- Rectangle : traitement (*process*)
 
 ---
 
@@ -84,7 +90,7 @@ Lire deux nombres, calculer leur somme, afficher le résultat.
 ```mermaid
 flowchart TB
   A([START]) --> B[/INPUT a, b/]
-  B --> C["sum ← a + b"]
+  B --> C["sum = a + b"]
   C --> D[/OUTPUT sum/]
   D --> E([END])
 ```
@@ -120,7 +126,7 @@ En *flowchart* / *pseudocode* : noms en anglais simples (`sum`, `price`, `mark`)
 ## Types de base
 
 | Type | Contenu | Exemples |
-| --- | --- |
+| --- | --- | --- |
 | `INTEGER` | entier | `3`, `-1`, `42` |
 | `REAL` | réel (virgule) | `3.14`, `-0.5` |
 | `BOOLEAN` | vrai / faux | `TRUE`, `FALSE` |
@@ -132,17 +138,19 @@ Le type fixe **ce qu'on peut faire** avec la valeur (calcul, comparaison, affich
 
 ## Affectation
 
-Symbole d'affectation : **`←`**
+Symbole d'affectation : **`=`**
 
 ```text
-total ← a + b
+total = a + b
 ```
 
-- À **gauche** : la variable qui reçoit
-- À **droite** : l'expression calculée
-- Ce n'est **pas** l'égalité mathématique
+**Attention :** ce n'est **pas** l'égalité mathématique.
 
-Après cette étape, `total` contient le résultat de `a + b`.
+- À **gauche** : la variable qui **reçoit**
+- À **droite** : l'expression **calculée**
+- On calcule la droite, puis on **range** le résultat à gauche
+
+Donc `x = x + 1` a du sens ici (on remplace `x` par `x + 1`).
 
 ---
 
@@ -166,11 +174,11 @@ Utile pour : heures/minutes, parité, découpage en paquets…
 ## Exemple : types + opérateurs
 
 ```text
-a ← 17          // INTEGER
-b ← 5           // INTEGER
-q ← a DIV b     // 3
-r ← a MOD b     // 2
-avg ← (a + b) / 2   // REAL si division réelle
+a = 17          // INTEGER
+b = 5           // INTEGER
+q = a DIV b     // 3
+r = a MOD b     // 2
+avg = (a + b) / 2   // REAL si division réelle
 ```
 
 Choisir le type selon le besoin : une moyenne est souvent un `REAL`.
@@ -189,18 +197,52 @@ Compétence d'examen : vérifier un algorithme **sans machine**.
 
 ---
 
+## Exemple : *trace table* — somme
+
+```text
+INPUT a, b
+sum = a + b
+OUTPUT sum
+```
+
+Pour `a = 3`, `b = 5` :
+
+| step | a | b | sum | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `INPUT a, b` | 3 | 5 | | |
+| `sum = a + b` | 3 | 5 | 8 | |
+| `OUTPUT sum` | 3 | 5 | 8 | 8 |
+
+On ne réécrit une case que quand la variable **change**.
+
+---
+
+## Exemple : *trace table* — `DIV` et `MOD`
+
+```text
+a = 17
+b = 5
+q = a DIV b
+r = a MOD b
+OUTPUT q, r
+```
+
+| step | a | b | q | r | OUTPUT |
+| --- | --- | --- | --- | --- | --- |
+| `a = 17` | 17 | | | | |
+| `b = 5` | 17 | 5 | | | |
+| `q = a DIV b` | 17 | 5 | 3 | | |
+| `r = a MOD b` | 17 | 5 | 3 | 2 | |
+| `OUTPUT q, r` | 17 | 5 | 3 | 2 | 3, 2 |
+
+---
+
 ## Quiz
 
 Dix questions pour vérifier les notions de la séance — puis on passe aux exercices papier.
 
 [→ Quiz](quiz_seance_01.html)
-
----
-
-## Exercices
-
-À faire sur papier — **un énoncé par slide**.  
-Fiche complète + corrigé : [Exercices](exercices_seance_01.html)
+[→ Exercices](exercices_seance_01.html)
 
 ---
 
@@ -233,9 +275,9 @@ Compléter une mini *trace table* sur papier.
 ## Exercice 1.C — Trace table (`DIV` et `MOD`)
 
 ```text
-a ← 10
-b ← 4
-result ← (a DIV b) + (a MOD b)
+a = 10
+b = 4
+result = (a DIV b) + (a MOD b)
 OUTPUT result
 ```
 
@@ -251,7 +293,7 @@ Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
 > Calculer le prix TTC  
 > Afficher le TTC
 
-Formule : `priceTTC ← priceHT * (1 + rate)`  
+Formule : `priceTTC = priceHT * (1 + rate)`  
 (ex. `rate = 0.21` pour 21 %)
 
 → [Exercices](exercices_seance_01.html) § 1.D

@@ -247,8 +247,9 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_01_answers_v1";
-      const checkedKey = "quiz_seance_01_checked_v1";
+      const storageKey = "quiz_seance_01_answers_v2";
+      const checkedKey = "quiz_seance_01_checked_v2";
+
 
       const questions = [
         {
@@ -325,7 +326,7 @@
         },
         {
           id: "q7",
-          text: "Dans <code>total ← a + b</code>, le symbole <code>←</code> signifie…",
+          text: "Dans <code>total = a + b</code>, le symbole <code>=</code> signifie…",
           options: [
             { value: "A", label: "une égalité mathématique à vérifier" },
             { value: "B", label: "une affectation : on calcule <code>a + b</code> et on place le résultat dans <code>total</code>" },
@@ -333,7 +334,7 @@
             { value: "D", label: "une entrée clavier dans <code>total</code>" },
           ],
           correct: "B",
-          feedback: "À gauche : la variable qui reçoit ; à droite : l'expression calculée. Ce n'est pas l'égalité mathématique.",
+          feedback: "À gauche : la variable qui reçoit ; à droite : l'expression calculée. Ce <code>=</code> n'est <strong>pas</strong> l'égalité mathématique.",
         },
         {
           id: "q8",
