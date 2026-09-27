@@ -172,3 +172,14 @@ blockquote {
   color: var(--color-secondary);
   border-left: 4px solid var(--color-primary);
 }
+
+section .mermaid-diagram {
+  display: flex;
+  justify-content: center;
+  margin: 0.4em 0;
+}
+
+section .mermaid-diagram svg {
+  max-height: 460px;
+  width: auto;
+}

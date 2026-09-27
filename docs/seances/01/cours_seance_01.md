@@ -7,74 +7,46 @@ header: "Méthodo Algo — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shura
 footer: "[← Retour à l'accueil](../../index.html)"
 ---
 
+## Cadre général
+
+**Méthodologie algorithmique** — 1<sup>e</sup> bachelier ISIB
+
+- Apprendre à **penser** un traitement avant de coder
+- Pas de langage d'enseignement ici (ni Python, ni C++)
+- Support : *flowcharts*, puis *pseudocode* progressivement
+- Travail sur **papier** : lire, tracer, produire
+
+| Élément | Langue |
+| --- | --- |
+| Prose, consignes, thèmes | **français** |
+| Flowcharts, pseudocode | **anglais** |
+
+Dans la prose, les termes EN sont en *italique* : *array*, *dry run*…
+
+---
+
 ## Séance 1
 
 Algorithmes et traitement séquentiel
-
-Support : *flowcharts* (prose FR — flowcharts + pseudocode EN)
 
 [→ Quiz](quiz_seance_01.html)
 [→ Exercices](exercices_seance_01.html)
 
 ---
 
-## Objectifs de la séance
+## Qu'est-ce qu'un *algorithm* ?
 
-- Distinguer algorithme, programme et langage de programmation
-- Appliquer *Input → Process → Output*
-- Utiliser `START` / `END`, `INPUT` / `OUTPUT`, process
-- Variables et types : `INTEGER`, `REAL`, `BOOLEAN`, `STRING`
-- Affectation `←`, opérateurs `+ - * /`, `DIV`, `MOD`
-- Remplir une *trace table* (*dry run*)
-
----
-
-## Cadre du cours
-
-- Penser **avant** de coder — pas de langage d'enseignement ici
-- Support principal : *flowcharts* (organigrammes)
-- Le *pseudocode* viendra progressivement (dès S2–S3)
-- Travail sur **papier** : lire, tracer, produire
-
----
-
-## Convention de langue
-
-| Élément | Langue |
-| --- | --- |
-| Thèmes, consignes, prose | **français** |
-| Flowcharts, pseudocode | **anglais** |
-| Glosses | OK : *tableau (array)*, etc. |
-
-Les mots-clés de structure (`WHILE`, `FOR`, `IF`…) restent en anglais.
-
----
-
-## Plan de la séance
-
-1. Algorithm / program / programming language
-2. Démarche Input → Process → Output
-3. Symboles flowchart (séquence)
-4. Variables, types, affectation, opérateurs
-5. Trace table (dry run)
-
-**Rythme :** petit bloc exposé → pause exercice → reprise.
-
----
-
-## Qu'est-ce qu'un algorithm ?
-
-Un **algorithme** (*algorithm*) est une **suite finie d'étapes** précises pour résoudre un problème.
+Une **suite finie d'étapes** précises pour résoudre un problème.
 
 - Indépendant d'un langage
-- Exécutable « à la main » (sur papier)
-- Doit produire un résultat clair
+- Exécutable « à la main », sur papier
+- Produit un résultat clair
 
-Exemples de la vie courante : recette de cuisine, itinéraire GPS, mode d'emploi.
+Exemples : recette de cuisine, itinéraire GPS, mode d'emploi.
 
 ---
 
-## Program et programming language
+## *Algorithm*, *program*, *programming language*
 
 | Terme | Sens |
 | --- | --- |
@@ -86,35 +58,7 @@ L'algorithme **précède** le programme. Ce cours s'arrête volontairement avant
 
 ---
 
-## Input → Process → Output
-
-Tout traitement informatisé suit cette démarche (**IPO**) :
-
-1. *Input* — données d'entrée (saisie, valeurs connues)
-2. *Process* — calculs, transformations, enchaînement d'étapes
-3. *Output* — résultat affiché ou produit
-
-Avant de dessiner : *qu'est-ce qui entre ? que fait-on ? que sort-on ?*
-
----
-
-## Exemple IPO (mental)
-
-**Problème :** moyenne de deux notes.
-
-| Étape | Contenu |
-| --- | --- |
-| Input | deux notes |
-| Process | les additionner, diviser par 2 |
-| Output | la moyenne |
-
-Même idée pour un prix TTC, une conversion, une somme…
-
----
-
-## Pause exercice 1.A
-
-**Classer** — format *Lire* — ≈ 8–10 min
+## Classer : *algorithm*, *program* ou *neither* ?
 
 Pour chaque item : *algorithm* / *program* / *neither* ?
 
@@ -123,11 +67,11 @@ Pour chaque item : *algorithm* / *program* / *neither* ?
 3. L'itinéraire affiché par un GPS
 4. Le langage Python lui-même
 
-→ détail : [Exercices](exercices_seance_01.html) § 1.A
+→ [Exercices](exercices_seance_01.html) § 1.A
 
 ---
 
-## Reprise 1.A
+## Correction
 
 | Item | Classe | Pourquoi |
 | --- | --- |
@@ -136,45 +80,62 @@ Pour chaque item : *algorithm* / *program* / *neither* ?
 | Itinéraire GPS | *algorithm* *(ou résultat)* | Suite d'étapes pour aller d'A à B |
 | Python | *neither* | C'est un *programming language* |
 
-Nuance admissible : le GPS *produit* un algorithme (l'itinéraire).
+Nuance : le GPS *produit* un algorithme (l'itinéraire).
 
 ---
 
-## Symboles flowchart (séquence)
+## Entrée → traitement → sortie
 
-| Symbole | Forme | Rôle |
+Tout traitement suit la même démarche :
+
+1. *Input* — données d'entrée (saisie, valeurs connues)
+2. *Process* — calculs, transformations, enchaînement d'étapes
+3. *Output* — résultat affiché ou produit
+
+Avant de dessiner : qu'est-ce qui entre ? que fait-on ? que sort-on ?
+
+---
+
+## Exemple : moyenne de deux notes
+
+| Étape | Contenu |
 | --- | --- |
-| `START` / `END` | ovale (terminator) | Début / fin |
-| `INPUT` / `OUTPUT` | parallélogramme | Entrée / sortie |
-| process | rectangle | Traitement, affectation |
+| *Input* | deux notes |
+| *Process* | les additionner, diviser par 2 |
+| *Output* | la moyenne |
+
+Même idée pour un prix TTC, une conversion, une somme…
+
+---
+
+## Symboles *flowchart* (séquence)
+
+```mermaid
+flowchart LR
+  T([START / END])
+  I[/INPUT / OUTPUT/]
+  P[process]
+```
 
 Aujourd'hui : **séquence** uniquement (pas encore de losange Yes/No → S2).
 
 ---
 
-## Premier flowchart
+## Premier *flowchart*
 
 Lire deux nombres, calculer leur somme, afficher le résultat.
 
-```text
-         ( START )
-             |
-             v
-      / INPUT a, b /
-             |
-             v
-      [ sum ← a + b ]
-             |
-             v
-      / OUTPUT sum /
-             |
-             v
-          ( END )
+```mermaid
+flowchart TB
+  A([START]) --> B[/INPUT a, b/]
+  B --> C["sum ← a + b"]
+  C --> D[/OUTPUT sum/]
+  D --> E([END])
 ```
 
 ---
 
-## Lire un flowchart
+## Lire un *flowchart*
 
 De haut en bas, dans l'ordre :
 
@@ -184,26 +145,24 @@ De haut en bas, dans l'ordre :
 4. Quelle **sortie** ? (`OUTPUT`)
 5. Où s'arrête-t-on ? (`END`)
 
-Un flowchart séquentiel = **un seul chemin**, sans branche.
+Un *flowchart* séquentiel = **un seul chemin**, sans branche.
 
 ---
 
-## Pause exercice 1.B
+## Lire et tracer
 
-**Lire + Tracer** — ≈ 10–12 min
-
-Flowchart fourni (somme de 2 nombres) :
+Flowchart : somme de 2 nombres.
 
 1. Quelles sont les entrées ? la sortie ? l'ordre des étapes ?
 2. Pour `a = 3`, `b = 5` : que produit l'algorithme ?
 
-Compléter mentalement (ou sur papier) une mini *trace table*.
+Compléter une mini *trace table* sur papier.
 
 → [Exercices](exercices_seance_01.html) § 1.B
 
 ---
 
-## Reprise 1.B
+## Correction — somme de 2 nombres
 
 - **Entrées :** `a`, `b` — **Sortie :** `sum`
 - **Ordre :** `START` → `INPUT` → process → `OUTPUT` → `END`
@@ -225,7 +184,7 @@ Une **variable** est une case nommée qui contient une valeur.
 - On lui associe un **type** (nature de la valeur)
 - On peut **changer** sa valeur par affectation
 
-En flowchart / pseudocode : noms en anglais simples (`sum`, `price`, `mark`).
+En *flowchart* / *pseudocode* : noms en anglais simples (`sum`, `price`, `mark`).
 
 ---
 
@@ -289,11 +248,7 @@ Choisir le type selon le besoin : une moyenne est souvent un `REAL`.
 
 ---
 
-## Pause exercice 1.C
-
-**Tracer** — ≈ 12–15 min
-
-Algorithme (3 affectations + 1 `OUTPUT`) :
+## Trace table — `DIV` et `MOD`
 
 ```text
 a ← 10
@@ -308,7 +263,7 @@ Compléter la *trace table* (colonnes : step, `a`, `b`, `result`, OUTPUT).
 
 ---
 
-## Reprise 1.C
+## Correction — `DIV` et `MOD`
 
 | step | a | b | result | OUTPUT |
 | --- | :---: | :---: | :---: | :---: |
@@ -321,7 +276,7 @@ Rappel : `10 DIV 4 = 2`, `10 MOD 4 = 2` → `2 + 2 = 4`.
 
 ---
 
-## Trace table = dry run
+## *Trace table* = *dry run*
 
 Une *trace table* simule l'exécution **ligne par ligne**.
 
@@ -333,11 +288,7 @@ Compétence d'examen : vérifier un algorithme **sans machine**.
 
 ---
 
-## Pause exercice 1.D
-
-**Produire** — ≈ 8–10 min
-
-Dessiner le flowchart IPO :
+## Dessiner un *flowchart*
 
 > Lire un prix HT (`priceHT`) et un taux (`rate`)  
 > Calculer le prix TTC  
@@ -350,52 +301,22 @@ Formule : `priceTTC ← priceHT * (1 + rate)`
 
 ---
 
-## Reprise 1.D (structure attendue)
+## Correction — prix TTC
 
-```text
-            ( START )
-                |
-                v
-    / INPUT priceHT, rate /
-                |
-                v
-  [ priceTTC ← priceHT * (1 + rate) ]
-                |
-                v
-      / OUTPUT priceTTC /
-                |
-                v
-             ( END )
+```mermaid
+flowchart TB
+  A([START]) --> B[/INPUT priceHT, rate/]
+  B --> C["priceTTC ← priceHT * (1 + rate)"]
+  C --> D[/OUTPUT priceTTC/]
+  D --> E([END])
 ```
 
-Variante OK : moyenne de 2 nombres (même squelette IPO).
-
----
-
-## Points clés à retenir
-
-- *Algorithm* ≠ *program* ≠ *programming language*
-- Toujours cadrer avec *Input → Process → Output*
-- Symboles : `START`/`END`, `INPUT`/`OUTPUT`, process
-- Types : `INTEGER`, `REAL`, `BOOLEAN`, `STRING`
-- Affectation `←` ; `DIV` / `MOD` pour le quotient et le reste
-- *Trace table* = *dry run* sur papier
-
----
-
-## Livrable mental
-
-Sur papier, pour un petit problème au choix :
-
-1. Flowchart séquentiel (**5–7 boîtes**)
-2. Une ligne (ou table) de **trace** pour un jeu de données
-
-Exemple : moyenne de 2 nombres, ou conversion minutes → heures + minutes (`DIV` / `MOD`).
+Variante : moyenne de 2 nombres — même squelette (*input* → *process* → *output*).
 
 ---
 
 ## Pour la prochaine séance
 
-- Relire IPO + symboles de base
-- S'entraîner à une trace table courte
+- Relire entrée / traitement / sortie + symboles de base
+- S'entraîner à une *trace table* courte
 - **Séance 2 :** instructions conditionnelles — losange *Yes / No*, `IF` / `ELSE`

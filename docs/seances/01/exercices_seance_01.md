@@ -1,7 +1,6 @@
 # Séance 1 — Exercices
 
 **Thème :** Algorithmes et traitement séquentiel  
-**Durée indicative :** intégré au cours (entrelacé avec les slides)  
 **Support :** *flowcharts* + *trace table* (prose FR — flowcharts + pseudocode EN)
 
 <nav class="page-nav">
@@ -10,7 +9,7 @@
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 1.A — Classer (algorithm / program / neither)
+## 1.A — Classer (*algorithm* / *program* / *neither*)
 
 Pour chaque item, indiquer *algorithm*, *program* ou *neither*, et justifier en une phrase.
 
@@ -21,21 +20,21 @@ Pour chaque item, indiquer *algorithm*, *program* ou *neither*, et justifier en 
 
 ---
 
-## 1.B — Lire un flowchart + tracer
+## 1.B — Lire un *flowchart* + tracer
 
-Soit le flowchart séquentiel suivant (somme de deux nombres) :
+Soit le *flowchart* séquentiel suivant (somme de deux nombres) :
 
-```text
-START
-  → INPUT a, b
-  → sum ← a + b
-  → OUTPUT sum
-END
+```mermaid
+flowchart TB
+  A([START]) --> B[/INPUT a, b/]
+  B --> C["sum ← a + b"]
+  C --> D[/OUTPUT sum/]
+  D --> E([END])
 ```
 
 1. Quelles sont les **entrées** ? la **sortie** ? l'**ordre** des étapes ?
 2. Pour `a = 3` et `b = 5`, que produit l'algorithme ?
-3. Compléter la trace table :
+3. Compléter la *trace table* :
 
 | step | a | b | sum | OUTPUT |
 | --- | --- | --- | --- | --- |
@@ -45,7 +44,7 @@ END
 
 ---
 
-## 1.C — Compléter une trace table
+## 1.C — Compléter une *trace table*
 
 Exécuter « à la main » l'algorithme suivant :
 
@@ -69,15 +68,15 @@ Rappel : `DIV` = quotient entier ; `MOD` = reste.
 
 ---
 
-## 1.D — Produire un flowchart
+## 1.D — Produire un *flowchart*
 
-Dessiner un flowchart IPO (symboles `START` / `END`, `INPUT` / `OUTPUT`, process) pour :
+Dessiner un *flowchart* (symboles `START` / `END`, `INPUT` / `OUTPUT`, process) pour :
 
 > Lire un prix hors taxes (`priceHT`) et un taux (`rate`).  
 > Calculer le prix TTC : `priceTTC ← priceHT * (1 + rate)`.  
 > Afficher `priceTTC`.
 
-**Variante :** flowchart de la moyenne de deux nombres (`avg ← (a + b) / 2`).
+**Variante :** *flowchart* de la moyenne de deux nombres (`avg ← (a + b) / 2`).
 
 ---
 
@@ -87,10 +86,10 @@ Dessiner un flowchart IPO (symboles `START` / `END`, `INPUT` / `OUTPUT`, process
 
 | Item | Classe |
 | --- | --- |
-| Recette | algorithm |
-| App installée | program |
-| Itinéraire GPS | algorithm (ou résultat d'un algorithm) |
-| Python | neither (programming language) |
+| Recette | *algorithm* |
+| App installée | *program* |
+| Itinéraire GPS | *algorithm* (ou résultat d'un *algorithm*) |
+| Python | *neither* (*programming language*) |
 
 ### 1.B
 

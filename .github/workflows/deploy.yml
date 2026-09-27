@@ -26,8 +26,10 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Install Marp CLI
-        run: npm install -g @marp-team/marp-cli marked
+      - name: Install Marp CLI and Mermaid renderer
+        run: |
+          npm install -g @marp-team/marp-cli marked
+          npm install
 
       - name: Build Marp slides
         run: |
@@ -179,6 +181,17 @@ jobs:
                   background: transparent;
                   padding: 0;
                 }
+
+                .mermaid-diagram {
+                  display: flex;
+                  justify-content: center;
+                  margin: 1.25rem 0;
+                }
+
+                .mermaid-diagram svg {
+                  max-width: 100%;
+                  height: auto;
+                }
               </style>
             </head>
             <body>
@@ -188,6 +201,9 @@ jobs:
           EOF
             fi
           done
+
+      - name: Render Mermaid diagrams to SVG
+        run: node scripts/render-mermaid.mjs dist
 
       - name: Build landing page from docs/index.md
         run: |
