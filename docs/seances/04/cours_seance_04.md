@@ -18,27 +18,33 @@ Structures de données et choix méthodologiques
 
 ## Objectifs de la séance
 
-- Associer structures de données et besoins du problème
-- Comparer listes, tableaux, piles, files, dictionnaires (vue méthodologique)
-- Justifier un choix de structure
+- Associer **besoin du problème** ↔ structure
+- Comparer tableau / liste, pile, file, dictionnaire (vue méthodologique)
+- Justifier un choix ; indiquer dans le **logigramme** où la structure intervient
+
+**Livrable mental :** choisir une structure, justifier, annoter un logigramme en conséquence.
 
 ---
 
-## Contenu à développer
+## Outline
 
-*Placeholder.* Remplacer cette diapositive et les suivantes par le contenu pédagogique de la séance (définitions, exemples au tableau, schémas, cas d'étude adaptés à un amphithéâtre).
+1. Stocker vs accéder : quelles opérations comptent ?
+2. Tableau / liste : accès par position, parcours
+3. Pile (LIFO) et file (FIFO) — exemples du quotidien + schéma
+4. Dictionnaire : clé → valeur
+5. Impact du choix sur le logigramme (sans syntaxe de langage)
 
 ---
 
 ## Points clés à retenir
 
-- À compléter
-- À compléter
-- À compléter
+- On choisit une structure pour les **opérations** qu'elle rend naturelles
+- Même problème, structures différentes → logigrammes différents
+- L'implémentation viendra avec les langages du cursus (hors ce cours)
 
 ---
 
 ## Pour la prochaine séance
 
-- Relire les notions de la séance 4
-- Préparer les questions ouvertes listées dans la fiche amphi
+- Relire pile / file / dictionnaire avec un exemple chacun
+- On parlera de **coût** en lisant la forme du logigramme

@@ -18,27 +18,33 @@ Stratégies algorithmiques
 
 ## Objectifs de la séance
 
-- Reconnaître force brute, glouton, diviser pour régner
-- Choisir une stratégie adaptée au problème
+- Reconnaître **force brute**, **glouton**, **diviser pour régner**
+- Comparer deux stratégies via **deux logigrammes**
 - Discuter compromis (simplicité vs performance)
+
+**Livrable mental :** nommer la stratégie d'un logigramme et citer un avantage / un risque.
 
 ---
 
-## Contenu à développer
+## Outline
 
-*Placeholder.* Remplacer cette diapositive et les suivantes par le contenu pédagogique de la séance (définitions, exemples au tableau, schémas, cas d'étude adaptés à un amphithéâtre).
+1. Force brute : logigramme « explorer (presque) tout »
+2. Glouton : choix local à chaque étape — schéma type
+3. Diviser pour régner : idée + 1 organigramme (ex. dichotomie conceptuelle)
+4. Même problème, deux logigrammes au tableau
+5. Culture (hors programme) : backtracking / prog. dynamique — juste nommer
 
 ---
 
 ## Points clés à retenir
 
-- À compléter
-- À compléter
-- À compléter
+- Prototyper en force brute peut être rationnel si n est petit
+- Un glouton doit être justifié (contre-exemples)
+- La stratégie se lit souvent dans la **forme** du logigramme
 
 ---
 
 ## Pour la prochaine séance
 
-- Relire les notions de la séance 6
-- Préparer les questions ouvertes listées dans la fiche amphi
+- Relier stratégie ↔ coût sur un organigramme du cours
+- Séance 7 : **synthèse** et checklist type examen (logigrammes)

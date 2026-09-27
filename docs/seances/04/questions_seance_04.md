@@ -1,24 +1,25 @@
 # Séance 4 — Questions / activités amphithéâtre
 
 **Thème :** Structures de données et choix méthodologiques  
-**Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)
+**Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
+**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. *(À rédiger)* Question courte pour activer les prérequis.
-2. *(À rédiger)* Exemple concret lié au thème du jour.
+1. Matching rapide : énoncé du quotidien → pile / file / liste / dictionnaire.
+2. Schéma pile vs file avec post-it ou tableau.
 
 ## Activité principale
 
-1. *(À rédiger)* Problème à analyser collectivement (énoncé → idée d'algorithme).
-2. *(À rédiger)* Variante ou contre-exemple pour faire émerger une subtilité.
-3. *(À rédiger)* Question de méthode (« que feriez-vous en premier ? »).
+1. Débat : liste vs dictionnaire pour un même besoin.
+2. Annoter un logigramme : où la structure choisie intervient.
+3. Justifier le choix en 2–3 arguments (accès, ordre, clés).
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance.
+- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
 - Annonce du fil rouge vers la séance suivante.
 
 <nav class="page-nav">

@@ -1,24 +1,25 @@
 # Séance 7 — Questions / activités amphithéâtre
 
 **Thème :** Synthèse, études de cas, bonnes pratiques  
-**Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)
+**Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
+**Support :** logigrammes au centre (pseudo-code seulement en appui ponctuel)
 
 Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
-1. *(À rédiger)* Question courte pour activer les prérequis.
-2. *(À rédiger)* Exemple concret lié au thème du jour.
+1. Checklist projetée : ce qu'on attend à l'examen (logigrammes).
+2. Rappeler la légende des symboles en 1 minute.
 
 ## Activité principale
 
-1. *(À rédiger)* Problème à analyser collectivement (énoncé → idée d'algorithme).
-2. *(À rédiger)* Variante ou contre-exemple pour faire émerger une subtilité.
-3. *(À rédiger)* Question de méthode (« que feriez-vous en premier ? »).
+1. Étude de cas chronométrée : spec → logigramme → structure → coût qualititatif.
+2. Chasse aux erreurs sur un faux logigramme (anti-patterns).
+3. Quiz de synthèse éventuel / questions ouvertes restantes.
 
 ## Clôture
 
-- Synthèse orale des trois idées retenues de la séance.
+- Synthèse orale des trois idées retenues de la séance (dont un motif de logigramme).
 - Annonce du fil rouge vers la séance suivante.
 
 <nav class="page-nav">

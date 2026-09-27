@@ -18,27 +18,33 @@ Structures de contrôle et décomposition
 
 ## Objectifs de la séance
 
-- Choisir séquence, sélection et itération à bon escient
-- Décomposer un problème en sous-problèmes
-- Relier décomposition et lisibilité / maintenabilité
+- Représenter **séquence**, **sélection**, **itération** dans un logigramme
+- Imbriquer sans se perdre ; détecter une boucle dangereuse **sur le schéma**
+- **Décomposer** en sous-problèmes / sous-logigrammes
+
+**Livrable mental :** logigramme principal + un sous-logigramme pour un problème en 2–3 parties.
 
 ---
 
-## Contenu à développer
+## Outline
 
-*Placeholder.* Remplacer cette diapositive et les suivantes par le contenu pédagogique de la séance (définitions, exemples au tableau, schémas, cas d'étude adaptés à un amphithéâtre).
+1. Motifs de logigramme : SI / SINON, TANT QUE, POUR
+2. Ordre des conditions, imbrications, boucles infinies visibles
+3. Décomposition top-down
+4. Procédures : contrat entrée → sortie et appel dans le schéma
+5. Refactoriser un gros logigramme en blocs nommés
 
 ---
 
 ## Points clés à retenir
 
-- À compléter
-- À compléter
-- À compléter
+- Chaque structure a un **motif graphique** reconnaissable
+- Nommer des sous-problèmes clarifie avant d'ajouter des boîtes
+- Une boucle doit avoir une condition de fin **crédible** sur le dessin
 
 ---
 
 ## Pour la prochaine séance
 
-- Relire les notions de la séance 3
-- Préparer les questions ouvertes listées dans la fiche amphi
+- S'entraîner à dessiner les trois motifs
+- On abordera les **structures de données** (choix méthodologiques)

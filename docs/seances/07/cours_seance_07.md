@@ -18,27 +18,34 @@ Synthèse, études de cas, bonnes pratiques
 
 ## Objectifs de la séance
 
-- Relier les notions des séances précédentes
-- Analyser une étude de cas de bout en bout
-- Formuler des bonnes pratiques de conception algorithmique
+- Relier les séances 1–6
+- Mener une étude de cas **entièrement en logigrammes**
+- Formuler une **checklist** (exercices / examen)
+- Se projeter vers Arduino / Python **sans** syntaxe
+
+**Livrable mental :** checklist + logigramme propre sur un nouvel énoncé court (comme à l'examen).
 
 ---
 
-## Contenu à développer
+## Outline
 
-*Placeholder.* Remplacer cette diapositive et les suivantes par le contenu pédagogique de la séance (définitions, exemples au tableau, schémas, cas d'étude adaptés à un amphithéâtre).
+1. Fil conducteur : spécifier → logigramme → structures → coût → stratégie
+2. Étude de cas plénière (étapes chronométrées au tableau)
+3. Anti-patterns graphiques (flèches, décisions, monolithe illisible)
+4. Checklist amphi à emporter
+5. Ouverture cursus : où ces idées reviendront
 
 ---
 
 ## Points clés à retenir
 
-- À compléter
-- À compléter
-- À compléter
+- La méthode se répète ; le langage change
+- À l'examen : **lire et produire des logigrammes**, pas du code
+- Réflexe : **penser (et dessiner) avant de coder**
 
 ---
 
-## Pour la prochaine séance
+## Fin du module
 
-- Relire les notions de la séance 7
-- Préparer les questions ouvertes listées dans la fiche amphi
+- Relire la checklist et un organigramme type
+- S'entraîner sur papier avec la légende des symboles
