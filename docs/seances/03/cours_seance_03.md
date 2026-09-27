@@ -12,7 +12,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 Loops (1) : WHILE / REPEAT … UNTIL
 
 [→ Quiz](quiz_seance_03.html)
-[→ Questions amphi](questions_seance_03.html)
+[→ Exercices](exercices_seance_03.html)
 
 ---
 

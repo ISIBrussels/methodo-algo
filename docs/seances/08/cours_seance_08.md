@@ -14,7 +14,7 @@ Review & mock exam
 > Séance tampon : synthèse + sujet blanc. Hors volume minimal de 10 h 30.
 
 [→ Quiz](quiz_seance_08.html)
-[→ Questions amphi](questions_seance_08.html)
+[→ Exercices](exercices_seance_08.html)
 
 ---
 

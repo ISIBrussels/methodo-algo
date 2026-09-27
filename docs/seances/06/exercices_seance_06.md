@@ -1,17 +1,15 @@
-# Séance 6 — Questions / activités amphithéâtre
+# Séance 6 — Exercices
 
 **Thème :** Functions & procedures  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** pseudocode (modular design)
-
-Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
 1. Relire un parcours tableau S5 → « pourrait-on le réutiliser ? »
 2. Vote : 3 extraits → FUNCTION ou PROCEDURE ?
 
-## Activité principale
+## Exercices principaux
 
 1. **Produire** `FUNCTION maxOf(a, b) RETURN …`.
 2. **Corriger** un bug de scope (globale écrasée).

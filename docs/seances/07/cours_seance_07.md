@@ -12,7 +12,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 Searching, sorting & efficiency
 
 [→ Quiz](quiz_seance_07.html)
-[→ Questions amphi](questions_seance_07.html)
+[→ Exercices](exercices_seance_07.html)
 
 ---
 

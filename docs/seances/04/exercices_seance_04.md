@@ -1,17 +1,15 @@
-# Séance 4 — Questions / activités amphithéâtre
+# Séance 4 — Exercices
 
 **Thème :** Loops (2) : FOR & nested loops  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** pseudocode (FOR / nested) + trace table
-
-Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
 1. Relire un compteur `WHILE` S3 → équivalent `FOR` ?
 2. Vote : afficher 2, 4, …, 20 — quelles bornes / `STEP` ?
 
-## Activité principale
+## Exercices principaux
 
 1. **Compléter** un `FOR` avec `STEP` (y compris compte à rebours).
 2. Matching 4 énoncés → `FOR` / `WHILE` / `REPEAT`.

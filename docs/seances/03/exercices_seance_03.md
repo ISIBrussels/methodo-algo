@@ -1,17 +1,15 @@
-# Séance 3 — Questions / activités amphithéâtre
+# Séance 3 — Exercices
 
 **Thème :** Loops (1) : WHILE / REPEAT … UNTIL  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** flowchart + pseudocode (patterns de boucle)
-
-Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
 1. Vote : où est l'infinite loop sur ce flowchart ?
 2. Relire un `IF` S2 → « et si on devait répéter la saisie ? »
 
-## Activité principale
+## Exercices principaux
 
 1. **Corriger** une boucle infinie ; proposer la sortie.
 2. **Lire** : lequel teste avant / après (`WHILE` vs `REPEAT`) ?

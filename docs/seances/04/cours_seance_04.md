@@ -12,7 +12,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 Loops (2) : FOR & nested loops
 
 [→ Quiz](quiz_seance_04.html)
-[→ Questions amphi](questions_seance_04.html)
+[→ Exercices](exercices_seance_04.html)
 
 ---
 

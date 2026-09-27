@@ -1,18 +1,16 @@
-# Séance 8 *(optionnelle)* — Questions / activités amphithéâtre
+# Séance 8 *(optionnelle)* — Exercices
 
 **Thème :** Review & mock exam  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** mixte flowchart + pseudocode + trace table  
 **Statut :** séance **optionnelle** (hors volume minimal 10 h 30)
 
-Ces questions sont destinées à l'**interaction en grand groupe** et à l'entraînement examen. Elles ne remplacent pas un laboratoire.
-
 ## Échauffement (5–10 min)
 
 1. Carte mentale collective S1–S7 (structures + patterns).
 2. 3 mini-items rapides (vote) : condition, borne de boucle, scope.
 
-## Activité principale
+## Exercices principaux
 
 1. **Sujet blanc** individuel chronométré (≈ 30–35 min).
 2. Correction collective ; focus erreurs fréquentes.

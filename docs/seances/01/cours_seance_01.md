@@ -14,7 +14,7 @@ Algorithms & sequential processing
 Support : **flowcharts** (convention FR explications / EN code)
 
 [→ Quiz](quiz_seance_01.html)
-[→ Questions amphi](questions_seance_01.html)
+[→ Exercices](exercices_seance_01.html)
 
 ---
 

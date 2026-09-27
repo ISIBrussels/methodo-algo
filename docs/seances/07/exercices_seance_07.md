@@ -1,17 +1,15 @@
-# Séance 7 — Questions / activités amphithéâtre
+# Séance 7 — Exercices
 
 **Thème :** Searching, sorting & efficiency  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** pseudocode + trace table (compteurs)
-
-Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
 1. Vote : trouver une valeur dans une liste non triée — quelle approche ?
 2. Relier un parcours `FOR` S5 à une linear search.
 
-## Activité principale
+## Exercices principaux
 
 1. **Tracer** linear search + compter les comparaisons (présent / absent).
 2. **Tracer** binary search (N=7) — étapes mid.

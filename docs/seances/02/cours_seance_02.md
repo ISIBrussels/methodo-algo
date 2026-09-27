@@ -12,7 +12,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 Conditional statements
 
 [→ Quiz](quiz_seance_02.html)
-[→ Questions amphi](questions_seance_02.html)
+[→ Exercices](exercices_seance_02.html)
 
 ---
 

@@ -1,17 +1,15 @@
-# Séance 1 — Questions / activités amphithéâtre
+# Séance 1 — Exercices
 
 **Thème :** Algorithms & sequential processing  
 **Durée indicative :** 1 h 30 (intégré au cours, pas de TP machine)  
 **Support :** flowcharts + trace table (convention FR / EN)
-
-Ces questions sont destinées à l'**interaction en grand groupe** (vote, discussion, résolution collective au tableau). Elles ne remplacent pas un laboratoire.
 
 ## Échauffement (5–10 min)
 
 1. Vote : « algorithm / program / neither ? » (recette, GPS, app compilée).
 2. Premier contact : lire collectivement un mini-flowchart IPO à 4–5 boîtes.
 
-## Activité principale
+## Exercices principaux
 
 1. **Lire** un flowchart séquentiel → entrées / sorties / ordre.
 2. **Tracer** : remplir une trace table (3 affectations + 1 `OUTPUT`).
