@@ -18,35 +18,33 @@ Recherche, tri et efficacité
 
 ## Objectifs de la séance
 
-- **Linear search** avec early exit
-- **Binary search** sur tableau trié
-- **Selection sort** et **bubble sort** (arrêt anticipé)
+- Impliquer une **linear search** avec early exit
+- Appliquer une **binary search** sur tableau trié
+- Décrire **selection sort** et **bubble sort** (arrêt anticipé)
 - Compter comparaisons et échanges
 - Situer N, N², log N ; **Big O** sans formalisme ; best / worst case
 
-**Livrable mental :** linear vs binary (prérequis) + pourquoi bubble/selection ~N².
+**Livrable mental :** linear vs binary + pourquoi bubble/selection ~ N².
 
 ---
 
-## Plan
+## Contenu à venir
 
-1. Linear search + early exit
-2. Binary search (sorted) ; intuition log N
-3. Selection sort ; bubble sort + early exit
-4. Compter comparaisons / échanges (*swaps*)
-5. Croissance N / N² / log N ; best vs worst
+Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
 
 ---
 
-## Points clés à retenir
+## Notions (outline)
 
-- Binary search exige un tableau **trié**
-- Compter les opérations = première lecture de l'efficacité
-- Big O = ordre de grandeur, pas une preuve
+1. Linear search (early exit)
+2. Binary search
+3. Selection sort ; bubble sort (early exit)
+4. Compteurs de comparaisons / swaps
+5. Croissance ; Big O intuitif ; best / worst case
 
 ---
 
-## Pour la suite
+## Pour la prochaine séance
 
-- Relire recherche et tri (*search & sort*) + un comptage de comparaisons
-- Séance 8 *(optionnelle)* : révision et examen blanc
+- Tracer une search et situer un ordre de grandeur
+- **Séance 8 *(optionnelle) :** révision et examen blanc

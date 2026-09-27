@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: methodo-algo
-title: "Séance 8 (optionnelle) — Révision et examen blanc"
+title: "Séance 8 — Révision et examen blanc"
 paginate: true
 header: "Méthodo Algo — Séance 8 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[← Retour à l'accueil](../../index.html)"
@@ -11,8 +11,6 @@ footer: "[← Retour à l'accueil](../../index.html)"
 
 Révision et examen blanc
 
-> Séance tampon : synthèse + sujet blanc. Hors volume minimal de 10 h 30.
-
 [→ Quiz](quiz_seance_08.html)
 [→ Exercices](exercices_seance_08.html)
 
@@ -20,33 +18,30 @@ Révision et examen blanc
 
 ## Objectifs de la séance
 
-- Synthétiser structures et patterns (S1–S7)
-- Traiter un **sujet blanc** au format examen, puis correction
+- Synthétiser structures et patterns des séances 1–7
+- S'entraîner sur un **sujet blanc** au format de l'examen, puis correction
 - Consolider les erreurs fréquentes ; questions libres
 
 **Livrable mental :** un blanc complet + 3 erreurs personnelles à surveiller.
 
 ---
 
-## Plan
+## Contenu à venir
 
-1. Carte mentale S1–S7
-2. Échauffement : mini-items (condition, borne, scope)
-3. Sujet blanc chronométré
-4. Correction collective ; erreurs fréquentes
-5. Questions libres et conseils de révision
+Contenu pédagogique complet à rédiger (carte mentale, warm-up, sujet blanc, corrigé).
 
 ---
 
-## Points clés à retenir
+## Notions (outline)
 
-- Checklist : branche No, infinite loop, off-by-one, index out of bounds, function/procedure
-- À l'examen : flowchart **et** pseudocode, trace tables, test cases
-- Réflexe : **penser (et dessiner) avant de coder**
+1. Carte mentale : séquence → décisions → boucles → tableaux → modularité → search/sort
+2. Checklist anti-erreurs (branche No, infinite loop, off-by-one, index out of bounds, function/procedure)
+3. Timing et consignes d'examen
+4. Sujet blanc + correction
 
 ---
 
-## Fin du module
+## Points clés (rappel)
 
-- Relire la checklist et un organigramme / pseudocode type
-- S'entraîner sur papier avec la légende des symboles
+- À l'examen : flowchart **et** / ou pseudocode, trace tables, test cases
+- Pas de machine — tout se joue sur papier

@@ -18,34 +18,31 @@ Boucles (2) : FOR et boucles imbriquées
 
 ## Objectifs de la séance
 
-- Écrire `FOR i ← 1 TO N … END FOR` avec `STEP`
-- **Choisir** entre `FOR`, `WHILE` et `REPEAT`
-- Construire des **boucles imbriquées (nested loops)** : tables, grilles, motifs
-- Éviter **off-by-one** et bornes incorrectes
+- Écrire `FOR i ← 1 TO N … END FOR` avec `STEP` éventuel
+- **Choisir** entre `FOR`, `WHILE` et `REPEAT` selon le problème
+- Construire des **nested loops** (tables, grilles, motifs)
+- Éviter les erreurs **off-by-one** et les bornes incorrectes
 
-**Livrable mental :** un `FOR` simple + une boucle imbriquée (pseudocode) avec bornes justifiées.
-
----
-
-## Plan
-
-1. `FOR i ← 1 TO N` ; `STEP` ; lien avec compteur `WHILE`
-2. Grille de choix : FOR / WHILE / REPEAT
-3. Boucles imbriquées : tables, grilles, motifs
-4. Trace table de boucles imbriquées
-5. Off-by-one et bornes
+**Livrable mental :** un `FOR` simple + un exemple nested (pseudocode) avec bornes justifiées.
 
 ---
 
-## Points clés à retenir
+## Contenu à venir
 
-- `FOR` quand le nombre d'itérations est **connu**
-- Boucles imbriquées → attention à l'ordre d'exécution (tracer !)
-- Off-by-one = erreur classique d'examen
+Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+
+---
+
+## Notions (outline)
+
+1. `FOR` / `TO` / `STEP` / `END FOR`
+2. Critères de choix `FOR` / `WHILE` / `REPEAT`
+3. Nested loops (table, motif)
+4. Off-by-one ; bornes
 
 ---
 
 ## Pour la prochaine séance
 
-- Refaire une table de multiplication en `FOR` imbriqués
-- On aborde les **tableaux (arrays)**
+- Justifier les bornes d'un `FOR` et d'un nested simple
+- **Séance 5 :** tableaux (*arrays*)

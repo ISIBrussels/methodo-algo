@@ -28,7 +28,13 @@ Boucles (1) : WHILE / REPEAT … UNTIL
 
 ---
 
-## Plan
+## Contenu à venir
+
+Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+
+---
+
+## Notions (outline)
 
 1. Principe de l'itération ; infinite loop sur un flowchart
 2. `WHILE` vs `REPEAT … UNTIL` (flowchart + pseudocode)
@@ -38,15 +44,7 @@ Boucles (1) : WHILE / REPEAT … UNTIL
 
 ---
 
-## Points clés à retenir
-
-- Toute boucle a une **condition de sortie crédible**
-- `WHILE` teste **avant** ; `REPEAT` teste **après**
-- Sentinel / validation = patterns d'examen fréquents
-
----
-
 ## Pour la prochaine séance
 
 - Refaire un `REPEAT` de validation + un accumulateur
-- On aborde `FOR`, `STEP` et les **boucles imbriquées (nested loops)**
+- **Séance 4 :** `FOR`, `STEP` et boucles imbriquées (*nested loops*)

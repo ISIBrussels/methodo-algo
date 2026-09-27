@@ -28,7 +28,13 @@ Instructions conditionnelles
 
 ---
 
-## Plan
+## Contenu à venir
+
+Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
+
+---
+
+## Notions (outline)
 
 1. Losange Yes / No ; premier `IF` (flowchart + miroir pseudocode)
 2. `ELSE IF` ; opérateurs ; truth tables
@@ -38,15 +44,7 @@ Instructions conditionnelles
 
 ---
 
-## Points clés à retenir
-
-- Toute décision a **deux** sorties explicites (Yes / No)
-- Le pseudocode commence à **miroiter** le flowchart
-- Les edge cases font partie de la validation
-
----
-
 ## Pour la prochaine séance
 
 - S'entraîner sur un `IF`/`ELSE IF` + 2 jeux de test
-- On aborde les boucles : **WHILE** / **REPEAT … UNTIL**
+- **Séance 3 :** boucles `WHILE` / `REPEAT … UNTIL`

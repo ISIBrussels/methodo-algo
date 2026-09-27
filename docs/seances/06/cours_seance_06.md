@@ -20,34 +20,31 @@ Fonctions et procédures
 
 - Découper un problème (**modular design**)
 - Distinguer `FUNCTION … RETURN` et `PROCEDURE` ; utiliser `CALL`
-- Paramètres / arguments ; valeur de retour
-- Portée **local / global**
-- Fonctions sur tableaux : `average(values, n)`, `countAbove(values, n, limit)`
-- Structure **main program + functions**
+- Passer parameters / arguments ; exploiter la valeur de retour
+- Expliquer la portée (**local / global scope**)
+- Écrire des fonctions sur tableaux ; structurer **main + functions**
 
 **Livrable mental :** main qui lit un tableau, appelle `average` et `countAbove`.
 
 ---
 
-## Plan
+## Contenu à venir
 
-1. Pourquoi modulariser ?
-2. `FUNCTION` vs `PROCEDURE` ; `CALL` / `RETURN`
-3. Paramètres, arguments, valeur de retour
-4. Local / global scope
-5. Main + functions sur tableaux
+Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
 
 ---
 
-## Points clés à retenir
+## Notions (outline)
 
-- Une function **retourne** ; une procedure **fait**
-- Préférer le local au global
-- Le programme se lit depuis le **main**
+1. Modular design ; `FUNCTION` vs `PROCEDURE`
+2. Parameters, arguments, return value
+3. Local / global scope
+4. Functions on arrays
+5. Main + functions
 
 ---
 
 ## Pour la prochaine séance
 
-- Refactoriser un monolithe « notes » en 2 fonctions
-- On aborde **recherche, tri et efficacité**
+- Refactoriser un petit monolithe en main + 2 fonctions
+- **Séance 7 :** recherche, tri et efficacité

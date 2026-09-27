@@ -21,32 +21,30 @@ Tableaux (arrays)
 - Déclarer et indexer : `ARRAY values[1..N]`
 - Remplir et parcourir avec `FOR`
 - Patterns : somme, moyenne, min/max, **index of max**, comptage
-- Décalage et inversion d'éléments
-- Éviter **index out of bounds**
+- Réaliser décalage et inversion d'éléments
+- Expliquer et éviter **index out of bounds**
 
 **Livrable mental :** moyenne + index du maximum, sans dépasser les bornes.
 
 ---
 
-## Plan
+## Contenu à venir
 
-1. Déclaration, indices, taille
-2. Remplissage et parcours `FOR`
-3. Patterns sur tableau (sum, average, min/max, index of max, count)
-4. Décalage et inversion
-5. Index out of bounds
+Contenu pédagogique complet à rédiger (entrelacement slides ↔ exercices).
 
 ---
 
-## Points clés à retenir
+## Notions (outline)
 
-- Indices de `1` à `N` (convention du cours)
-- Un parcours = presque toujours un `FOR`
-- Toujours vérifier les **bornes** avant d'accéder
+1. Déclaration, indices, taille
+2. Remplissage / parcours
+3. Patterns sur tableau
+4. Décalage, inversion
+5. Index out of bounds
 
 ---
 
 ## Pour la prochaine séance
 
-- Refaire index of max + countAbove sur papier
-- On aborde les **fonctions et procédures**
+- Parcourir un petit tableau sans sortir des bornes
+- **Séance 6 :** fonctions et procédures
