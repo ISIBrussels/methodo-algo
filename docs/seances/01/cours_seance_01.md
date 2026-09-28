@@ -324,3 +324,34 @@ OUTPUT hours, minutes
 2. Dessiner le *flowchart*.
 
 → [Exercices](exercices_seance_01.html) § 1.C
+
+---
+
+## Exercice 1.D — Moyenne de deux notes
+
+> Lire deux notes (`mark1`, `mark2`)  
+> Calculer la moyenne  
+> Afficher la moyenne
+
+Formule : `average = (mark1 + mark2) / 2`  
+(ex. `mark1 = 12`, `mark2 = 15`)
+
+1. Dessiner le *flowchart*.
+2. Compléter la *trace table* pour `mark1 = 12`, `mark2 = 15`.
+
+→ [Exercices](exercices_seance_01.html) § 1.D
+
+---
+
+## Exercice 1.E — Température Celsius → Fahrenheit
+
+```text
+celsius = 20
+fahrenheit = celsius * 9 / 5 + 32
+OUTPUT fahrenheit
+```
+
+1. Compléter la *trace table* (step, `celsius`, `fahrenheit`, OUTPUT).
+2. Dessiner le *flowchart*.
+
+→ [Exercices](exercices_seance_01.html) § 1.E

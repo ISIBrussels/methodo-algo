@@ -79,6 +79,47 @@ OUTPUT hours, minutes
 
 ---
 
+## 1.D — Moyenne de deux notes
+
+> Lire deux notes (`mark1`, `mark2`).  
+> Calculer la moyenne : `average = (mark1 + mark2) / 2`.  
+> Afficher `average`.
+
+1. Dessiner le *flowchart* (`START` / `END`, `INPUT` / `OUTPUT`, process).
+2. Compléter la *trace table* pour `mark1 = 12`, `mark2 = 15` :
+
+| step | mark1 | mark2 | average | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `INPUT mark1, mark2` | | | | |
+| `average = …` | | | | |
+| `OUTPUT average` | | | | |
+
+---
+
+## 1.E — Température Celsius → Fahrenheit
+
+Algorithme, avec `celsius = 20` :
+
+```text
+celsius = 20
+fahrenheit = celsius * 9 / 5 + 32
+OUTPUT fahrenheit
+```
+
+1. Compléter la *trace table* :
+
+| step | celsius | fahrenheit | OUTPUT |
+| --- | --- | --- | --- |
+| `celsius = 20` | | | |
+| `fahrenheit = …` | | | |
+| `OUTPUT fahrenheit` | | | |
+
+2. Dessiner le *flowchart* correspondant.
+
+Rappel : formule de conversion °C → °F : `F = C × 9/5 + 32`.
+
+---
+
 ## Corrigé (enseignant)
 
 ### 1.A
@@ -118,5 +159,29 @@ OUTPUT hours, minutes
 | `OUTPUT hours, minutes` | 135 | 2 | 15 | 2, 15 |
 
 *Flowchart :* `START` → `totalMinutes = 135` → `hours = totalMinutes DIV 60` → `minutes = totalMinutes MOD 60` → `OUTPUT hours, minutes` → `END`.
+
+### 1.D
+
+*Flowchart :* `START` → `INPUT mark1, mark2` → `average = (mark1 + mark2) / 2` → `OUTPUT average` → `END`.
+
+`(12 + 15) / 2 = 13.5` → **OUTPUT 13.5**.
+
+| step | mark1 | mark2 | average | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `INPUT mark1, mark2` | 12 | 15 | | |
+| `average = (mark1 + mark2) / 2` | 12 | 15 | 13.5 | |
+| `OUTPUT average` | 12 | 15 | 13.5 | 13.5 |
+
+### 1.E
+
+`20 * 9 / 5 + 32 = 68` → **OUTPUT 68**.
+
+| step | celsius | fahrenheit | OUTPUT |
+| --- | --- | --- | --- |
+| `celsius = 20` | 20 | | |
+| `fahrenheit = celsius * 9 / 5 + 32` | 20 | 68 | |
+| `OUTPUT fahrenheit` | 20 | 68 | 68 |
+
+*Flowchart :* `START` → `celsius = 20` → `fahrenheit = celsius * 9 / 5 + 32` → `OUTPUT fahrenheit` → `END`.
 
 <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>
