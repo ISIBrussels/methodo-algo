@@ -53,7 +53,7 @@ jobs:
               out="${out%.md}.html"
               mkdir -p "$(dirname "$out")"
 
-              body="$(marked "$file")"
+              body="$(marked --gfm "$file")"
               session_num="${file##*_seance_}"
               session_num="${session_num%.md}"
               session_num=$((10#$session_num))
@@ -182,6 +182,43 @@ jobs:
                   padding: 0;
                 }
 
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin: 1rem 0 1.5rem;
+                  background: var(--color-bg);
+                  border: 1px solid var(--color-border);
+                }
+
+                thead th {
+                  background: var(--color-primary);
+                  color: #ffffff;
+                  font-weight: 600;
+                  font-size: 0.9rem;
+                  letter-spacing: 0.03em;
+                  text-align: left;
+                  padding: 0.65rem 0.85rem;
+                  border: 1px solid var(--color-primary);
+                }
+
+                tbody td {
+                  padding: 0.55rem 0.85rem;
+                  border: 1px solid var(--color-border);
+                  vertical-align: middle;
+                  min-width: 3.5rem;
+                  min-height: 1.75rem;
+                }
+
+                tbody tr:nth-child(even) {
+                  background: var(--color-row-alt);
+                }
+
+                tbody td:first-child {
+                  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 0.88em;
+                  white-space: nowrap;
+                }
+
                 .mermaid-diagram {
                   display: flex;
                   justify-content: center;
@@ -212,7 +249,7 @@ jobs:
             -e 's#(seances/[0-9]{2}/exercices_seance_[0-9]{2})\.md#\1.html#g' \
             docs/index.md > /tmp/pages-index.md
 
-          body="$(marked /tmp/pages-index.md)"
+          body="$(marked --gfm /tmp/pages-index.md)"
 
           cat > dist/index.html <<EOF
           <!doctype html>
