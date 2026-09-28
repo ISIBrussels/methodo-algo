@@ -48,7 +48,14 @@ Rappel : `=` est une **affectation**, pas une égalité mathématique.
 | `result = (a DIV b) + (a MOD b)` | 10 | 4 | 4 | |
 | `OUTPUT result` | 10 | 4 | 4 | 4 |
 
-*Flowchart :* `START` → `a = 10` → `b = 4` → `result = (a DIV b) + (a MOD b)` → `OUTPUT result` → `END`.
+```mermaid
+flowchart TB
+  A([START]) --> B["a = …"]
+  B --> C["b = …"]
+  C --> D["result = (a DIV b) + (a MOD b)"]
+  D --> E[/OUTPUT result/]
+  E --> F([END])
+```
 
 </details>
 
@@ -72,7 +79,13 @@ Rappel : `=` est une **affectation**, pas une égalité mathématique.
 <details class="corrige">
 <summary>Corrigé</summary>
 
-*Flowchart :* `START` → `INPUT priceHT, rate` → `priceTTC = priceHT * (1 + rate)` → `OUTPUT priceTTC` → `END`.
+```mermaid
+flowchart TB
+  A([START]) --> B[/INPUT priceHT, rate/]
+  B --> C["priceTTC = priceHT * (1 + rate)"]
+  C --> D[/OUTPUT priceTTC/]
+  D --> E([END])
+```
 
 `100 * (1 + 0.21) = 121` → **OUTPUT 121**.
 
@@ -120,7 +133,14 @@ OUTPUT hours, minutes
 | `minutes = totalMinutes MOD 60` | 135 | 2 | 15 | |
 | `OUTPUT hours, minutes` | 135 | 2 | 15 | 2, 15 |
 
-*Flowchart :* `START` → `totalMinutes = 135` → `hours = totalMinutes DIV 60` → `minutes = totalMinutes MOD 60` → `OUTPUT hours, minutes` → `END`.
+```mermaid
+flowchart TB
+  A([START]) --> B["totalMinutes = …"]
+  B --> C["hours = totalMinutes DIV 60"]
+  C --> D["minutes = totalMinutes MOD 60"]
+  D --> E[/OUTPUT hours, minutes/]
+  E --> F([END])
+```
 
 </details>
 
@@ -144,7 +164,13 @@ OUTPUT hours, minutes
 <details class="corrige">
 <summary>Corrigé</summary>
 
-*Flowchart :* `START` → `INPUT mark1, mark2` → `average = (mark1 + mark2) / 2` → `OUTPUT average` → `END`.
+```mermaid
+flowchart TB
+  A([START]) --> B[/INPUT mark1, mark2/]
+  B --> C["average = (mark1 + mark2) / 2"]
+  C --> D[/OUTPUT average/]
+  D --> E([END])
+```
 
 `(12 + 15) / 2 = 13.5` → **OUTPUT 13.5**.
 
@@ -191,7 +217,13 @@ Rappel : formule de conversion °C → °F : `F = C × 9/5 + 32`.
 | `fahrenheit = celsius * 9 / 5 + 32` | 20 | 68 | |
 | `OUTPUT fahrenheit` | 20 | 68 | 68 |
 
-*Flowchart :* `START` → `celsius = 20` → `fahrenheit = celsius * 9 / 5 + 32` → `OUTPUT fahrenheit` → `END`.
+```mermaid
+flowchart TB
+  A([START]) --> B["celsius = …"]
+  B --> C["fahrenheit = celsius * 9 / 5 + 32"]
+  C --> D[/OUTPUT fahrenheit/]
+  D --> E([END])
+```
 
 </details>
 
