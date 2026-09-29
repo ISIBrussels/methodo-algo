@@ -60,7 +60,7 @@ Deux chemins, **un seul** suivi.
 
 </div>
 
-<div class="mid-mermaid">
+<div class="max-mermaid-lg">
 
 ```mermaid
 flowchart TB
@@ -187,7 +187,7 @@ On teste **dans l'ordre** ; dès qu'une condition est vraie, on prend cette bran
 ## Cascade en *flowchart*
 
 ```mermaid
-flowchart TB
+flowchart LR
   A([START]) --> B[/INPUT mark/]
   B --> C{mark >= 16}
   C -->|Yes| D["grade = \"A\""]
@@ -276,7 +276,7 @@ END IF
 
 </div>
 
-<div class="compact-mermaid">
+<div class="max-mermaid">
 
 ```mermaid
 flowchart TB

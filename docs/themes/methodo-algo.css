@@ -9,6 +9,10 @@
   --color-text: #212121;
   --color-border: #e0e0e0;
   --color-row-alt: #f5f5f5;
+  /* Chrome UI — tailles FIXES (base Marp 29px). Ne jamais hériter de section.compact. */
+  --chrome-header: 15.95px; /* 0.55em × 29px — 2 labels header */
+  --chrome-nav-btn: 24.65px; /* 0.85em × 29px — boutons Quiz / Exercices */
+  --chrome-paginate: 29px; /* numéro de slide */
 }
 
 section {
@@ -46,12 +50,12 @@ a {
   color: var(--color-primary);
 }
 
-/* Liens de navigation dans le contenu (paragraphes) */
+/* Liens de navigation dans le contenu (paragraphes) — taille FIXE */
 section > p > a:not([href^="mailto:"]) {
   display: inline-block;
   margin: 0.15rem 0.35rem 0.15rem 0;
   padding: 0.3rem 0.7rem;
-  font-size: 0.85em;
+  font-size: var(--chrome-nav-btn);
   font-weight: 600;
   color: var(--color-primary);
   text-decoration: none;
@@ -98,7 +102,7 @@ section td a:not([href^="mailto:"]):hover {
   color: var(--color-primary);
 }
 
-/* Header : titre séance à gauche, crédit mailto à droite */
+/* Header : 2 labels fixes — « Méthodo Algo — Séance N » + « Sylvain Huraux - HE2B - ISIB » */
 section header {
   top: 18px;
   left: 30px;
@@ -109,13 +113,13 @@ section header {
   align-items: center;
   gap: 1rem;
   color: var(--color-secondary);
-  font-size: 0.55em;
+  font-size: var(--chrome-header);
   font-weight: 600;
 }
 
 section header a[href^="mailto:"] {
   flex-shrink: 0;
-  font-size: 1em;
+  font-size: var(--chrome-header);
   font-weight: 400;
 }
 
@@ -124,18 +128,23 @@ section footer {
   bottom: 18px;
   left: 30px;
   color: var(--color-secondary);
-  font-size: 0.55em;
+  font-size: var(--chrome-header);
 }
 
 section footer a:not([href^="mailto:"]) {
   display: inline-block;
   padding: 0.35em 0.75em;
-  font-size: 1em;
+  font-size: var(--chrome-header);
   font-weight: 600;
   color: var(--color-primary);
   text-decoration: none;
   background: transparent;
   border: 1px solid var(--color-primary);
+}
+
+/* Pagination (numéro de slide) — taille FIXE, indépendante de section.compact */
+section::after {
+  font-size: var(--chrome-paginate);
 }
 
 section footer a:not([href^="mailto:"]):hover {
@@ -210,7 +219,7 @@ section .compact-mermaid .mermaid-diagram svg {
   max-height: 340px;
 }
 
-/* Mermaid two-cols un cran plus grand (slide 4 Pass/Fail) — ne pas utiliser sur slide 12 */
+/* Mermaid two-cols un cran plus grand */
 section .mid-mermaid .mermaid-diagram {
   margin: 0;
 }
@@ -219,7 +228,40 @@ section .mid-mermaid .mermaid-diagram svg {
   max-height: 400px;
 }
 
-/* Léger shrink slide-local (évite chevauchement footer ; base Marp ≈ 29px) */
+/* Mermaid maximisé (two-cols) — calé au footer sans chevauchement */
+section .max-mermaid .mermaid-diagram {
+  margin: 0;
+}
+
+section .max-mermaid .mermaid-diagram svg {
+  max-height: 470px;
+}
+
+/* Encore plus haut quand le layout laisse de la place (slide 4 Pass/Fail) */
+section .max-mermaid-lg .mermaid-diagram {
+  margin: 0;
+}
+
+section .max-mermaid-lg .mermaid-diagram svg {
+  max-height: 535px;
+}
+
+/* Titre plus haut sur slides Mermaid max */
+section:has(.max-mermaid),
+section:has(.max-mermaid-lg) {
+  padding-top: 44px;
+}
+
+section:has(.max-mermaid) h2,
+section:has(.max-mermaid-lg) h2 {
+  margin-bottom: 0.2em;
+}
+
+/*
+ * Shrink slide-local : corps de contenu UNIQUEMENT (base Marp ≈ 29px → 26px).
+ * Header (2 labels), footer/boutons nav, pagination restent en px chrome FIXES —
+ * ils n'héritent plus de section.font-size (plus d'em relatifs).
+ */
 section.compact {
   font-size: 26px;
 }
