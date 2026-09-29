@@ -201,6 +201,15 @@ section .two-cols table {
   margin: 0;
 }
 
+/* Mermaid réduit dans une colonne (évite débord footer) */
+section .compact-mermaid .mermaid-diagram {
+  margin: 0;
+}
+
+section .compact-mermaid .mermaid-diagram svg {
+  max-height: 340px;
+}
+
 /* Ligne symbole flowchart : libellé | forme Mermaid */
 section .symbol-row {
   display: grid;

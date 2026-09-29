@@ -49,8 +49,18 @@ Le reste des symboles ne change pas : ovale, parallélogramme, rectangle.
 
 ## Exemple : Pass / Fail
 
-Lire une note (`mark`).  
-Si `mark >= 10` → afficher `"Pass"`, sinon `"Fail"`.
+<div class="two-cols">
+
+<div>
+
+Lire `mark`.  
+`mark >= 10` → `"Pass"`, sinon `"Fail"`.
+
+Deux chemins, **un seul** suivi.
+
+</div>
+
+<div class="compact-mermaid">
 
 ```mermaid
 flowchart TB
@@ -62,13 +72,19 @@ flowchart TB
   E --> F
 ```
 
-Deux chemins, un seul suivi à la fois.
+</div>
+
+</div>
 
 ---
 
 ## `IF … THEN … ELSE … END IF`
 
-Même idée en *pseudocode* (anglais) :
+Même idée en *pseudocode* :
+
+<div class="two-cols">
+
+<div>
 
 ```text
 INPUT mark
@@ -79,33 +95,51 @@ ELSE
 END IF
 ```
 
+</div>
+
+<div>
+
 | Mot-clé | Rôle |
 | --- | --- |
-| `IF` | pose la condition |
+| `IF` | condition |
 | `THEN` | branche **Yes** |
 | `ELSE` | branche **No** |
-| `END IF` | fin de la décision |
+| `END IF` | fin |
 
-Le *flowchart* et le *pseudocode* décrivent le **même** algorithme.
+*Flowchart* et *pseudocode* = **même** algo.
+
+</div>
+
+</div>
 
 ---
 
 ## Opérateurs de comparaison
 
-Une condition compare deux valeurs. Résultat : `TRUE` ou `FALSE` (`BOOLEAN`).
+Condition → `TRUE` / `FALSE` (`BOOLEAN`).
 
-| Opérateur | Sens |
+<div class="two-cols">
+
+<div>
+
+| Op. | Sens |
 | --- | --- |
-| `=` | égal à *(comparaison, pas affectation)* |
-| `<>` | différent de |
-| `<` | strictement inférieur |
-| `<=` | inférieur ou égal |
-| `>` | strictement supérieur |
-| `>=` | supérieur ou égal |
+| `=` | égal *(≠ affectation)* |
+| `<>` | différent |
+| `<` / `<=` | inférieur / ≤ |
+| `>` / `>=` | supérieur / ≥ |
 
-Exemples : `mark >= 10`, `age < 12`, `x = 0`.
+</div>
 
-**Attention :** dans une affectation, `=` range une valeur ; dans une condition, `=` compare.
+<div>
+
+Ex. : `mark >= 10`, `age < 12`, `x = 0`.
+
+**Attention :** `=` range (affectation) **ou** compare (condition).
+
+</div>
+
+</div>
 
 ---
 
