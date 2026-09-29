@@ -223,6 +223,10 @@ Résultat toujours `TRUE` ou `FALSE`.
 
 ## Tables de vérité (*truth tables*)
 
+<div class="two-cols">
+
+<div>
+
 Pour `AND` :
 
 | A | B | A AND B |
@@ -232,6 +236,10 @@ Pour `AND` :
 | `TRUE` | `FALSE` | `FALSE` |
 | `TRUE` | `TRUE` | `TRUE` |
 
+</div>
+
+<div>
+
 Pour `OR` :
 
 | A | B | A OR B |
@@ -240,6 +248,10 @@ Pour `OR` :
 | `FALSE` | `TRUE` | `TRUE` |
 | `TRUE` | `FALSE` | `TRUE` |
 | `TRUE` | `TRUE` | `TRUE` |
+
+</div>
+
+</div>
 
 `NOT` : `NOT TRUE` → `FALSE` ; `NOT FALSE` → `TRUE`.
 
