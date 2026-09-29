@@ -12,8 +12,13 @@
         --color-text: #212121;
         --color-border: #e0e0e0;
         --color-row-alt: #f5f5f5;
+        --color-error: #f23646;
       }
-      * { box-sizing: border-box; }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         max-width: 920px;
         margin: 0 auto;
@@ -23,6 +28,7 @@
         color: var(--color-text);
         background: var(--color-bg);
       }
+
       h1 {
         margin: 0 0 1.25rem;
         font-size: 1.85rem;
@@ -31,19 +37,31 @@
         padding-bottom: 0.6rem;
         border-bottom: 2px solid var(--color-primary);
       }
+
       h2 {
-        margin: 2rem 0 0.75rem;
-        font-size: 1.15rem;
+        margin: 0 0 0.75rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--color-secondary);
       }
-      p { margin: 0 0 1rem; color: var(--color-secondary); }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
       .page-nav {
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
-        margin: 1.25rem 0 1.75rem;
+        margin: 0 0 1.25rem;
       }
+
       .page-nav a {
         display: inline-block;
         padding: 0.3rem 0.7rem;
@@ -51,18 +69,144 @@
         font-weight: 600;
         color: var(--color-primary);
         text-decoration: none;
+        background: transparent;
         border: 1px solid var(--color-primary);
       }
+
       .page-nav a:hover {
         background: var(--color-primary);
         color: #ffffff;
+        text-decoration: none;
       }
-      .placeholder {
-        background: var(--color-row-alt);
+
+      .progress {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        color: var(--color-secondary);
+      }
+
+      .question {
         border: 1px solid var(--color-border);
-        padding: 1.25rem 1.5rem;
-        margin: 1.5rem 0;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: var(--color-bg);
       }
+
+      .answers {
+        display: grid;
+        gap: 0;
+        margin: 1rem 0 0;
+        border: 1px solid var(--color-border);
+      }
+
+      .answers label {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+        cursor: pointer;
+      }
+
+      .answers label:last-child {
+        border-bottom: none;
+      }
+
+      .answers label:nth-child(even) {
+        background: var(--color-row-alt);
+      }
+
+      .answers label.correct {
+        background: var(--color-row-alt);
+        color: var(--color-primary);
+        font-weight: 600;
+      }
+
+      .answers label.wrong {
+        color: var(--color-error);
+        text-decoration: line-through;
+      }
+
+      .answers label.checked-mode {
+        cursor: default;
+      }
+
+      .option-tag {
+        display: inline-block;
+        margin-left: 0.35rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-secondary);
+      }
+
+      button {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid var(--color-primary);
+        background: transparent;
+        color: var(--color-primary);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        background: var(--color-primary);
+        color: #ffffff;
+      }
+
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1.25rem;
+      }
+
+      #reset-btn {
+        margin-left: auto;
+      }
+
+      .result {
+        font-weight: 600;
+        margin-top: 1rem;
+      }
+
+      .ok {
+        color: var(--color-primary);
+      }
+
+      .ko {
+        color: var(--color-error);
+      }
+
+      .muted {
+        color: var(--color-secondary);
+      }
+
+      .question-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .status {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.88em;
+        background: var(--color-row-alt);
+        color: var(--color-secondary);
+        padding: 0.1em 0.35em;
+      }
+
+      em {
+        font-style: italic;
+      }
+
       .site-footer {
         margin-top: 2.5rem;
         padding-top: 1rem;
@@ -71,11 +215,16 @@
         font-size: 0.9rem;
         color: var(--color-secondary);
       }
+
       .site-footer a {
         color: var(--color-secondary);
         text-decoration: underline;
+        font-weight: 400;
       }
-      .site-footer a:hover { color: var(--color-primary); }
+
+      .site-footer a:hover {
+        color: var(--color-primary);
+      }
     </style>
   </head>
   <body>
@@ -86,16 +235,314 @@
       <a href="exercices_seance_02.html">Exercices →</a>
       <a href="../../index.html">Accueil</a>
     </nav>
-    <div class="placeholder">
-      <h2>Placeholder</h2>
-      <p>
-        Quiz à rédiger (QCM / vrai-faux), centré sur les <strong>flowcharts</strong>,
-        le <strong>pseudocode</strong> et les patterns de la séance — pas sur un langage
-        de programmation.
-      </p>
+    <p class="muted">10 questions sur le cours de la séance 2.</p>
+    <p class="progress" id="progress"></p>
+    <div id="quiz"></div>
+
+    <div class="actions">
+      <button id="check-btn" type="button">Valider les réponses</button>
+      <button id="reset-btn" type="button">Réinitialiser</button>
     </div>
-    <footer class="site-footer">
-      <a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a>
-    </footer>
+    <p class="status" id="status" aria-live="polite"></p>
+    <div id="summary" class="result" aria-live="polite"></div>
+
+    <script>
+      const storageKey = "quiz_seance_02_answers_v1";
+      const checkedKey = "quiz_seance_02_checked_v1";
+
+      const questions = [
+        {
+          id: "q1",
+          text: "Dans un <em>flowchart</em>, quelle forme représente une <em>decision</em> ?",
+          options: [
+            { value: "A", label: "un ovale" },
+            { value: "B", label: "un rectangle" },
+            { value: "C", label: "un losange" },
+            { value: "D", label: "un parallélogramme" },
+          ],
+          correct: "C",
+          feedback: "Le losange pose une condition Yes/No. Ovale = début/fin ; rectangle = traitement ; parallélogramme = entrée/sortie.",
+        },
+        {
+          id: "q2",
+          text: "Combien de sorties a un losange de décision ?",
+          options: [
+            { value: "A", label: "une seule" },
+            { value: "B", label: "deux : <strong>Yes</strong> et <strong>No</strong>" },
+            { value: "C", label: "trois : Yes, No et Maybe" },
+            { value: "D", label: "autant qu'il y a de variables" },
+          ],
+          correct: "B",
+          feedback: "Une décision binaire : la condition est vraie (Yes) ou fausse (No). Une seule sortie est suivie à chaque exécution.",
+        },
+        {
+          id: "q3",
+          text: "Dans <code>IF mark &gt;= 10 THEN … ELSE … END IF</code>, la branche <code>ELSE</code> correspond à…",
+          options: [
+            { value: "A", label: "la flèche <strong>Yes</strong> du losange" },
+            { value: "B", label: "la flèche <strong>No</strong> du losange" },
+            { value: "C", label: "le symbole <code>START</code>" },
+            { value: "D", label: "une affectation obligatoire" },
+          ],
+          correct: "B",
+          feedback: "<code>THEN</code> = Yes ; <code>ELSE</code> = No. <code>END IF</code> marque la fin de la décision.",
+        },
+        {
+          id: "q4",
+          text: "Dans la condition <code>mark &gt;= 10</code>, le symbole <code>&gt;=</code> est…",
+          options: [
+            { value: "A", label: "une affectation" },
+            { value: "B", label: "un opérateur de comparaison" },
+            { value: "C", label: "un opérateur <code>AND</code>" },
+            { value: "D", label: "un type <code>STRING</code>" },
+          ],
+          correct: "B",
+          feedback: "Les comparaisons (<code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>) donnent un <code>BOOLEAN</code>. L'affectation utilise aussi <code>=</code>, mais dans un autre contexte.",
+        },
+        {
+          id: "q5",
+          text: "Que vaut <code>(TRUE) AND (FALSE)</code> ?",
+          options: [
+            { value: "A", label: "<code>TRUE</code>" },
+            { value: "B", label: "<code>FALSE</code>" },
+            { value: "C", label: "<code>NULL</code>" },
+            { value: "D", label: "<code>0</code>" },
+          ],
+          correct: "B",
+          feedback: "<code>AND</code> n'est vrai que si <strong>les deux</strong> opérandes sont vrais.",
+        },
+        {
+          id: "q6",
+          text: "Que vaut <code>(FALSE) OR (TRUE)</code> ?",
+          options: [
+            { value: "A", label: "<code>FALSE</code>" },
+            { value: "B", label: "<code>TRUE</code>" },
+            { value: "C", label: "<code>NOT TRUE</code>" },
+            { value: "D", label: "une erreur" },
+          ],
+          correct: "B",
+          feedback: "<code>OR</code> est vrai dès qu'<strong>au moins une</strong> des deux conditions est vraie.",
+        },
+        {
+          id: "q7",
+          text: "Dans une cascade <code>ELSE IF</code> (notes A/B/C/F), dès qu'une condition est vraie…",
+          options: [
+            { value: "A", label: "on continue à tester toutes les conditions suivantes" },
+            { value: "B", label: "on prend cette branche et on ignore le reste de la cascade" },
+            { value: "C", label: "on exécute toutes les branches Yes en même temps" },
+            { value: "D", label: "on revient automatiquement au <code>START</code>" },
+          ],
+          correct: "B",
+          feedback: "Les cas sont mutuellement exclusifs : le premier test réussi gagne ; les suivants ne sont pas évalués.",
+        },
+        {
+          id: "q8",
+          text: "Une condition <em>nested</em> (imbriquée), c'est…",
+          options: [
+            { value: "A", label: "plusieurs <code>ELSE IF</code> au même niveau" },
+            { value: "B", label: "un <code>IF</code> placé <strong>à l'intérieur</strong> d'un autre <code>IF</code>" },
+            { value: "C", label: "uniquement l'opérateur <code>NOT</code>" },
+            { value: "D", label: "un <em>flowchart</em> sans losange" },
+          ],
+          correct: "B",
+          feedback: "Imbrication = une décision dépend d'une autre. Cascade (<code>ELSE IF</code>) = plusieurs cas exclusifs sur la même donnée.",
+        },
+        {
+          id: "q9",
+          text: "Un <em>edge case</em> (cas limite), c'est surtout…",
+          options: [
+            { value: "A", label: "un jeu de données « au milieu » du domaine attendu" },
+            { value: "B", label: "une valeur juste au seuil, extrême ou limite (ex. <code>mark = 10</code> pour <code>&gt;= 10</code>)" },
+            { value: "C", label: "le symbole <code>END</code> d'un <em>flowchart</em>" },
+            { value: "D", label: "une table de vérité complète" },
+          ],
+          correct: "B",
+          feedback: "Les <em>edge cases</em> révèlent souvent une erreur de seuil (<code>&lt;</code> vs <code>&lt;=</code>). Un <em>test case</em> = entrée + résultat attendu.",
+        },
+        {
+          id: "q10",
+          text: "Pour <code>(age &lt; 12) OR (age &gt;= 65)</code> avec <code>age = 65</code>, le résultat de la condition est…",
+          options: [
+            { value: "A", label: "<code>FALSE</code> (65 n'est pas &lt; 12)" },
+            { value: "B", label: "<code>TRUE</code> (car <code>age &gt;= 65</code>)" },
+            { value: "C", label: "indéfini" },
+            { value: "D", label: "<code>NOT TRUE</code>" },
+          ],
+          correct: "B",
+          feedback: "<code>age &lt; 12</code> est faux, mais <code>age &gt;= 65</code> est vrai → <code>OR</code> donne <code>TRUE</code> (réduction).",
+        },
+      ];
+
+      const quizEl = document.getElementById("quiz");
+      const progressEl = document.getElementById("progress");
+      const statusEl = document.getElementById("status");
+      const summaryEl = document.getElementById("summary");
+      const checkBtn = document.getElementById("check-btn");
+      const resetBtn = document.getElementById("reset-btn");
+
+      let checked = false;
+      const answers = {};
+
+      function loadState() {
+        const rawAnswers = localStorage.getItem(storageKey);
+        const rawChecked = localStorage.getItem(checkedKey);
+
+        if (rawAnswers) {
+          try {
+            Object.assign(answers, JSON.parse(rawAnswers));
+          } catch {
+            localStorage.removeItem(storageKey);
+          }
+        }
+
+        checked = rawChecked === "1";
+      }
+
+      function saveState() {
+        localStorage.setItem(storageKey, JSON.stringify(answers));
+        localStorage.setItem(checkedKey, checked ? "1" : "0");
+      }
+
+      function answeredCount() {
+        return questions.filter((question) => answers[question.id]).length;
+      }
+
+      function updateProgress() {
+        progressEl.textContent = `${answeredCount()} / ${questions.length} réponse(s) cochée(s)`;
+      }
+
+      function renderQuiz() {
+        quizEl.innerHTML = questions
+          .map((question, index) => {
+            const selected = answers[question.id] || null;
+            let feedbackHtml = "";
+
+            if (checked) {
+              const isCorrect = selected === question.correct;
+              const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
+              const verdictText = !selected
+                ? "Non répondue."
+                : isCorrect
+                  ? `Correct. ${question.feedback}`
+                  : `Incorrect. ${question.feedback}`;
+              feedbackHtml = `<p class="question-feedback ${verdictClass}">${verdictText}</p>`;
+            }
+
+            const optionsHtml = question.options
+              .map((option) => {
+                const isCorrect = option.value === question.correct;
+                const isChosen = option.value === selected;
+                const classes = [];
+                if (checked) classes.push("checked-mode");
+                if (checked && isCorrect) classes.push("correct");
+                if (checked && isChosen && !isCorrect) classes.push("wrong");
+
+                let tag = "";
+                if (checked && isCorrect) tag = '<span class="option-tag">bonne réponse</span>';
+                else if (checked && isChosen) tag = '<span class="option-tag">réponse sélectionnée</span>';
+
+                return `
+                  <label class="${classes.join(" ")}">
+                    <input
+                      type="radio"
+                      name="${question.id}"
+                      value="${option.value}"
+                      ${selected === option.value ? "checked" : ""}
+                      ${checked ? "disabled" : ""}
+                    />
+                    ${option.value}. ${option.label}${tag}
+                  </label>
+                `;
+              })
+              .join("");
+
+            return `
+              <section class="question" data-question-id="${question.id}">
+                <h2>Question ${index + 1}</h2>
+                <p><strong>${question.text}</strong></p>
+                <div class="answers">${optionsHtml}</div>
+                ${feedbackHtml}
+              </section>
+            `;
+          })
+          .join("");
+
+        if (!checked) {
+          quizEl.querySelectorAll('input[type="radio"]').forEach((input) => {
+            input.addEventListener("change", () => {
+              answers[input.name] = input.value;
+              statusEl.textContent = "";
+              statusEl.className = "status";
+              summaryEl.innerHTML = "";
+              summaryEl.className = "result";
+              saveState();
+              updateProgress();
+            });
+          });
+        }
+
+        checkBtn.hidden = checked;
+        updateProgress();
+
+        if (checked) {
+          renderSummary();
+        } else {
+          summaryEl.innerHTML = "";
+          summaryEl.className = "result";
+        }
+      }
+
+      function renderSummary() {
+        let score = 0;
+        questions.forEach((question) => {
+          if (answers[question.id] === question.correct) score += 1;
+        });
+
+        summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;
+        summaryEl.className = "result";
+      }
+
+      function checkAll() {
+        const unanswered = questions.filter((question) => !answers[question.id]);
+        if (unanswered.length > 0) {
+          statusEl.textContent = `Il reste ${unanswered.length} question(s) sans réponse.`;
+          statusEl.className = "status ko";
+          const firstMissing = quizEl.querySelector(
+            `[data-question-id="${unanswered[0].id}"]`
+          );
+          if (firstMissing) firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        checked = true;
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        saveState();
+        renderQuiz();
+        summaryEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function resetQuiz() {
+        for (const key of Object.keys(answers)) {
+          delete answers[key];
+        }
+        checked = false;
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(checkedKey);
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        summaryEl.innerHTML = "";
+        summaryEl.className = "result";
+        renderQuiz();
+      }
+
+      checkBtn.addEventListener("click", checkAll);
+      resetBtn.addEventListener("click", resetQuiz);
+
+      loadState();
+      renderQuiz();
+    </script>
+
+    <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>
   </body>
 </html>
