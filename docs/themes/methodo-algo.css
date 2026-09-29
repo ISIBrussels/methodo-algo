@@ -210,6 +210,20 @@ section .compact-mermaid .mermaid-diagram svg {
   max-height: 340px;
 }
 
+/* Mermaid two-cols un cran plus grand (slide 4 Pass/Fail) — ne pas utiliser sur slide 12 */
+section .mid-mermaid .mermaid-diagram {
+  margin: 0;
+}
+
+section .mid-mermaid .mermaid-diagram svg {
+  max-height: 400px;
+}
+
+/* Léger shrink slide-local (évite chevauchement footer ; base Marp ≈ 29px) */
+section.compact {
+  font-size: 26px;
+}
+
 /* Ligne symbole flowchart : libellé | forme Mermaid */
 section .symbol-row {
   display: grid;

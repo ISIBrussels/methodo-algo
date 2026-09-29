@@ -60,7 +60,7 @@ Deux chemins, **un seul** suivi.
 
 </div>
 
-<div class="compact-mermaid">
+<div class="mid-mermaid">
 
 ```mermaid
 flowchart TB
@@ -327,6 +327,8 @@ Les deux sont corrects ; on choisit selon la structure du problème.
 Piège fréquent : une branche **inaccessible** (condition déjà couverte plus haut, ou ordre des tests incorrect).
 
 ---
+
+<!-- _class: compact -->
 
 ## *Test cases* et *edge cases*
 
