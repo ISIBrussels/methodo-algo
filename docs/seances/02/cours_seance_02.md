@@ -261,6 +261,10 @@ Pour `OR` :
 
 « Est-ce que `x` est strictement entre 0 et 10 ? »
 
+<div class="two-cols">
+
+<div>
+
 ```text
 INPUT x
 IF (x > 0) AND (x < 10) THEN
@@ -269,6 +273,10 @@ ELSE
   OUTPUT "Outside"
 END IF
 ```
+
+</div>
+
+<div class="compact-mermaid">
 
 ```mermaid
 flowchart TB
@@ -279,6 +287,10 @@ flowchart TB
   D --> F([END])
   E --> F
 ```
+
+</div>
+
+</div>
 
 ---
 
