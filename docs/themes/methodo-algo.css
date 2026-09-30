@@ -193,6 +193,16 @@ section .mermaid-diagram svg {
   width: auto;
 }
 
+/* Edge labels (Yes/No…) : pas de pastille opaque — lisible clair/sombre */
+section .mermaid-diagram .edge-label > rect {
+  fill: none;
+  stroke: none;
+}
+
+section .mermaid-diagram .edge-label text {
+  fill: currentColor;
+}
+
 /* Layout 2 colonnes (ex. pseudocode | tableau) */
 section .two-cols {
   display: grid;

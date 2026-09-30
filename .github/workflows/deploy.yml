@@ -230,6 +230,15 @@ jobs:
                   height: auto;
                 }
 
+                .mermaid-diagram .edge-label > rect {
+                  fill: none;
+                  stroke: none;
+                }
+
+                .mermaid-diagram .edge-label text {
+                  fill: currentColor;
+                }
+
                 details.corrige {
                   margin: 1rem 0 1.5rem;
                   padding: 0.65rem 0.9rem;

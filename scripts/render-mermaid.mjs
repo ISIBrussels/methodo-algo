@@ -126,6 +126,35 @@ function applyParallelograms(svg, lean) {
   return next;
 }
 
+/**
+ * beautiful-mermaid paints opaque --bg pills behind every edge label (Yes/No…).
+ * That reads as white boxes in dark slide themes. Make label chrome transparent
+ * and inherit page text color for light/dark readability.
+ */
+function transparentizeEdgeLabels(svg) {
+  return svg.replace(
+    /<g class="edge-label"[^>]*>[\s\S]*?<\/g>/g,
+    (group) =>
+      group
+        .replace(
+          /<rect\b([^>]*?)\/>/g,
+          (_, attrs) => {
+            let next = attrs
+              .replace(/\sfill="[^"]*"/g, ' fill="none"')
+              .replace(/\sstroke="[^"]*"/g, ' stroke="none"')
+              .replace(/\sstroke-width="[^"]*"/g, "");
+            if (!/\sfill=/.test(next)) next += ' fill="none"';
+            if (!/\sstroke=/.test(next)) next += ' stroke="none"';
+            return `<rect${next}/>`;
+          },
+        )
+        .replace(
+          /(<text\b[^>]*?)\sfill="[^"]*"/g,
+          '$1 fill="currentColor"',
+        ),
+  );
+}
+
 function renderDiagram(source) {
   const { source: prepared, lean } = preprocessParallelograms(source);
   const svg = renderMermaidSVG(prepared, {
@@ -136,7 +165,7 @@ function renderDiagram(source) {
     line: "#757575",
     accent: "#0075c9",
   });
-  return applyParallelograms(svg, lean);
+  return transparentizeEdgeLabels(applyParallelograms(svg, lean));
 }
 
 const fence =
