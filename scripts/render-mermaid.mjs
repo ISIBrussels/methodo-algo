@@ -155,6 +155,111 @@ function transparentizeEdgeLabels(svg) {
   );
 }
 
+function parsePoints(pointsAttr) {
+  return pointsAttr
+    .trim()
+    .split(/\s+/)
+    .map((p) => {
+      const [x, y] = p.split(",").map(Number);
+      return { x, y };
+    });
+}
+
+function pathLength(points) {
+  let len = 0;
+  for (let i = 1; i < points.length; i++) {
+    const dx = points[i].x - points[i - 1].x;
+    const dy = points[i].y - points[i - 1].y;
+    len += Math.hypot(dx, dy);
+  }
+  return len;
+}
+
+/** Point at `distance` px along a polyline from its start. */
+function pointAtDistance(points, distance) {
+  if (points.length === 0) return { x: 0, y: 0 };
+  if (points.length === 1 || distance <= 0) return { ...points[0] };
+
+  let remaining = distance;
+  for (let i = 1; i < points.length; i++) {
+    const dx = points[i].x - points[i - 1].x;
+    const dy = points[i].y - points[i - 1].y;
+    const segLen = Math.hypot(dx, dy);
+    if (remaining <= segLen || i === points.length - 1) {
+      const t = segLen === 0 ? 0 : Math.min(1, remaining / segLen);
+      return {
+        x: points[i - 1].x + t * dx,
+        y: points[i - 1].y + t * dy,
+      };
+    }
+    remaining -= segLen;
+  }
+  return { ...points[points.length - 1] };
+}
+
+/**
+ * beautiful-mermaid places edge labels at the path midpoint. On long Yes/No
+ * branches (esp. LR cascades), that puts "Yes"/"No" far from the diamond.
+ * Nudge each labeled edge's label near the source exit (~28px along the path).
+ */
+function nudgeEdgeLabelsNearSource(svg) {
+  const EDGE_RE =
+    /<polyline class="edge"[^>]*\bdata-from="([^"]*)"[^>]*\bdata-to="([^"]*)"[^>]*\bdata-label="([^"]+)"[^>]*\bpoints="([^"]+)"[^>]*\/>/g;
+  const EDGE_RE_ALT =
+    /<polyline class="edge"[^>]*\bpoints="([^"]+)"[^>]*\bdata-from="([^"]*)"[^>]*\bdata-to="([^"]*)"[^>]*\bdata-label="([^"]+)"[^>]*\/>/g;
+
+  /** @type {Map<string, {x:number,y:number}>} */
+  const targets = new Map();
+
+  const collect = (from, to, label, pointsAttr) => {
+    const points = parsePoints(pointsAttr);
+    if (points.length < 2) return;
+    const total = pathLength(points);
+    // Stay near the diamond exit; never past ~35% of a short edge.
+    const dist = Math.min(28, Math.max(14, total * 0.22));
+    const pos = pointAtDistance(points, dist);
+    targets.set(`${from}\0${to}\0${label}`, pos);
+  };
+
+  for (const m of svg.matchAll(EDGE_RE)) {
+    collect(m[1], m[2], m[3], m[4]);
+  }
+  // Attribute order may vary; pick up any the first regex missed.
+  for (const m of svg.matchAll(EDGE_RE_ALT)) {
+    const key = `${m[2]}\0${m[3]}\0${m[4]}`;
+    if (!targets.has(key)) collect(m[2], m[3], m[4], m[1]);
+  }
+
+  if (targets.size === 0) return svg;
+
+  return svg.replace(
+    /<g class="edge-label"([^>]*)>([\s\S]*?)<\/g>/g,
+    (full, attrs, inner) => {
+      const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+      const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      const label = /data-label="([^"]*)"/.exec(attrs)?.[1];
+      if (from == null || to == null || label == null) return full;
+      const pos = targets.get(`${from}\0${to}\0${label}`);
+      if (!pos) return full;
+
+      const textMatch = /<text\b[^>]*\bx="([^"]+)"[^>]*\by="([^"]+)"/.exec(
+        inner,
+      );
+      if (!textMatch) return full;
+      const oldX = Number(textMatch[1]);
+      const oldY = Number(textMatch[2]);
+      const dx = pos.x - oldX;
+      const dy = pos.y - oldY;
+      if (Math.hypot(dx, dy) < 8) return full; // already near source
+
+      const shifted = inner
+        .replace(/\bx="([^"]+)"/g, (_, v) => `x="${Number(v) + dx}"`)
+        .replace(/\by="([^"]+)"/g, (_, v) => `y="${Number(v) + dy}"`);
+      return `<g class="edge-label"${attrs}>${shifted}</g>`;
+    },
+  );
+}
+
 function renderDiagram(source) {
   const { source: prepared, lean } = preprocessParallelograms(source);
   const svg = renderMermaidSVG(prepared, {
@@ -165,7 +270,9 @@ function renderDiagram(source) {
     line: "#757575",
     accent: "#0075c9",
   });
-  return transparentizeEdgeLabels(applyParallelograms(svg, lean));
+  return transparentizeEdgeLabels(
+    nudgeEdgeLabelsNearSource(applyParallelograms(svg, lean)),
+  );
 }
 
 const fence =

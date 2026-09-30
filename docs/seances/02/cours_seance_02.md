@@ -367,16 +367,6 @@ END IF
 
 ---
 
-## À retenir
-
-- Losange = question **Yes / No**
-- `IF` / `ELSE` / `ELSE IF` / `END IF`
-- Comparaisons ; `AND` / `OR` / `NOT` ; *truth tables*
-- Cascade vs imbrication
-- Toujours prévoir des ***test cases***, dont des ***edge cases***
-
----
-
 ## Quiz
 
 10 questions pour tester sa compréhension du contenu de la séance.
