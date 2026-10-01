@@ -375,91 +375,92 @@ END IF
 
 ---
 
-## Exercice 2.A — Pass / Fail
+## Exercice 2.A — Alerte chaleur (`IF` sans `ELSE`)
 
 ```text
-INPUT mark
-IF mark >= 10 THEN
-  message = "Pass"
-ELSE
-  message = "Fail"
+INPUT temperature
+IF temperature > hotLimit THEN
+  OUTPUT "Hot"
 END IF
-OUTPUT message
+OUTPUT "Done"
 ```
 
-1. Compléter la *trace table* pour `mark = 12`.
-2. Dessiner le *flowchart*.
+1. *Trace table* : `temperature = 32`, `hotLimit = 30`.
+2. Dessiner le *flowchart* (branche **No** contourne `"Hot"`).
 
 → [Exercices](exercices_seance_02.html) § 2.A
 
 ---
 
-## Exercice 2.B — Positif ou non
+## Exercice 2.B — Valeur absolue (`IF` / `ELSE`)
 
 ```text
 INPUT x
-IF x > 0 THEN
-  label = "Positive"
+IF x < 0 THEN
+  absValue = zero - x
 ELSE
-  label = "Not positive"
+  absValue = x
 END IF
-OUTPUT label
+OUTPUT absValue
 ```
 
-1. Compléter la *trace table* pour `x = -3`.
-2. Dessiner le *flowchart*.
+1. *Trace table* : `x = -5`, `zero = 0`.
+2. Dessiner le *flowchart* (calcul dans les processus).
 
 → [Exercices](exercices_seance_02.html) § 2.B
 
 ---
 
-## Exercice 2.C — Intervalle avec `AND`
+## Exercice 2.C — Entrée billetterie (`IF` imbriqué)
 
 ```text
-INPUT x
-IF (x > 0) AND (x < 10) THEN
-  message = "Inside"
+INPUT hasTicket, age
+IF hasTicket = TRUE THEN
+  IF age >= adultAge THEN
+    entry = "Adult"
+  ELSE
+    entry = "Child"
+  END IF
 ELSE
-  message = "Outside"
+  entry = "Denied"
 END IF
-OUTPUT message
+OUTPUT entry
 ```
 
-1. Compléter la *trace table* pour `x = 5`.
-2. Dessiner le *flowchart*.
+1. *Trace table* : `hasTicket = TRUE`, `age = 16`, `adultAge = 18`.
+2. Dessiner le *flowchart* (deux losanges imbriqués).
 
 → [Exercices](exercices_seance_02.html) § 2.C
 
 ---
 
-## Exercice 2.D — Réduction d'âge
+## Exercice 2.D — Réussite avec présence (`AND` / `NOT`)
 
 ```text
-INPUT age
-IF (age < 12) OR (age >= 65) THEN
-  price = "Discount"
+INPUT mark, isAbsent
+IF (NOT isAbsent) AND (mark >= passMark) THEN
+  status = "Pass"
 ELSE
-  price = "Full"
+  status = "Fail"
 END IF
-OUTPUT price
+OUTPUT status
 ```
 
-1. Compléter la *trace table* pour `age = 65`.
-2. Dessiner le *flowchart*.
+1. *Trace table* : `mark = 12`, `isAbsent = FALSE`, `passMark = 10`.
+2. Dessiner le *flowchart* (condition composée dans un losange).
 
 → [Exercices](exercices_seance_02.html) § 2.D
-
 ---
 
 ## Exercice 2.E — Mentions (cascade)
 
 ```text
 INPUT mark
-IF mark >= 16 THEN
+IF mark >= gradeA THEN
   grade = "A"
-ELSE IF mark >= 14 THEN
+ELSE IF mark >= gradeB THEN
   grade = "B"
-ELSE IF mark >= 10 THEN
+ELSE IF mark >= gradeC THEN
   grade = "C"
 ELSE
   grade = "F"
@@ -467,7 +468,7 @@ END IF
 OUTPUT grade
 ```
 
-1. Compléter la *trace table* pour `mark = 14`.
-2. Dessiner le *flowchart*.
+1. *Trace table* : `mark = 14`, `gradeA = 16`, `gradeB = 14`, `gradeC = 10`.
+2. Dessiner le *flowchart* (cascade ; bornes nommées).
 
 → [Exercices](exercices_seance_02.html) § 2.E

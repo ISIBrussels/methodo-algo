@@ -3,7 +3,8 @@
 **Thème :** Instructions conditionnelles  
 **Support :** *flowcharts* (losange Yes/No) + *trace table* (texte FR — flowcharts + *pseudocode* EN)
 
-Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.
+Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.  
+Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes apparaissent **uniquement** dans la *trace table*).
 
 <nav class="page-nav">
   <a href="cours_seance_02.html">← Cours</a>
@@ -11,102 +12,105 @@ Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 2.A — Pass / Fail
+## 2.A — Alerte chaleur (`IF` sans `ELSE`)
 
 Algorithme :
 
 ```text
-INPUT mark
-IF mark >= 10 THEN
-  message = "Pass"
-ELSE
-  message = "Fail"
+INPUT temperature
+IF temperature > hotLimit THEN
+  OUTPUT "Hot"
 END IF
-OUTPUT message
+OUTPUT "Done"
 ```
 
-1. Compléter la *trace table* pour `mark = 12` :
+Données de la *trace* : `temperature = 32`, `hotLimit = 30`.
 
-| step | mark | message | OUTPUT |
+1. Compléter la *trace table* :
+
+| step | temperature | hotLimit | OUTPUT |
 | --- | --- | --- | --- |
-| `INPUT mark` | | | |
-| `IF mark >= 10` | | | |
-| `message = …` | | | |
-| `OUTPUT message` | | | |
+| `INPUT temperature` | | | |
+| `IF temperature > hotLimit` | | | |
+| … | | | |
+| `OUTPUT "Done"` | | | |
 
-2. Dessiner le *flowchart* (`START` / `END`, `INPUT` / `OUTPUT`, losange Yes/No).
+2. Dessiner le *flowchart* (la branche **No** contourne `"Hot"` et rejoint `"Done"`).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`12 >= 10` → Yes → `message = "Pass"` → **OUTPUT Pass**.
+`32 > 30` → Yes → **OUTPUT Hot**, puis **OUTPUT Done**.  
+*Edge* utile : `temperature = hotLimit` → pas de `"Hot"`, seulement `"Done"`.
 
-| step | mark | message | OUTPUT |
+| step | temperature | hotLimit | OUTPUT |
 | --- | --- | --- | --- |
-| `INPUT mark` | 12 | | |
-| `IF mark >= 10` | 12 | | |
-| `message = "Pass"` | 12 | Pass | |
-| `OUTPUT message` | 12 | Pass | Pass |
+| `INPUT temperature` | 32 | 30 | |
+| `IF temperature > hotLimit` | 32 | 30 | |
+| `OUTPUT "Hot"` | 32 | 30 | Hot |
+| `OUTPUT "Done"` | 32 | 30 | Done |
 
 ```mermaid
 flowchart TB
-  A([START]) --> B[/INPUT mark/]
-  B --> C{mark >= 10}
-  C -->|Yes| D["message = \"Pass\""]
-  C -->|No| E["message = \"Fail\""]
-  D --> F[/OUTPUT message/]
-  E --> F
-  F --> G([END])
+  A([START]) --> B[/INPUT temperature/]
+  B --> C{temperature > hotLimit}
+  C -->|Yes| D[/OUTPUT "Hot"/]
+  C -->|No| E[/OUTPUT "Done"/]
+  D --> E
+  E --> F([END])
 ```
 
 </details>
 
 ---
 
-## 2.B — Positif ou non
+## 2.B — Valeur absolue (`IF` / `ELSE`)
 
 Algorithme :
 
 ```text
 INPUT x
-IF x > 0 THEN
-  label = "Positive"
+IF x < 0 THEN
+  absValue = zero - x
 ELSE
-  label = "Not positive"
+  absValue = x
 END IF
-OUTPUT label
+OUTPUT absValue
 ```
 
-1. Compléter la *trace table* pour `x = -3` :
+Données de la *trace* : `x = -5`, `zero = 0`.
 
-| step | x | label | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT x` | | | |
-| `IF x > 0` | | | |
-| `label = …` | | | |
-| `OUTPUT label` | | | |
+1. Compléter la *trace table* :
 
-2. Dessiner le *flowchart*.
+| step | x | zero | absValue | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `INPUT x` | | | | |
+| `IF x < 0` | | | | |
+| `absValue = …` | | | | |
+| `OUTPUT absValue` | | | | |
+
+2. Dessiner le *flowchart* (calcul dans les rectangles de processus).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`-3 > 0` → No → `label = "Not positive"` → **OUTPUT Not positive**.
+`-5 < 0` → Yes → `absValue = 0 - (-5) = 5` → **OUTPUT 5**.  
+*Edge* : `x = 0` → branche No → `absValue = 0`.
 
-| step | x | label | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT x` | -3 | | |
-| `IF x > 0` | -3 | | |
-| `label = "Not positive"` | -3 | Not positive | |
-| `OUTPUT label` | -3 | Not positive | Not positive |
+| step | x | zero | absValue | OUTPUT |
+| --- | --- | --- | --- | --- |
+| `INPUT x` | -5 | 0 | | |
+| `IF x < 0` | -5 | 0 | | |
+| `absValue = zero - x` | -5 | 0 | 5 | |
+| `OUTPUT absValue` | -5 | 0 | 5 | 5 |
 
 ```mermaid
 flowchart TB
   A([START]) --> B[/INPUT x/]
-  B --> C{x > 0}
-  C -->|Yes| D["label = \"Positive\""]
-  C -->|No| E["label = \"Not positive\""]
-  D --> F[/OUTPUT label/]
+  B --> C{x < 0}
+  C -->|Yes| D["absValue = zero - x"]
+  C -->|No| E["absValue = x"]
+  D --> F[/OUTPUT absValue/]
   E --> F
   F --> G([END])
 ```
@@ -115,102 +119,117 @@ flowchart TB
 
 ---
 
-## 2.C — Intervalle avec `AND`
+## 2.C — Entrée billetterie (`IF` imbriqué)
 
 Algorithme :
 
 ```text
-INPUT x
-IF (x > 0) AND (x < 10) THEN
-  message = "Inside"
+INPUT hasTicket, age
+IF hasTicket = TRUE THEN
+  IF age >= adultAge THEN
+    entry = "Adult"
+  ELSE
+    entry = "Child"
+  END IF
 ELSE
-  message = "Outside"
+  entry = "Denied"
 END IF
-OUTPUT message
+OUTPUT entry
 ```
 
-1. Compléter la *trace table* pour `x = 5` :
+Données de la *trace* : `hasTicket = TRUE`, `age = 16`, `adultAge = 18`.
 
-| step | x | message | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT x` | | | |
-| `IF (x > 0) AND (x < 10)` | | | |
-| `message = …` | | | |
-| `OUTPUT message` | | | |
+1. Compléter la *trace table* :
 
-2. Dessiner le *flowchart*.
+| step | hasTicket | age | adultAge | entry | OUTPUT |
+| --- | --- | --- | --- | --- | --- |
+| `INPUT hasTicket, age` | | | | | |
+| `IF hasTicket = TRUE` | | | | | |
+| `IF age >= adultAge` | | | | | |
+| `entry = …` | | | | | |
+| `OUTPUT entry` | | | | | |
+
+2. Dessiner le *flowchart* (deux losanges imbriqués).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`(5 > 0) AND (5 < 10)` → `TRUE AND TRUE` → Yes → **OUTPUT Inside**.
+`hasTicket = TRUE` → Yes ; `16 >= 18` → No → `entry = "Child"` → **OUTPUT Child**.  
+Sans billet, le deuxième test n'a **pas** de sens (branche `"Denied"`).
 
-| step | x | message | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT x` | 5 | | |
-| `IF (x > 0) AND (x < 10)` | 5 | | |
-| `message = "Inside"` | 5 | Inside | |
-| `OUTPUT message` | 5 | Inside | Inside |
+| step | hasTicket | age | adultAge | entry | OUTPUT |
+| --- | --- | --- | --- | --- | --- |
+| `INPUT hasTicket, age` | TRUE | 16 | 18 | | |
+| `IF hasTicket = TRUE` | TRUE | 16 | 18 | | |
+| `IF age >= adultAge` | TRUE | 16 | 18 | | |
+| `entry = "Child"` | TRUE | 16 | 18 | Child | |
+| `OUTPUT entry` | TRUE | 16 | 18 | Child | Child |
 
 ```mermaid
 flowchart TB
-  A([START]) --> B[/INPUT x/]
-  B --> C{"(x > 0) AND (x < 10)"}
-  C -->|Yes| D["message = \"Inside\""]
-  C -->|No| E["message = \"Outside\""]
-  D --> F[/OUTPUT message/]
-  E --> F
-  F --> G([END])
+  A([START]) --> B[/INPUT hasTicket, age/]
+  B --> C{hasTicket = TRUE}
+  C -->|Yes| D{age >= adultAge}
+  C -->|No| E["entry = \"Denied\""]
+  D -->|Yes| F["entry = \"Adult\""]
+  D -->|No| G["entry = \"Child\""]
+  E --> H[/OUTPUT entry/]
+  F --> H
+  G --> H
+  H --> I([END])
 ```
 
 </details>
 
 ---
 
-## 2.D — Réduction d'âge
+## 2.D — Réussite avec présence (`AND` / `NOT`)
 
 Algorithme :
 
 ```text
-INPUT age
-IF (age < 12) OR (age >= 65) THEN
-  price = "Discount"
+INPUT mark, isAbsent
+IF (NOT isAbsent) AND (mark >= passMark) THEN
+  status = "Pass"
 ELSE
-  price = "Full"
+  status = "Fail"
 END IF
-OUTPUT price
+OUTPUT status
 ```
 
-1. Compléter la *trace table* pour `age = 65` :
+Données de la *trace* : `mark = 12`, `isAbsent = FALSE`, `passMark = 10`.
 
-| step | age | price | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT age` | | | |
-| `IF (age < 12) OR (age >= 65)` | | | |
-| `price = …` | | | |
-| `OUTPUT price` | | | |
+1. Compléter la *trace table* :
 
-2. Dessiner le *flowchart*.
+| step | mark | isAbsent | passMark | status | OUTPUT |
+| --- | --- | --- | --- | --- | --- |
+| `INPUT mark, isAbsent` | | | | | |
+| `IF (NOT isAbsent) AND (mark >= passMark)` | | | | | |
+| `status = …` | | | | | |
+| `OUTPUT status` | | | | | |
+
+2. Dessiner le *flowchart* (condition composée dans **un** losange).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`(65 < 12) OR (65 >= 65)` → `FALSE OR TRUE` → Yes → **OUTPUT Discount**.
+`(NOT FALSE) AND (12 >= 10)` → `TRUE AND TRUE` → Yes → **OUTPUT Pass**.  
+*Edge* : `isAbsent = TRUE` même avec `mark` haute → Fail (`NOT TRUE` → `FALSE`).
 
-| step | age | price | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT age` | 65 | | |
-| `IF (age < 12) OR (age >= 65)` | 65 | | |
-| `price = "Discount"` | 65 | Discount | |
-| `OUTPUT price` | 65 | Discount | Discount |
+| step | mark | isAbsent | passMark | status | OUTPUT |
+| --- | --- | --- | --- | --- | --- |
+| `INPUT mark, isAbsent` | 12 | FALSE | 10 | | |
+| `IF (NOT isAbsent) AND (mark >= passMark)` | 12 | FALSE | 10 | | |
+| `status = "Pass"` | 12 | FALSE | 10 | Pass | |
+| `OUTPUT status` | 12 | FALSE | 10 | Pass | Pass |
 
 ```mermaid
 flowchart TB
-  A([START]) --> B[/INPUT age/]
-  B --> C{"(age < 12) OR (age >= 65)"}
-  C -->|Yes| D["price = \"Discount\""]
-  C -->|No| E["price = \"Full\""]
-  D --> F[/OUTPUT price/]
+  A([START]) --> B[/INPUT mark, isAbsent/]
+  B --> C{"(NOT isAbsent) AND (mark >= passMark)"}
+  C -->|Yes| D["status = \"Pass\""]
+  C -->|No| E["status = \"Fail\""]
+  D --> F[/OUTPUT status/]
   E --> F
   F --> G([END])
 ```
@@ -225,11 +244,11 @@ Algorithme :
 
 ```text
 INPUT mark
-IF mark >= 16 THEN
+IF mark >= gradeA THEN
   grade = "A"
-ELSE IF mark >= 14 THEN
+ELSE IF mark >= gradeB THEN
   grade = "B"
-ELSE IF mark >= 10 THEN
+ELSE IF mark >= gradeC THEN
   grade = "C"
 ELSE
   grade = "F"
@@ -237,39 +256,41 @@ END IF
 OUTPUT grade
 ```
 
-1. Compléter la *trace table* pour `mark = 14` :
+Données de la *trace* : `mark = 14`, `gradeA = 16`, `gradeB = 14`, `gradeC = 10`.
 
-| step | mark | grade | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT mark` | | | |
-| `IF mark >= 16` | | | |
-| `ELSE IF mark >= 14` | | | |
-| `grade = …` | | | |
-| `OUTPUT grade` | | | |
+1. Compléter la *trace table* :
 
-2. Dessiner le *flowchart* (cascade de losanges).
+| step | mark | gradeA | gradeB | gradeC | grade | OUTPUT |
+| --- | --- | --- | --- | --- | --- | --- |
+| `INPUT mark` | | | | | | |
+| `IF mark >= gradeA` | | | | | | |
+| `ELSE IF mark >= gradeB` | | | | | | |
+| `grade = …` | | | | | | |
+| `OUTPUT grade` | | | | | | |
+
+2. Dessiner le *flowchart* (cascade de losanges ; bornes nommées).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`14 >= 16` → No ; `14 >= 14` → Yes → `grade = "B"` → **OUTPUT B**.
+`14 >= 16` → No ; `14 >= 14` → Yes → `grade = "B"` → **OUTPUT B** (on **ignore** le test `gradeC`).
 
-| step | mark | grade | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT mark` | 14 | | |
-| `IF mark >= 16` | 14 | | |
-| `ELSE IF mark >= 14` | 14 | | |
-| `grade = "B"` | 14 | B | |
-| `OUTPUT grade` | 14 | B | B |
+| step | mark | gradeA | gradeB | gradeC | grade | OUTPUT |
+| --- | --- | --- | --- | --- | --- | --- |
+| `INPUT mark` | 14 | 16 | 14 | 10 | | |
+| `IF mark >= gradeA` | 14 | 16 | 14 | 10 | | |
+| `ELSE IF mark >= gradeB` | 14 | 16 | 14 | 10 | | |
+| `grade = "B"` | 14 | 16 | 14 | 10 | B | |
+| `OUTPUT grade` | 14 | 16 | 14 | 10 | B | B |
 
 ```mermaid
 flowchart TB
   A([START]) --> B[/INPUT mark/]
-  B --> C{mark >= 16}
+  B --> C{mark >= gradeA}
   C -->|Yes| D["grade = \"A\""]
-  C -->|No| E{mark >= 14}
+  C -->|No| E{mark >= gradeB}
   E -->|Yes| F["grade = \"B\""]
-  E -->|No| G{mark >= 10}
+  E -->|No| G{mark >= gradeC}
   G -->|Yes| H["grade = \"C\""]
   G -->|No| I["grade = \"F\""]
   D --> J[/OUTPUT grade/]
