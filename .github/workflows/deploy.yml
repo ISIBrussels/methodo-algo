@@ -237,6 +237,7 @@ jobs:
 
                 .mermaid-diagram .edge-label text {
                   fill: currentColor;
+                  font-weight: 700;
                 }
 
                 details.corrige {

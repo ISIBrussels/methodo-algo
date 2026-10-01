@@ -201,6 +201,7 @@ section .mermaid-diagram .edge-label > rect {
 
 section .mermaid-diagram .edge-label text {
   fill: currentColor;
+  font-weight: 700;
 }
 
 /* Layout 2 colonnes (ex. pseudocode | tableau) */

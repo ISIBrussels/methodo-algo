@@ -127,9 +127,10 @@ function applyParallelograms(svg, lean) {
 }
 
 /**
- * beautiful-mermaid paints opaque --bg pills behind every edge label (Yes/No…).
- * That reads as white boxes in dark slide themes. Make label chrome transparent
- * and inherit page text color for light/dark readability.
+ * beautiful-mermaid paints opaque --bg pills behind every edge label (Yes/No…)
+ * and sets label text to font-weight 400. Make label chrome transparent, inherit
+ * page text color, and bump weight for light/dark readability without shifting
+ * the nudged near-diamond position.
  */
 function transparentizeEdgeLabels(svg) {
   return svg.replace(
@@ -148,10 +149,14 @@ function transparentizeEdgeLabels(svg) {
             return `<rect${next}/>`;
           },
         )
-        .replace(
-          /(<text\b[^>]*?)\sfill="[^"]*"/g,
-          '$1 fill="currentColor"',
-        ),
+        .replace(/(<text\b[^>]*)>/g, (_, open) => {
+          let next = open
+            .replace(/\sfill="[^"]*"/g, ' fill="currentColor"')
+            .replace(/\sfont-weight="[^"]*"/g, ' font-weight="700"');
+          if (!/\sfill=/.test(next)) next += ' fill="currentColor"';
+          if (!/\sfont-weight=/.test(next)) next += ' font-weight="700"';
+          return `${next}>`;
+        }),
   );
 }
 
