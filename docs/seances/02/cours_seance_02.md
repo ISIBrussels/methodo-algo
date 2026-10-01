@@ -375,37 +375,45 @@ END IF
 
 ---
 
-## Exercice 2.A — Alerte chaleur (`IF` sans `ELSE`)
+## Exercice 2.A — Quantité hors bornes (`OR` + validation)
 
 ```text
-INPUT temperature
-IF temperature > hotLimit THEN
-  OUTPUT "Hot"
+INPUT quantity
+IF (quantity < minQty) OR (quantity > maxQty) THEN
+  verdict = "Rejected"
+ELSE
+  verdict = "Accepted"
 END IF
-OUTPUT "Done"
+OUTPUT verdict
 ```
 
-1. *Trace table* : `temperature = 32`, `hotLimit = 30`.
-2. Dessiner le *flowchart* (branche **No** contourne `"Hot"`).
+1. *Trace table* : `quantity = 150`, `minQty = 1`, `maxQty = 100`.
+2. Dessiner le *flowchart* (condition `OR` ; bornes nommées).
 
 → [Exercices](exercices_seance_02.html) § 2.A
 
 ---
 
-## Exercice 2.B — Valeur absolue (`IF` / `ELSE`)
+## Exercice 2.B — Maximum puis niveau (deux décisions en séquence)
 
 ```text
-INPUT x
-IF x < 0 THEN
-  absValue = zero - x
+INPUT a, b
+IF a >= b THEN
+  maxValue = a
 ELSE
-  absValue = x
+  maxValue = b
 END IF
-OUTPUT absValue
+IF maxValue >= threshold THEN
+  band = "High"
+ELSE
+  band = "Low"
+END IF
+OUTPUT maxValue
+OUTPUT band
 ```
 
-1. *Trace table* : `x = -5`, `zero = 0`.
-2. Dessiner le *flowchart* (calcul dans les processus).
+1. *Trace table* : `a = 3`, `b = 8`, `threshold = 5`.
+2. Dessiner le *flowchart* (deux losanges **en séquence**, pas imbriqués).
 
 → [Exercices](exercices_seance_02.html) § 2.B
 
@@ -434,22 +442,25 @@ OUTPUT entry
 
 ---
 
-## Exercice 2.D — Réussite avec présence (`AND` / `NOT`)
+## Exercice 2.D — Confort thermique (`ELSE IF` court)
 
 ```text
-INPUT mark, isAbsent
-IF (NOT isAbsent) AND (mark >= passMark) THEN
-  status = "Pass"
+INPUT temperature
+IF temperature > hotLimit THEN
+  comfort = "Hot"
+ELSE IF temperature < coldLimit THEN
+  comfort = "Cold"
 ELSE
-  status = "Fail"
+  comfort = "OK"
 END IF
-OUTPUT status
+OUTPUT comfort
 ```
 
-1. *Trace table* : `mark = 12`, `isAbsent = FALSE`, `passMark = 10`.
-2. Dessiner le *flowchart* (condition composée dans un losange).
+1. *Trace table* : `temperature = 5`, `hotLimit = 28`, `coldLimit = 16`.
+2. Dessiner le *flowchart* (cascade courte ; bornes nommées).
 
 → [Exercices](exercices_seance_02.html) § 2.D
+
 ---
 
 ## Exercice 2.E — Mentions (cascade)

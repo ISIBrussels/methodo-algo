@@ -12,107 +12,127 @@ Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes ap
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 2.A — Alerte chaleur (`IF` sans `ELSE`)
+## 2.A — Quantité hors bornes (`OR` + validation)
 
 Algorithme :
 
 ```text
-INPUT temperature
-IF temperature > hotLimit THEN
-  OUTPUT "Hot"
+INPUT quantity
+IF (quantity < minQty) OR (quantity > maxQty) THEN
+  verdict = "Rejected"
+ELSE
+  verdict = "Accepted"
 END IF
-OUTPUT "Done"
+OUTPUT verdict
 ```
 
-Données de la *trace* : `temperature = 32`, `hotLimit = 30`.
+Données de la *trace* : `quantity = 150`, `minQty = 1`, `maxQty = 100`.
 
 1. Compléter la *trace table* :
 
-| step | temperature | hotLimit | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT temperature` | | | |
-| `IF temperature > hotLimit` | | | |
-| … | | | |
-| `OUTPUT "Done"` | | | |
+| step | quantity | minQty | maxQty | verdict | OUTPUT |
+| --- | --- | --- | --- | --- | --- |
+| `INPUT quantity` | | | | | |
+| `IF (quantity < minQty) OR (quantity > maxQty)` | | | | | |
+| `verdict = …` | | | | | |
+| `OUTPUT verdict` | | | | | |
 
-2. Dessiner le *flowchart* (la branche **No** contourne `"Hot"` et rejoint `"Done"`).
+2. Dessiner le *flowchart* (condition `OR` dans **un** losange ; bornes nommées).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`32 > 30` → Yes → **OUTPUT Hot**, puis **OUTPUT Done**.  
-*Edge* utile : `temperature = hotLimit` → pas de `"Hot"`, seulement `"Done"`.
+`(150 < 1) OR (150 > 100)` → `FALSE OR TRUE` → Yes → `verdict = "Rejected"` → **OUTPUT Rejected**.  
+*Edge* : `quantity = minQty` ou `quantity = maxQty` → Accepted (seuils inclus côté `ELSE`).
 
-| step | temperature | hotLimit | OUTPUT |
-| --- | --- | --- | --- |
-| `INPUT temperature` | 32 | 30 | |
-| `IF temperature > hotLimit` | 32 | 30 | |
-| `OUTPUT "Hot"` | 32 | 30 | Hot |
-| `OUTPUT "Done"` | 32 | 30 | Done |
+| step | quantity | minQty | maxQty | verdict | OUTPUT |
+| --- | --- | --- | --- | --- | --- |
+| `INPUT quantity` | 150 | 1 | 100 | | |
+| `IF (quantity < minQty) OR (quantity > maxQty)` | 150 | 1 | 100 | | |
+| `verdict = "Rejected"` | 150 | 1 | 100 | Rejected | |
+| `OUTPUT verdict` | 150 | 1 | 100 | Rejected | Rejected |
 
 ```mermaid
 flowchart TB
-  A([START]) --> B[/INPUT temperature/]
-  B --> C{temperature > hotLimit}
-  C -->|Yes| D[/OUTPUT "Hot"/]
-  C -->|No| E[/OUTPUT "Done"/]
-  D --> E
-  E --> F([END])
+  A([START]) --> B[/INPUT quantity/]
+  B --> C{"(quantity < minQty) OR (quantity > maxQty)"}
+  C -->|Yes| D["verdict = \"Rejected\""]
+  C -->|No| E["verdict = \"Accepted\""]
+  D --> F[/OUTPUT verdict/]
+  E --> F
+  F --> G([END])
 ```
 
 </details>
 
 ---
 
-## 2.B — Valeur absolue (`IF` / `ELSE`)
+## 2.B — Maximum puis niveau (deux décisions en séquence)
 
 Algorithme :
 
 ```text
-INPUT x
-IF x < 0 THEN
-  absValue = zero - x
+INPUT a, b
+IF a >= b THEN
+  maxValue = a
 ELSE
-  absValue = x
+  maxValue = b
 END IF
-OUTPUT absValue
+IF maxValue >= threshold THEN
+  band = "High"
+ELSE
+  band = "Low"
+END IF
+OUTPUT maxValue
+OUTPUT band
 ```
 
-Données de la *trace* : `x = -5`, `zero = 0`.
+Données de la *trace* : `a = 3`, `b = 8`, `threshold = 5`.
 
 1. Compléter la *trace table* :
 
-| step | x | zero | absValue | OUTPUT |
-| --- | --- | --- | --- | --- |
-| `INPUT x` | | | | |
-| `IF x < 0` | | | | |
-| `absValue = …` | | | | |
-| `OUTPUT absValue` | | | | |
+| step | a | b | threshold | maxValue | band | OUTPUT |
+| --- | --- | --- | --- | --- | --- | --- |
+| `INPUT a, b` | | | | | | |
+| `IF a >= b` | | | | | | |
+| `maxValue = …` | | | | | | |
+| `IF maxValue >= threshold` | | | | | | |
+| `band = …` | | | | | | |
+| `OUTPUT maxValue` | | | | | | |
+| `OUTPUT band` | | | | | | |
 
-2. Dessiner le *flowchart* (calcul dans les rectangles de processus).
+2. Dessiner le *flowchart* (**deux** losanges **l'un après l'autre**, pas imbriqués).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`-5 < 0` → Yes → `absValue = 0 - (-5) = 5` → **OUTPUT 5**.  
-*Edge* : `x = 0` → branche No → `absValue = 0`.
+`3 >= 8` → No → `maxValue = 8` ; puis `8 >= 5` → Yes → `band = "High"` → **OUTPUT 8**, puis **OUTPUT High**.  
+Les deux tests s'exécutent **toujours** (contrairement à l'imbrication de 2.C).
 
-| step | x | zero | absValue | OUTPUT |
-| --- | --- | --- | --- | --- |
-| `INPUT x` | -5 | 0 | | |
-| `IF x < 0` | -5 | 0 | | |
-| `absValue = zero - x` | -5 | 0 | 5 | |
-| `OUTPUT absValue` | -5 | 0 | 5 | 5 |
+| step | a | b | threshold | maxValue | band | OUTPUT |
+| --- | --- | --- | --- | --- | --- | --- |
+| `INPUT a, b` | 3 | 8 | 5 | | | |
+| `IF a >= b` | 3 | 8 | 5 | | | |
+| `maxValue = b` | 3 | 8 | 5 | 8 | | |
+| `IF maxValue >= threshold` | 3 | 8 | 5 | 8 | | |
+| `band = "High"` | 3 | 8 | 5 | 8 | High | |
+| `OUTPUT maxValue` | 3 | 8 | 5 | 8 | High | 8 |
+| `OUTPUT band` | 3 | 8 | 5 | 8 | High | High |
 
 ```mermaid
 flowchart TB
-  A([START]) --> B[/INPUT x/]
-  B --> C{x < 0}
-  C -->|Yes| D["absValue = zero - x"]
-  C -->|No| E["absValue = x"]
-  D --> F[/OUTPUT absValue/]
+  A([START]) --> B[/INPUT a, b/]
+  B --> C{a >= b}
+  C -->|Yes| D["maxValue = a"]
+  C -->|No| E["maxValue = b"]
+  D --> F{maxValue >= threshold}
   E --> F
-  F --> G([END])
+  F -->|Yes| G["band = \"High\""]
+  F -->|No| H["band = \"Low\""]
+  G --> I[/OUTPUT maxValue/]
+  H --> I
+  I --> J[/OUTPUT band/]
+  J --> K([END])
 ```
 
 </details>
@@ -183,55 +203,63 @@ flowchart TB
 
 ---
 
-## 2.D — Réussite avec présence (`AND` / `NOT`)
+## 2.D — Confort thermique (`ELSE IF` court)
 
 Algorithme :
 
 ```text
-INPUT mark, isAbsent
-IF (NOT isAbsent) AND (mark >= passMark) THEN
-  status = "Pass"
+INPUT temperature
+IF temperature > hotLimit THEN
+  comfort = "Hot"
+ELSE IF temperature < coldLimit THEN
+  comfort = "Cold"
 ELSE
-  status = "Fail"
+  comfort = "OK"
 END IF
-OUTPUT status
+OUTPUT comfort
 ```
 
-Données de la *trace* : `mark = 12`, `isAbsent = FALSE`, `passMark = 10`.
+Données de la *trace* : `temperature = 5`, `hotLimit = 28`, `coldLimit = 16`.
 
 1. Compléter la *trace table* :
 
-| step | mark | isAbsent | passMark | status | OUTPUT |
+| step | temperature | hotLimit | coldLimit | comfort | OUTPUT |
 | --- | --- | --- | --- | --- | --- |
-| `INPUT mark, isAbsent` | | | | | |
-| `IF (NOT isAbsent) AND (mark >= passMark)` | | | | | |
-| `status = …` | | | | | |
-| `OUTPUT status` | | | | | |
+| `INPUT temperature` | | | | | |
+| `IF temperature > hotLimit` | | | | | |
+| `ELSE IF temperature < coldLimit` | | | | | |
+| `comfort = …` | | | | | |
+| `OUTPUT comfort` | | | | | |
 
-2. Dessiner le *flowchart* (condition composée dans **un** losange).
+2. Dessiner le *flowchart* (cascade **courte** : deux losanges + `ELSE` final ; bornes nommées).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`(NOT FALSE) AND (12 >= 10)` → `TRUE AND TRUE` → Yes → **OUTPUT Pass**.  
-*Edge* : `isAbsent = TRUE` même avec `mark` haute → Fail (`NOT TRUE` → `FALSE`).
+`5 > 28` → No ; `5 < 16` → Yes → `comfort = "Cold"` → **OUTPUT Cold**.  
+*Edge* : entre les deux bornes (ex. `temperature = 20`) → branche `ELSE` → `"OK"`.  
+Diffère de 2.E : ici **trois** issues seulement, pas toute la cascade des mentions.
 
-| step | mark | isAbsent | passMark | status | OUTPUT |
+| step | temperature | hotLimit | coldLimit | comfort | OUTPUT |
 | --- | --- | --- | --- | --- | --- |
-| `INPUT mark, isAbsent` | 12 | FALSE | 10 | | |
-| `IF (NOT isAbsent) AND (mark >= passMark)` | 12 | FALSE | 10 | | |
-| `status = "Pass"` | 12 | FALSE | 10 | Pass | |
-| `OUTPUT status` | 12 | FALSE | 10 | Pass | Pass |
+| `INPUT temperature` | 5 | 28 | 16 | | |
+| `IF temperature > hotLimit` | 5 | 28 | 16 | | |
+| `ELSE IF temperature < coldLimit` | 5 | 28 | 16 | | |
+| `comfort = "Cold"` | 5 | 28 | 16 | Cold | |
+| `OUTPUT comfort` | 5 | 28 | 16 | Cold | Cold |
 
 ```mermaid
 flowchart TB
-  A([START]) --> B[/INPUT mark, isAbsent/]
-  B --> C{"(NOT isAbsent) AND (mark >= passMark)"}
-  C -->|Yes| D["status = \"Pass\""]
-  C -->|No| E["status = \"Fail\""]
-  D --> F[/OUTPUT status/]
-  E --> F
-  F --> G([END])
+  A([START]) --> B[/INPUT temperature/]
+  B --> C{temperature > hotLimit}
+  C -->|Yes| D["comfort = \"Hot\""]
+  C -->|No| E{temperature < coldLimit}
+  E -->|Yes| F["comfort = \"Cold\""]
+  E -->|No| G["comfort = \"OK\""]
+  D --> H[/OUTPUT comfort/]
+  F --> H
+  G --> H
+  H --> I([END])
 ```
 
 </details>
