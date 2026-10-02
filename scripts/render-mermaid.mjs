@@ -305,10 +305,12 @@ function retargetParallelogramPorts(svg) {
  * Translate a node group's geometry (polygon/rect/text) by (dx, dy).
  */
 function translateNodeGroup(groupInner, dx, dy) {
+  // Translate every vertex by the same (dx, dy) — preserves parallelogram
+  // lean. Must keep the leading "<" on <polygon> (regression in 754a5b9).
   let next = groupInner.replace(
     /<polygon points="([^"]+)"/g,
     (_, pts) =>
-      `polygon points="${formatPoints(
+      `<polygon points="${formatPoints(
         parsePoints(pts).map((p) => ({ x: p.x + dx, y: p.y + dy })),
       )}"`,
   );
