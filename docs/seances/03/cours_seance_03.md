@@ -22,9 +22,9 @@ En séances 1–2 : **séquence** et **décisions** — chaque étape s'exécute
 
 Souvent, on doit **répéter** une action :
 
-- compter jusqu'à N ;
-- additionner des nombres saisis un par un ;
-- redemander une saisie tant qu'elle est invalide ;
+- compter jusqu'à N,
+- additionner des nombres saisis un par un,
+- redemander une saisie tant qu'elle est invalide,
 - chercher le minimum / maximum parmi plusieurs valeurs.
 
 Il faut une **boucle** (*loop*) : un bloc d'instructions répété tant qu'une **condition** le permet.
@@ -52,12 +52,12 @@ La condition ne devient **jamais** fausse (ou vraie, selon la forme).
 
 Exemples de causes :
 
-- on **oublie** de modifier la variable testée ;
-- la mise à jour va dans le **mauvais sens** ;
+- on **oublie** de modifier la variable testée,
+- la mise à jour va dans le **mauvais sens**,
 - la condition est **toujours vraie** (erreur de comparaison).
 
 En *flowchart* : une flèche qui **revient** sans chemin de sortie.  
-En examen / sur papier : on détecte souvent le bug avec une ***trace table***.
+Sur papier : on détecte souvent le bug avec une ***trace table***.
 
 ---
 
@@ -163,7 +163,7 @@ Différence clé avec `WHILE` : le test est **après** le corps.
 <div>
 
 - Corps d'abord
-- Losange : **No** → on recommence ; **Yes** → on sort
+- Losange : **No** → on recommence, **Yes** → on sort
 
 `UNTIL` = « jusqu'à ce que … soit vrai » = sortie sur **Yes**.
 

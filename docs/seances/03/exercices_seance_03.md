@@ -39,7 +39,7 @@ END WHILE
 <details class="corrige">
 <summary>Corrigé</summary>
 
-Trois tours : sorties `0`, `1`, `2` ; puis `count = 3` → condition fausse → fin.
+Trois tours : sorties `0`, `1`, `2`, puis `count = 3` → condition fausse → fin.
 
 | step | count | N | condition | OUTPUT |
 | --- | --- | --- | --- | --- |
@@ -130,7 +130,7 @@ UNTIL (mark >= minMark) AND (mark <= maxMark)
 OUTPUT mark
 ```
 
-Données de la *trace* : `minMark = 0`, `maxMark = 20` ; saisies `25`, puis `14`.
+Données de la *trace* : `minMark = 0`, `maxMark = 20`, saisies `25`, puis `14`.
 
 1. Compléter la *trace table*.
 2. Dessiner le *flowchart* (utiliser `minMark` / `maxMark`, pas les littéraux).
@@ -138,7 +138,7 @@ Données de la *trace* : `minMark = 0`, `maxMark = 20` ; saisies `25`, puis `14`
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`25` hors intervalle → on recommence ; `14` valide → **OUTPUT 14**.
+`25` hors intervalle → on recommence, `14` valide → **OUTPUT 14**.
 
 | step | mark | minMark | maxMark | UNTIL ? | OUTPUT |
 | --- | --- | --- | --- | --- | --- |
@@ -175,7 +175,7 @@ END WHILE
 OUTPUT sum
 ```
 
-Données de la *trace* : `sentinel = -1` ; saisies `4`, `6`, `-1`.
+Données de la *trace* : `sentinel = -1`, saisies `4`, `6`, `-1`.
 
 1. Compléter la *trace table*.
 2. Dessiner le *flowchart* (nommer `sentinel`, ne pas écrire `-1` dans le dessin).
@@ -183,7 +183,7 @@ Données de la *trace* : `sentinel = -1` ; saisies `4`, `6`, `-1`.
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`4` et `6` s'accumulent ; `-1` est la sentinelle → **non** ajouté → **OUTPUT 10**.
+`4` et `6` s'accumulent. `-1` est la sentinelle → **non** ajouté → **OUTPUT 10**.
 
 | step | value | sum | sentinel | condition | OUTPUT |
 | --- | --- | --- | --- | --- | --- |
@@ -231,7 +231,7 @@ END WHILE
 OUTPUT minimum
 ```
 
-Données de la *trace* : `N = 3` ; saisies `8`, `3`, `5` (dans cet ordre : `first = 8`, puis `3`, puis `5`).
+Données de la *trace* : `N = 3`, saisies `8`, `3`, `5` (dans cet ordre : `first = 8`, puis `3`, puis `5`).
 
 1. Compléter la *trace table*.
 2. Dessiner le *flowchart*.
@@ -239,7 +239,7 @@ Données de la *trace* : `N = 3` ; saisies `8`, `3`, `5` (dans cet ordre : `firs
 <details class="corrige">
 <summary>Corrigé</summary>
 
-Init `minimum = 8` ; puis `3 < 8` → `minimum = 3` ; puis `5` ne change rien → **OUTPUT 3**.
+Init `minimum = 8`, puis `3 < 8` → `minimum = 3`, puis `5` ne change rien → **OUTPUT 3**.
 
 | step | first / value | minimum | count | N | OUTPUT |
 | --- | --- | --- | --- | --- | --- |
