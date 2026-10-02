@@ -202,6 +202,205 @@ function pointAtDistance(points, distance) {
   return { ...points[points.length - 1] };
 }
 
+function diamondVertices(pointsAttr) {
+  const pts = parsePoints(pointsAttr);
+  if (pts.length < 4) return null;
+  const byY = [...pts].sort((a, b) => a.y - b.y);
+  const byX = [...pts].sort((a, b) => a.x - b.x);
+  return {
+    top: byY[0],
+    bottom: byY[byY.length - 1],
+    left: byX[0],
+    right: byX[byX.length - 1],
+    cx: (byX[0].x + byX[byX.length - 1].x) / 2,
+    cy: (byY[0].y + byY[byY.length - 1].y) / 2,
+  };
+}
+
+function formatPoints(points) {
+  return points
+    .map(
+      (p) =>
+        `${Math.round(p.x * 1000) / 1000},${Math.round(p.y * 1000) / 1000}`,
+    )
+    .join(" ");
+}
+
+function dedupePoints(points) {
+  const out = [];
+  for (const p of points) {
+    const prev = out[out.length - 1];
+    if (!prev || Math.hypot(prev.x - p.x, prev.y - p.y) > 0.5) out.push(p);
+  }
+  return out;
+}
+
+/**
+ * beautiful-mermaid / ELK treat diamonds as rectangles, so TB Yes/No exits
+ * leave near the bottom face instead of the left/right corners.
+ *
+ * Convention (post-SVG):
+ * - TB decision exits labeled Yes/No → left & right vertices (side chosen from
+ *   the edge's natural horizontal bias so branches do not cross)
+ * - WHILE loop return (and other approaches) → nearest corner matching the
+ *   approach direction (typically bottom vertex back into the test)
+ * - Other diamond endpoints → snap to the nearest corner when close
+ *
+ * Mermaid source stays simple: `C -->|Yes| D` / `C -->|No| E`.
+ */
+function rewireDiamondPorts(svg) {
+  /** @type {Map<string, ReturnType<typeof diamondVertices>>} */
+  const diamonds = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-shape="diamond"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    const poly = /<polygon points="([^"]+)"/.exec(m[2]);
+    if (!poly) continue;
+    const verts = diamondVertices(poly[1]);
+    if (verts) diamonds.set(m[1], verts);
+  }
+  if (diamonds.size === 0) return svg;
+
+  /** @type {Map<string, 'left'|'right'>} */
+  const sideAssign = new Map();
+  /** @type {Map<string, {label:string, bias:number}[]>} */
+  const decisionEdges = new Map();
+
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const label = (/data-label="([^"]*)"/.exec(attrs)?.[1] ?? "")
+      .trim()
+      .toLowerCase();
+    const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!from || !diamonds.has(from) || !pointsAttr) continue;
+    if (label !== "yes" && label !== "no") continue;
+    const pts = parsePoints(pointsAttr);
+    if (pts.length < 2) continue;
+    const verticalExit =
+      Math.abs(pts[1].y - pts[0].y) >= Math.abs(pts[1].x - pts[0].x);
+    if (!verticalExit) continue; // LR (or already sideways): leave routing
+    const d = diamonds.get(from);
+    let bias = 0;
+    for (const p of pts) bias += p.x - d.cx;
+    bias += 2 * (pts[pts.length - 1].x - d.cx);
+    if (!decisionEdges.has(from)) decisionEdges.set(from, []);
+    decisionEdges.get(from).push({ label, bias });
+  }
+
+  for (const [id, edges] of decisionEdges) {
+    const yes = edges.find((e) => e.label === "yes");
+    const no = edges.find((e) => e.label === "no");
+    if (yes && no) {
+      if (yes.bias >= no.bias) {
+        sideAssign.set(`${id}\0yes`, "right");
+        sideAssign.set(`${id}\0no`, "left");
+      } else {
+        sideAssign.set(`${id}\0yes`, "left");
+        sideAssign.set(`${id}\0no`, "right");
+      }
+    } else {
+      for (const e of edges) {
+        sideAssign.set(
+          `${id}\0${e.label}`,
+          e.bias >= 0 ? "right" : "left",
+        );
+      }
+    }
+  }
+
+  return svg.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = (/data-label="([^"]*)"/.exec(attrs)?.[1] ?? "").trim();
+    const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!from || !to || !pointsAttr) return full;
+
+    let pts = parsePoints(pointsAttr);
+    if (pts.length < 2) return full;
+    let changed = false;
+
+    if (diamonds.has(from)) {
+      const d = diamonds.get(from);
+      const assigned = sideAssign.get(`${from}\0${label.toLowerCase()}`);
+      if (assigned) {
+        const v = d[assigned];
+        const sign = assigned === "right" ? 1 : -1;
+        const outward = { x: v.x + sign * 24, y: v.y };
+        const end = pts[pts.length - 1];
+        let runwayY = null;
+        for (let i = 1; i < pts.length; i++) {
+          if (
+            Math.abs(pts[i].y - pts[i - 1].y) < 1 &&
+            Math.abs(pts[i].x - pts[i - 1].x) > 1
+          ) {
+            runwayY = pts[i].y;
+            break;
+          }
+        }
+        if (runwayY == null) {
+          runwayY = Math.max(d.bottom.y + 20, (v.y + end.y) / 2);
+        }
+        pts = dedupePoints([
+          { ...v },
+          outward,
+          { x: outward.x, y: runwayY },
+          { x: end.x, y: runwayY },
+          { ...end },
+        ]);
+        changed = true;
+      } else {
+        const verts = [d.top, d.right, d.bottom, d.left];
+        let best = verts[0];
+        let bestD = Infinity;
+        for (const vert of verts) {
+          const dist = Math.hypot(vert.x - pts[0].x, vert.y - pts[0].y);
+          if (dist < bestD) {
+            bestD = dist;
+            best = vert;
+          }
+        }
+        if (bestD > 0.75) {
+          pts[0] = { ...best };
+          changed = true;
+        }
+      }
+    }
+
+    if (diamonds.has(to)) {
+      const d = diamonds.get(to);
+      const prev = pts[pts.length - 2];
+      const end = pts[pts.length - 1];
+      const dx = end.x - prev.x;
+      const dy = end.y - prev.y;
+      const target =
+        Math.abs(dy) >= Math.abs(dx)
+          ? dy < 0
+            ? d.bottom
+            : d.top
+          : dx < 0
+            ? d.right
+            : d.left;
+      if (Math.hypot(target.x - end.x, target.y - end.y) > 0.75) {
+        pts[pts.length - 1] = { ...target };
+        if (Math.abs(dy) >= Math.abs(dx)) {
+          pts[pts.length - 2] = { x: target.x, y: prev.y };
+        } else {
+          pts[pts.length - 2] = { x: prev.x, y: target.y };
+        }
+        pts = dedupePoints(pts);
+        changed = true;
+      }
+    }
+
+    if (!changed) return full;
+    return `<polyline class="edge"${attrs.replace(
+      /points="[^"]+"/,
+      `points="${formatPoints(pts)}"`,
+    )}/>`;
+  });
+}
+
 /**
  * beautiful-mermaid places edge labels at the path midpoint. On long Yes/No
  * branches (esp. LR cascades), that puts "Yes"/"No" far from the diamond.
@@ -276,7 +475,9 @@ function renderDiagram(source) {
     accent: "#0075c9",
   });
   return transparentizeEdgeLabels(
-    nudgeEdgeLabelsNearSource(applyParallelograms(svg, lean)),
+    nudgeEdgeLabelsNearSource(
+      rewireDiamondPorts(applyParallelograms(svg, lean)),
+    ),
   );
 }
 

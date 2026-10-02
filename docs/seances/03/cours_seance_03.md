@@ -243,20 +243,22 @@ OUTPUT sum
 
 ## Pattern : sentinelle (*sentinel*)
 
-Une **valeur sentinelle** (*sentinel value*) signale la **fin** des données — ce n'est **pas** une donnée à traiter.
+Une **valeur sentinelle** (*sentinel value*) est une valeur **choisie d'avance** pour marquer la **fin** des données. On la compare souvent à une **variable d'entrée** (ex. `value`). Ce n'est **pas** une donnée à traiter.
+
+Exemple : on fixe `SENTINEL = -1`. On lit des nombres dans `value` et on s'arrête quand `value = SENTINEL`.
 
 ```text
 sum = 0
+SENTINEL = -1
 INPUT value
-WHILE value <> sentinel DO
+WHILE value <> SENTINEL DO
   sum = sum + value
   INPUT value
 END WHILE
 OUTPUT sum
 ```
 
-Exemple classique : saisir des nombres jusqu'à `-1` (la sentinelle).  
-Le `-1` n'entre **pas** dans la somme.
+Avec les saisies `4`, `6`, `-1` : la boucle traite `4` et `6`, puis s'arrête. Le `-1` n'entre **pas** dans la somme.
 
 ---
 
@@ -266,11 +268,12 @@ Le `-1` n'entre **pas** dans la somme.
 
 <div>
 
-Lecture « amorcée » :
+Lecture « amorcée » (`SENTINEL = -1`) :
 
-1. premier `INPUT` **avant** le test
-2. `INPUT` en fin de corps
-3. sentinelle → **No** → sortie (non traitée)
+1. premier `INPUT value` **avant** le test
+2. test : `value <> SENTINEL`
+3. `INPUT value` en fin de corps
+4. si `value = SENTINEL` → **No** → sortie (valeur non traitée)
 
 </div>
 
@@ -280,7 +283,7 @@ Lecture « amorcée » :
 flowchart TB
   A([START]) --> B["sum = 0"]
   B --> C[/INPUT value/]
-  C --> D{value <> sentinel}
+  C --> D{value <> SENTINEL}
   D -->|Yes| E["sum = sum + value"]
   E --> C
   D -->|No| F[/OUTPUT sum/]
@@ -460,15 +463,16 @@ OUTPUT mark
 
 ```text
 sum = 0
+SENTINEL = -1
 INPUT value
-WHILE value <> sentinel DO
+WHILE value <> SENTINEL DO
   sum = sum + value
   INPUT value
 END WHILE
 OUTPUT sum
 ```
 
-1. Compléter la *trace table* pour les saisies `4`, `6`, `-1` (`sentinel = -1`).
+1. Compléter la *trace table* pour les saisies `4`, `6`, `-1` (`SENTINEL = -1`).
 2. Dessiner le *flowchart*.
 
 → [Exercices](exercices_seance_03.html) § 3.D

@@ -163,46 +163,47 @@ flowchart TB
 
 ## 3.D — Somme jusqu'à sentinelle (*accumulator* + *sentinel*)
 
-Algorithme :
+Algorithme (`SENTINEL` = valeur sentinelle, ici `-1`) :
 
 ```text
 sum = 0
+SENTINEL = -1
 INPUT value
-WHILE value <> sentinel DO
+WHILE value <> SENTINEL DO
   sum = sum + value
   INPUT value
 END WHILE
 OUTPUT sum
 ```
 
-Données de la *trace* : `sentinel = -1`, saisies `4`, `6`, `-1`.
+Données de la *trace* : `SENTINEL = -1`, saisies `4`, `6`, `-1`.
 
 1. Compléter la *trace table*.
-2. Dessiner le *flowchart* (nommer `sentinel`, ne pas écrire `-1` dans le dessin).
+2. Dessiner le *flowchart* (nommer `SENTINEL`, ne pas écrire `-1` dans le dessin).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`4` et `6` s'accumulent. `-1` est la sentinelle → **non** ajouté → **OUTPUT 10**.
+`4` et `6` s'accumulent. `-1` est la valeur sentinelle → **non** ajouté → **OUTPUT 10**.
 
-| step | value | sum | sentinel | condition | OUTPUT |
+| step | value | sum | SENTINEL | condition | OUTPUT |
 | --- | --- | --- | --- | --- | --- |
 | `sum = 0` | | 0 | -1 | | |
 | `INPUT value` | 4 | 0 | -1 | | |
-| `WHILE value <> sentinel` | 4 | 0 | -1 | Yes | |
+| `WHILE value <> SENTINEL` | 4 | 0 | -1 | Yes | |
 | `sum = sum + value` | 4 | 4 | -1 | | |
 | `INPUT value` | 6 | 4 | -1 | | |
-| `WHILE value <> sentinel` | 6 | 4 | -1 | Yes | |
+| `WHILE value <> SENTINEL` | 6 | 4 | -1 | Yes | |
 | `sum = sum + value` | 6 | 10 | -1 | | |
 | `INPUT value` | -1 | 10 | -1 | | |
-| `WHILE value <> sentinel` | -1 | 10 | -1 | No | |
+| `WHILE value <> SENTINEL` | -1 | 10 | -1 | No | |
 | `OUTPUT sum` | -1 | 10 | -1 | | 10 |
 
 ```mermaid
 flowchart TB
   A([START]) --> B["sum = zero"]
   B --> C[/INPUT value/]
-  C --> D{value <> sentinel}
+  C --> D{value <> SENTINEL}
   D -->|Yes| E["sum = sum + value"]
   E --> C
   D -->|No| F[/OUTPUT sum/]
