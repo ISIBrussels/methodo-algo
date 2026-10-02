@@ -396,6 +396,10 @@ OUTPUT verdict
 
 ## Exercice 2.B — Maximum puis niveau (deux décisions en séquence)
 
+<div class="two-cols">
+
+<div>
+
 ```text
 INPUT a, b
 IF a >= b THEN
@@ -412,10 +416,18 @@ OUTPUT maxValue
 OUTPUT band
 ```
 
+</div>
+
+<div>
+
 1. *Trace table* : `a = 3`, `b = 8`, `threshold = 5`.
 2. Dessiner le *flowchart* (deux losanges **en séquence**, pas imbriqués).
 
 → [Exercices](exercices_seance_02.html) § 2.B
+
+</div>
+
+</div>
 
 ---
 
