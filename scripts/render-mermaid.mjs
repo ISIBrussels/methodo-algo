@@ -217,6 +217,24 @@ function diamondVertices(pointsAttr) {
   };
 }
 
+/**
+ * Short outward stub along the rhombus diagonal so Yes/No leaves follow the
+ * tip a few pixels before turning (avoids a T/L glued to the vertex).
+ */
+const DIAMOND_EXIT_STUB_PX = 10;
+
+function diamondExitStub(d, side) {
+  const v = d[side];
+  const dx = v.x - d.cx;
+  const dy = v.y - d.cy;
+  const half = Math.hypot(dx, dy) || 1;
+  const stub = Math.min(DIAMOND_EXIT_STUB_PX, half * 0.22);
+  return {
+    x: v.x + (dx / half) * stub,
+    y: v.y + (dy / half) * stub,
+  };
+}
+
 /** Visual midpoints of a parallelogram's top/bottom faces (skew shifts them). */
 function parallelogramPorts(pointsAttr) {
   const pts = parsePoints(pointsAttr);
@@ -374,8 +392,9 @@ function nodeFacePort(groupInner, shape, side) {
  * Convention (post-SVG, figé Sylvain):
  * - TB (haut→bas) Yes/No → coins gauche / droite (côté selon biais horizontal)
  * - LR (gauche→droite) Yes/No → coins haut / bas (côté selon biais vertical)
- * - Branch targets (OUTPUT…) are shifted so their face centre sits on that
- *   exit axis → traits droits (vertical TB / horizontal LR), pas de polylines tordues
+ * - Sortie Yes/No : court stub dans l'axe de la diagonale, puis virage
+ * - Branch targets (OUTPUT…) are shifted onto that post-stub axis
+ *   → descente verticale TB / traverse horizontale LR, pas un T collé à la pointe
  * - WHILE loop return → coin bas (approche par le bas)
  * - Autres extrémités losange → snap au coin le plus proche / selon direction
  *
@@ -475,11 +494,11 @@ function rewireDiamondPorts(svg) {
         assigned === "left" || assigned === "right" ? "top" : "left";
       const port = nodeFacePort(target.inner, target.shape, face);
       if (!port) continue;
-      const v = d[assigned];
+      const stub = diamondExitStub(d, assigned);
       if (assigned === "left" || assigned === "right") {
-        shifts.set(e.to, { dx: v.x - port.x, dy: 0 });
+        shifts.set(e.to, { dx: stub.x - port.x, dy: 0 });
       } else {
-        shifts.set(e.to, { dx: 0, dy: v.y - port.y });
+        shifts.set(e.to, { dx: 0, dy: stub.y - port.y });
       }
     }
   }
@@ -561,9 +580,10 @@ function rewireDiamondPorts(svg) {
       const assigned = portAssign.get(`${from}\0${label.toLowerCase()}`);
       if (assigned) {
         const v = d[assigned];
+        const stub = diamondExitStub(d, assigned);
         const targetNode = nodes.get(to);
         if (assigned === "left" || assigned === "right") {
-          // TB: prefer a straight vertical from the side corner onto the target.
+          // TB: stub along the horizontal diagonal, then drop vertically.
           let end = { ...pts[pts.length - 1] };
           if (targetNode && targetNode.shape !== "diamond") {
             const face = nodeFacePort(targetNode.inner, targetNode.shape, "top");
@@ -571,11 +591,12 @@ function rewireDiamondPorts(svg) {
           }
           pts = dedupePoints([
             { ...v },
-            { x: v.x, y: end.y },
+            { ...stub },
+            { x: stub.x, y: end.y },
             { ...end },
           ]);
         } else {
-          // LR: prefer a straight horizontal from the top/bottom corner.
+          // LR: stub along the vertical diagonal, then run horizontally.
           let end = { ...pts[pts.length - 1] };
           if (targetNode && targetNode.shape !== "diamond") {
             const face = nodeFacePort(
@@ -589,7 +610,8 @@ function rewireDiamondPorts(svg) {
           }
           pts = dedupePoints([
             { ...v },
-            { x: end.x, y: v.y },
+            { ...stub },
+            { x: end.x, y: stub.y },
             { ...end },
           ]);
         }
