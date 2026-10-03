@@ -395,6 +395,8 @@ function nodeFacePort(groupInner, shape, side) {
  * - Sortie Yes/No : court stub dans l'axe de la diagonale, puis virage
  * - Branch targets (OUTPUT…) are shifted onto that post-stub axis
  *   → descente verticale TB / traverse horizontale LR, pas un T collé à la pointe
+ * - Entrée losange : arrive droit sur le vertex « en face » (LR → gauche /
+ *   TB → haut), sans stub ni petit segment collé à l'arrivée
  * - WHILE loop return → coin bas (approche par le bas)
  * - Autres extrémités losange → snap au coin le plus proche / selon direction
  *
@@ -588,13 +590,29 @@ function rewireDiamondPorts(svg) {
           if (targetNode && targetNode.shape !== "diamond") {
             const face = nodeFacePort(targetNode.inner, targetNode.shape, "top");
             if (face) end = face;
+            pts = dedupePoints([
+              { ...v },
+              { ...stub },
+              { x: stub.x, y: end.y },
+              { ...end },
+            ]);
+          } else if (targetNode?.verts) {
+            // Enter next diamond via top tip, vertical final approach.
+            end = { ...targetNode.verts.top };
+            pts = dedupePoints([
+              { ...v },
+              { ...stub },
+              { x: end.x, y: stub.y },
+              { ...end },
+            ]);
+          } else {
+            pts = dedupePoints([
+              { ...v },
+              { ...stub },
+              { x: stub.x, y: end.y },
+              { ...end },
+            ]);
           }
-          pts = dedupePoints([
-            { ...v },
-            { ...stub },
-            { x: stub.x, y: end.y },
-            { ...end },
-          ]);
         } else {
           // LR: stub along the vertical diagonal, then run horizontally.
           let end = { ...pts[pts.length - 1] };
@@ -605,15 +623,32 @@ function rewireDiamondPorts(svg) {
               "left",
             );
             if (face) end = face;
+            pts = dedupePoints([
+              { ...v },
+              { ...stub },
+              { x: end.x, y: stub.y },
+              { ...end },
+            ]);
           } else if (targetNode?.verts) {
+            // Enter next diamond via left tip: bend away from the tip so the
+            // final segment is horizontal (no vertical stub glued to the tip).
             end = { ...targetNode.verts.left };
+            const midX = (stub.x + end.x) / 2;
+            pts = dedupePoints([
+              { ...v },
+              { ...stub },
+              { x: midX, y: stub.y },
+              { x: midX, y: end.y },
+              { ...end },
+            ]);
+          } else {
+            pts = dedupePoints([
+              { ...v },
+              { ...stub },
+              { x: end.x, y: stub.y },
+              { ...end },
+            ]);
           }
-          pts = dedupePoints([
-            { ...v },
-            { ...stub },
-            { x: end.x, y: stub.y },
-            { ...end },
-          ]);
         }
         changed = true;
       } else {
@@ -637,31 +672,76 @@ function rewireDiamondPorts(svg) {
     if (diamonds.has(to)) {
       const d = diamonds.get(to);
       const end = pts[pts.length - 1];
-      const onCorner = [d.top, d.right, d.bottom, d.left].some(
-        (v) => Math.hypot(v.x - end.x, v.y - end.y) <= 0.75,
-      );
-      if (!onCorner) {
+      const corners = [
+        ["top", d.top],
+        ["right", d.right],
+        ["bottom", d.bottom],
+        ["left", d.left],
+      ];
+      let corner = corners.find(
+        ([, v]) => Math.hypot(v.x - end.x, v.y - end.y) <= 0.75,
+      )?.[0];
+      if (!corner) {
         const prev = pts[pts.length - 2];
         const dx = end.x - prev.x;
         const dy = end.y - prev.y;
-        const target =
+        corner =
           Math.abs(dy) >= Math.abs(dx)
             ? dy < 0
-              ? d.bottom
-              : d.top
+              ? "bottom"
+              : "top"
             : dx < 0
-              ? d.right
-              : d.left;
-        if (Math.hypot(target.x - end.x, target.y - end.y) > 0.75) {
-          pts[pts.length - 1] = { ...target };
-          if (Math.abs(dy) >= Math.abs(dx)) {
-            pts[pts.length - 2] = { x: target.x, y: prev.y };
+              ? "right"
+              : "left";
+      }
+      const target = d[corner];
+      const prev = pts[pts.length - 2];
+      // Final approach must follow the facing axis: left/right → horizontal,
+      // top/bottom → vertical. No stub glued to the tip on arrival.
+      if (corner === "left" || corner === "right") {
+        if (
+          Math.abs(prev.y - target.y) > 0.5 ||
+          Math.hypot(target.x - end.x, target.y - end.y) > 0.75
+        ) {
+          if (Math.abs(prev.x - target.x) <= 0.5) {
+            // Vertical stub into the tip: bend earlier, then arrive horizontally.
+            const back =
+              pts.length >= 3 ? pts[pts.length - 3] : { x: prev.x - 24, y: prev.y };
+            const midX = (back.x + target.x) / 2;
+            pts = dedupePoints([
+              ...pts.slice(0, -2),
+              { x: midX, y: prev.y },
+              { x: midX, y: target.y },
+              { ...target },
+            ]);
           } else {
             pts[pts.length - 2] = { x: prev.x, y: target.y };
+            pts[pts.length - 1] = { ...target };
+            pts = dedupePoints(pts);
           }
-          pts = dedupePoints(pts);
           changed = true;
         }
+      } else if (
+        Math.abs(prev.x - target.x) > 0.5 ||
+        Math.hypot(target.x - end.x, target.y - end.y) > 0.75
+      ) {
+        if (Math.abs(prev.y - target.y) <= 0.5) {
+          // Horizontal stub into the tip: bend earlier, then arrive vertically.
+          const back =
+            pts.length >= 3 ? pts[pts.length - 3] : { x: prev.x, y: prev.y - 24 };
+          const midY = (back.y + target.y) / 2;
+          pts = dedupePoints([
+            ...pts.slice(0, -2),
+            { x: prev.x, y: midY },
+            { x: target.x, y: midY },
+            { ...target },
+          ]);
+        } else {
+          pts[pts.length - 2] = { x: target.x, y: prev.y };
+          pts[pts.length - 1] = { ...target };
+          pts = dedupePoints(pts);
+        }
+        changed = true;
       }
     }
 
