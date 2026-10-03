@@ -597,12 +597,15 @@ function rewireDiamondPorts(svg) {
               { ...end },
             ]);
           } else if (targetNode?.verts) {
-            // Enter next diamond via top tip, vertical final approach.
+            // Enter next diamond via top tip: bend away from the tip so the
+            // final segment is vertical (no horizontal stub glued to the tip).
             end = { ...targetNode.verts.top };
+            const midY = (stub.y + end.y) / 2;
             pts = dedupePoints([
               { ...v },
               { ...stub },
-              { x: end.x, y: stub.y },
+              { x: stub.x, y: midY },
+              { x: end.x, y: midY },
               { ...end },
             ]);
           } else {

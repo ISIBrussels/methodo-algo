@@ -1,7 +1,7 @@
 # Séance 2 — Exercices
 
 **Thème :** Instructions conditionnelles  
-**Support :** *flowcharts* (losange Yes/No) + *trace table* (texte FR — flowcharts + *pseudocode* EN)
+**Support :** *flowcharts* (losange Yes/No) + *trace table* (texte FR, flowcharts + *pseudocode* EN)
 
 Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.  
 Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes apparaissent **uniquement** dans la *trace table*).
@@ -37,7 +37,7 @@ Données de la *trace* : `quantity = 150`, `minQty = 1`, `maxQty = 100`.
 | `verdict = …` | | | | | |
 | `OUTPUT verdict` | | | | | |
 
-2. Dessiner le *flowchart* (condition `OR` dans **un** losange ; bornes nommées).
+2. Dessiner le *flowchart* (condition `OR` dans **un** losange, bornes nommées).
 
 <details class="corrige">
 <summary>Corrigé</summary>
@@ -106,7 +106,7 @@ Données de la *trace* : `a = 3`, `b = 8`, `threshold = 5`.
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`3 >= 8` → No → `maxValue = 8` ; puis `8 >= 5` → Yes → `band = "High"` → **OUTPUT 8**, puis **OUTPUT High**.  
+`3 >= 8` → No → `maxValue = 8`, puis `8 >= 5` → Yes → `band = "High"` → **OUTPUT 8**, puis **OUTPUT High**.  
 Les deux tests s'exécutent **toujours** (contrairement à l'imbrication de 2.C).
 
 | step | a | b | threshold | maxValue | band | OUTPUT |
@@ -174,7 +174,7 @@ Données de la *trace* : `hasTicket = TRUE`, `age = 16`, `adultAge = 18`.
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`hasTicket = TRUE` → Yes ; `16 >= 18` → No → `entry = "Child"` → **OUTPUT Child**.  
+`hasTicket = TRUE` → Yes. `16 >= 18` → No → `entry = "Child"` → **OUTPUT Child**.  
 Sans billet, le deuxième test n'a **pas** de sens (branche `"Denied"`).
 
 | step | hasTicket | age | adultAge | entry | OUTPUT |
@@ -231,12 +231,12 @@ Données de la *trace* : `temperature = 5`, `hotLimit = 28`, `coldLimit = 16`.
 | `comfort = …` | | | | | |
 | `OUTPUT comfort` | | | | | |
 
-2. Dessiner le *flowchart* (cascade **courte** : deux losanges + `ELSE` final ; bornes nommées).
+2. Dessiner le *flowchart* (cascade **courte** : deux losanges + `ELSE` final, bornes nommées).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`5 > 28` → No ; `5 < 16` → Yes → `comfort = "Cold"` → **OUTPUT Cold**.  
+`5 > 28` → No. `5 < 16` → Yes → `comfort = "Cold"` → **OUTPUT Cold**.  
 *Edge* : entre les deux bornes (ex. `temperature = 20`) → branche `ELSE` → `"OK"`.  
 Diffère de 2.E : ici **trois** issues seulement, pas toute la cascade des mentions.
 
@@ -296,12 +296,12 @@ Données de la *trace* : `mark = 14`, `gradeA = 16`, `gradeB = 14`, `gradeC = 10
 | `grade = …` | | | | | | |
 | `OUTPUT grade` | | | | | | |
 
-2. Dessiner le *flowchart* (cascade de losanges ; bornes nommées).
+2. Dessiner le *flowchart* (cascade de losanges, bornes nommées).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-`14 >= 16` → No ; `14 >= 14` → Yes → `grade = "B"` → **OUTPUT B** (on **ignore** le test `gradeC`).
+`14 >= 16` → No. `14 >= 14` → Yes → `grade = "B"` → **OUTPUT B** (on **ignore** le test `gradeC`).
 
 | step | mark | gradeA | gradeB | gradeC | grade | OUTPUT |
 | --- | --- | --- | --- | --- | --- | --- |

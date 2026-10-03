@@ -1,7 +1,7 @@
 # Séance 1 — Exercices
 
 **Thème :** Algorithmes et traitement séquentiel  
-**Support :** *flowcharts* + *trace table* (texte FR — flowcharts + *pseudocode* EN)
+**Support :** *flowcharts* + *trace table* (texte FR, flowcharts + *pseudocode* EN)
 
 Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.
 
@@ -33,7 +33,7 @@ OUTPUT result
 
 2. Dessiner le *flowchart* correspondant (symboles `START` / `END`, process, `OUTPUT`).
 
-Rappel : `DIV` = quotient entier ; `MOD` = reste.  
+Rappel : `DIV` = quotient entier, `MOD` = reste.  
 Rappel : `=` est une **affectation**, pas une égalité mathématique.
 
 <details class="corrige">

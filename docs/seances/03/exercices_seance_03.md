@@ -1,7 +1,7 @@
 # Séance 3 — Exercices
 
 **Thème :** Boucles (1) : WHILE / REPEAT … UNTIL  
-**Support :** *flowcharts* (boucles) + *trace table* (texte FR — flowcharts + *pseudocode* EN)
+**Support :** *flowcharts* (boucles) + *trace table* (texte FR, flowcharts + *pseudocode* EN)
 
 Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.  
 Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes apparaissent **uniquement** dans la *trace table*).
@@ -65,7 +65,7 @@ flowchart TB
   C -->|No| F([END])
 ```
 
-(`zero` = 0, `one` = 1 — valeurs seulement dans la *trace*.)
+(`zero` = 0, `one` = 1 : valeurs seulement dans la *trace*.)
 
 </details>
 
