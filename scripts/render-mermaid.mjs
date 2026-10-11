@@ -285,6 +285,29 @@ function dedupePoints(points) {
 }
 
 /**
+ * Pull the last vertex back along the final segment so a marker-end arrowhead
+ * sits on the target border. Chromium paints markers above later siblings, so
+ * an endpoint flush with a node face otherwise shows the arrow through the fill.
+ */
+const ARROWHEAD_INSET_PX = 10;
+
+function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
+  if (!points || points.length < 2) return points;
+  const pts = points.map((p) => ({ ...p }));
+  const a = pts[pts.length - 2];
+  const b = pts[pts.length - 1];
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const d = Math.min(dist, Math.max(0, len - 0.5));
+  pts[pts.length - 1] = {
+    x: b.x - (dx / len) * d,
+    y: b.y - (dy / len) * d,
+  };
+  return dedupePoints(pts);
+}
+
+/**
  * After rectangles become parallelograms, edge stubs still sit on the old
  * axis-aligned top/bottom centers. Snap vertical landings onto the visual mid
  * of each slanted face so Yes/No drops look centered on I/O nodes.
@@ -2273,8 +2296,9 @@ function alignLoopBodyColumn(svg) {
 /**
  * Nested IF … THEN … merge (ex. 3.E): Yes → assign → merge, No → merge.
  * Stack assign above merge on the Yes column; No enters merge mid-right;
- * merge returns cleanly to the loop diamond bottom — no top-edge slide,
- * orphan marker, or double climb.
+ * loop return climbs OUTSIDE the merge box (no ghost stroke through the
+ * rect) and joins the WHILE entry at a junction above the diamond TOP so
+ * `count = one` and the return share one clean tip entry.
  */
 function alignIfThenMerge(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -2398,7 +2422,22 @@ function alignIfThenMerge(svg) {
       mergeFresh.shape,
       "right",
     );
-    if (!thenTop || !thenBot || !mergeTop || !mergeBot || !mergeRight) continue;
+    const mergeLeft = nodeFacePort(
+      mergeFresh.inner,
+      mergeFresh.shape,
+      "left",
+    );
+    const thenLeft = nodeFacePort(thenFresh.inner, thenFresh.shape, "left");
+    if (
+      !thenTop ||
+      !thenBot ||
+      !mergeTop ||
+      !mergeBot ||
+      !mergeRight ||
+      !mergeLeft
+    ) {
+      continue;
+    }
 
     // Optional loop-back from merge to a diamond above (WHILE header).
     const loop = edges.find(
@@ -2408,36 +2447,90 @@ function alignIfThenMerge(svg) {
         (nodes.get(e.to)?.center?.y ?? Infinity) < mergeFresh.center.y,
     );
     const loopDiamond = loop ? nodes.get(loop.to)?.verts : null;
+    // Forward entry into the WHILE diamond (e.g. count = one → count < N).
+    const entry =
+      loop && loopDiamond
+        ? edges.find(
+            (e) =>
+              e.to === loop.to &&
+              e.from !== mergeId &&
+              !e.label.trim() &&
+              (nodes.get(e.from)?.center?.y ?? Infinity) <
+                (nodes.get(loop.to)?.center?.y ?? 0),
+          )
+        : null;
+    const entryPred = entry ? nodes.get(entry.from) : null;
+    const entryBot = entryPred
+      ? nodeFacePort(entryPred.inner, entryPred.shape, "bottom")
+      : null;
 
     const stroke = /stroke="([^"]+)"/.exec(yes.attrs)?.[1] ?? "#757575";
     const sw = /stroke-width="([^"]+)"/.exec(yes.attrs)?.[1] ?? "1.5";
     const marker =
       /marker-end="([^"]*)"/.exec(yes.attrs)?.[1] || "url(#arrowhead)";
 
-    const yesPts = dedupePoints([
-      { ...d.left },
-      { ...yesStub },
-      { x: colX, y: thenTop.y },
-      { ...thenTop },
-    ]);
-    const thenPts = dedupePoints([{ ...thenBot }, { ...mergeTop }]);
+    const yesPts = insetEndpoint(
+      dedupePoints([
+        { ...d.left },
+        { ...yesStub },
+        { x: colX, y: thenTop.y },
+        { ...thenTop },
+      ]),
+    );
+    const thenPts = insetEndpoint(
+      dedupePoints([{ ...thenBot }, { ...mergeTop }]),
+    );
     // No: right stub → down to merge mid-right → enter mid of right face.
-    const noPts = dedupePoints([
-      { ...d.right },
-      { ...noStub },
-      { x: noStub.x, y: mergeRight.y },
-      { ...mergeRight },
-    ]);
-    // Climb on the LEFT of the Yes/THEN column so the return does not run
-    // parallel to the No drop (that pair read as a "double trait" up to the loop).
+    const noPts = insetEndpoint(
+      dedupePoints([
+        { ...d.right },
+        { ...noStub },
+        { x: noStub.x, y: mergeRight.y },
+        { ...mergeRight },
+      ]),
+    );
+    // Climb fully LEFT of THEN/merge boxes (colX-40 was still inside the
+    // wide merge rect → ghost vertical through "count = count + one").
+    const CLEAR = 24;
+    const leftX =
+      Math.min(
+        mergeLeft.x,
+        thenLeft?.x ?? Infinity,
+        colX,
+      ) - CLEAR;
+    // Junction on the spine above the diamond tip: entry + return share it.
+    const spineX = loopDiamond ? loopDiamond.top.x : colX;
+    const junctionY = loopDiamond
+      ? entryBot
+        ? (entryBot.y + loopDiamond.top.y) / 2
+        : loopDiamond.top.y - CLEAR
+      : null;
+    const junction =
+      loopDiamond && junctionY != null
+        ? { x: spineX, y: junctionY }
+        : null;
     const loopPts =
-      loop && loopDiamond
-        ? dedupePoints([
-            { ...mergeBot },
-            { x: colX - 40, y: mergeBot.y },
-            { x: colX - 40, y: loopDiamond.bottom.y },
-            { ...loopDiamond.bottom },
-          ])
+      loop && loopDiamond && junction
+        ? insetEndpoint(
+            dedupePoints([
+              { ...mergeLeft },
+              { x: leftX, y: mergeLeft.y },
+              { x: leftX, y: junction.y },
+              { ...junction },
+              { ...loopDiamond.top },
+            ]),
+          )
+        : null;
+    const entryPts =
+      entry && entryBot && loopDiamond && junction
+        ? insetEndpoint(
+            dedupePoints([
+              { ...entryBot },
+              { x: spineX, y: entryBot.y },
+              { ...junction },
+              { ...loopDiamond.top },
+            ]),
+          )
         : null;
 
     const mkEdge = (from, to, label, pts) => {
@@ -2459,6 +2552,9 @@ function alignIfThenMerge(svg) {
       }
       if (loop && loopPts && from === mergeId && to === loop.to) {
         return mkEdge(mergeId, loop.to, "", loopPts);
+      }
+      if (entry && entryPts && from === entry.from && to === entry.to) {
+        return mkEdge(entry.from, entry.to, "", entryPts);
       }
       return full;
     });

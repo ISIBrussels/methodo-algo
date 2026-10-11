@@ -237,6 +237,9 @@ jobs:
                 .mermaid-diagram svg {
                   max-width: 100%;
                   height: auto;
+                  /* Opaque node faces so edges/markers never read as ghost strokes. */
+                  --surface: #ffffff;
+                  --_node-fill: #ffffff;
                 }
 
                 .mermaid-diagram .edge-label > rect {
