@@ -1477,10 +1477,14 @@ function alignLoopBodyColumn(svg) {
     const childBefore = nodes.get(childId);
     shiftNode(childId, yesColX - childBefore.center.x, dy);
 
-    // Move No column (OUTPUT + END) right + up.
+    // Move No column (OUTPUT) right + up — anchor on TOP mid so the No drop
+    // lands on the middle of the upper segment (not a skewed-side hit).
     if (noBodyId && noBody?.center) {
-      shiftNode(noBodyId, noColX - noBody.center.x, dy);
+      const noTop0 = nodeFacePort(noBody.inner, noBody.shape, "top");
+      const anchorX = noTop0?.x ?? noBody.center.x;
+      shiftNode(noBodyId, noColX - anchorX, dy);
     }
+    // Park END under OUTPUT for now; re-anchor on BOTTOM mid after ports refresh.
     if (endId) {
       const endBefore = nodes.get(endId);
       shiftNode(endId, noColX - endBefore.center.x, dy);
@@ -1489,23 +1493,30 @@ function alignLoopBodyColumn(svg) {
     const bodyFresh = nodes.get(bodyId);
     const childFresh = nodes.get(childId);
     const noFresh = noBodyId ? nodes.get(noBodyId) : null;
-    const endFresh = endId ? nodes.get(endId) : null;
     const bodyBot2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "bottom");
     const bodyTop2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "top");
     const childTop2 = nodeFacePort(childFresh.inner, childFresh.shape, "top");
     const childBot2 = nodeFacePort(childFresh.inner, childFresh.shape, "bottom");
     if (!bodyBot2 || !bodyTop2 || !childTop2 || !childBot2) continue;
 
-    const bodyRight = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "right");
-    const noLeft = noFresh
-      ? nodeFacePort(noFresh.inner, noFresh.shape, "left")
-      : null;
     const noTop = noFresh
       ? nodeFacePort(noFresh.inner, noFresh.shape, "top")
       : null;
     const noBot = noFresh
       ? nodeFacePort(noFresh.inner, noFresh.shape, "bottom")
       : null;
+
+    // Parallelogram lean: top mid ≠ bottom mid. Exit OUTPUT→END from the
+    // bottom-segment midpoint and keep END on that same vertical.
+    if (endId && noBot) {
+      const endParked = nodes.get(endId);
+      const endTop0 = endParked
+        ? nodeFacePort(endParked.inner, endParked.shape, "top")
+        : null;
+      if (endTop0) shiftNode(endId, noBot.x - endTop0.x, 0);
+    }
+
+    const endFresh = endId ? nodes.get(endId) : null;
     const endTop = endFresh
       ? nodeFacePort(endFresh.inner, endFresh.shape, "top")
       : null;
@@ -1517,25 +1528,16 @@ function alignLoopBodyColumn(svg) {
 
     const yesColNow = bodyTop2.x;
     const noColNow = noTop?.x ?? noColX;
-    const gapX =
-      bodyRight && noLeft
-        ? (bodyRight.x + noLeft.x) / 2
-        : d.bottom.x;
-    const approachY = Math.min(
-      d.bottom.y + 18,
-      (d.bottom.y + bodyTop2.y) / 2,
-    );
 
     const dropPts = dedupePoints([
       { x: yesColNow, y: bodyBot2.y },
       { x: yesColNow, y: childTop2.y },
     ]);
-    // Return: INPUT → right into the Yes|No channel → up → diamond bottom tip.
+    // Return: INPUT → horizontal under the diamond → straight vertical climb
+    // into the bottom tip (no late jog near the tip).
     const returnPts = dedupePoints([
       { ...childBot2 },
-      { x: gapX, y: childBot2.y },
-      { x: gapX, y: approachY },
-      { x: d.bottom.x, y: approachY },
+      { x: d.bottom.x, y: childBot2.y },
       { ...d.bottom },
     ]);
     const yesEdgePts = dedupePoints([
@@ -1556,8 +1558,9 @@ function alignLoopBodyColumn(svg) {
     const endDropPts =
       noBot && endTop
         ? dedupePoints([
-            { x: noColNow, y: noBot.y },
-            { x: noColNow, y: endTop.y },
+            { ...noBot },
+            { x: noBot.x, y: endTop.y },
+            { ...endTop },
           ])
         : null;
 
