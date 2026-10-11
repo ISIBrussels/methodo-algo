@@ -335,6 +335,14 @@ function retargetParallelogramPorts(svg) {
 function translateNodeGroup(groupInner, dx, dy) {
   // Translate every vertex by the same (dx, dy) — preserves parallelogram
   // lean. Must keep the leading "<" on <polygon> (regression in 754a5b9).
+  // Multi-line labels use absolute <tspan x="…">; shift those too or the
+  // text stays behind after a polygon-only move (REPEAT diamond).
+  const shiftXY = (attrs) => {
+    let out = attrs;
+    out = out.replace(/(^|\s)x="([^"]+)"/, (_, sp, v) => `${sp}x="${Number(v) + dx}"`);
+    out = out.replace(/(^|\s)y="([^"]+)"/, (_, sp, v) => `${sp}y="${Number(v) + dy}"`);
+    return out;
+  };
   let next = groupInner.replace(
     /<polygon points="([^"]+)"/g,
     (_, pts) =>
@@ -342,21 +350,39 @@ function translateNodeGroup(groupInner, dx, dy) {
         parsePoints(pts).map((p) => ({ x: p.x + dx, y: p.y + dy })),
       )}"`,
   );
-  next = next.replace(/<rect\b([^>]*?)\/>/g, (_, attrs) => {
-    const x = Number(/x="([^"]+)"/.exec(attrs)?.[1] ?? 0);
-    const y = Number(/y="([^"]+)"/.exec(attrs)?.[1] ?? 0);
-    let out = attrs
-      .replace(/\sx="[^"]*"/, ` x="${x + dx}"`)
-      .replace(/\sy="[^"]*"/, ` y="${y + dy}"`);
-    return `<rect${out}/>`;
-  });
-  next = next.replace(/<text\b([^>]*)>/g, (_, attrs) => {
-    const x = Number(/x="([^"]+)"/.exec(attrs)?.[1] ?? 0);
-    const y = Number(/y="([^"]+)"/.exec(attrs)?.[1] ?? 0);
-    let out = attrs
-      .replace(/\sx="[^"]*"/, ` x="${x + dx}"`)
-      .replace(/\sy="[^"]*"/, ` y="${y + dy}"`);
+  next = next.replace(/<rect\b([^>]*?)\/>/g, (_, attrs) => `<rect${shiftXY(attrs)}/>`);
+  next = next.replace(/<text\b([^>]*)>/g, (_, attrs) => `<text${shiftXY(attrs)}>`);
+  next = next.replace(/<tspan\b([^>]*)>/g, (_, attrs) => `<tspan${shiftXY(attrs)}>`);
+  return next;
+}
+
+/** Pin diamond <text>/<tspan> on the rhombus centre (text-anchor=middle). */
+function centerDiamondLabel(groupInner, cx, cy) {
+  let next = groupInner.replace(/<text\b([^>]*)>/g, (_, attrs) => {
+    let out = attrs;
+    if (/\sx="[^"]*"/.test(out) || /^x="/.test(out.trim())) {
+      out = out.replace(/(^|\s)x="[^"]+"/, `$1x="${cx}"`);
+    } else {
+      out = ` x="${cx}"${out}`;
+    }
+    if (/\sy="[^"]*"/.test(out) || /^y="/.test(out.trim())) {
+      out = out.replace(/(^|\s)y="[^"]+"/, `$1y="${cy}"`);
+    } else {
+      out = ` y="${cy}"${out}`;
+    }
+    if (!/text-anchor=/.test(out)) {
+      out += ` text-anchor="middle"`;
+    }
     return `<text${out}>`;
+  });
+  next = next.replace(/<tspan\b([^>]*)>/g, (_, attrs) => {
+    let out = attrs;
+    if (/(^|\s)x="/.test(out)) {
+      out = out.replace(/(^|\s)x="[^"]+"/, `$1x="${cx}"`);
+    } else {
+      out = ` x="${cx}"${out}`;
+    }
+    return `<tspan${out}>`;
   });
   return next;
 }
@@ -1472,6 +1498,29 @@ function alignRepeatInputDiamond(svg) {
     const ddx = spineX - dNode.verts.top.x;
     shiftNode(did, ddx, 0);
     shiftNode(endId, ddx, 0);
+
+    // After the polygon move, force label anchors onto the diamond centre
+    // (covers any tspan that translateNodeGroup might have missed).
+    {
+      const idAttr = escapeAttr(did);
+      const g = new RegExp(
+        `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
+      ).exec(next);
+      if (g) {
+        const poly = /<polygon points="([^"]+)"/.exec(g[2]);
+        const verts = poly ? diamondVertices(poly[1]) : null;
+        if (verts) {
+          const centered = centerDiamondLabel(g[2], verts.cx, verts.cy);
+          next = next.replace(g[0], `${g[1]}${centered}${g[3]}`);
+          nodes.set(did, {
+            shape: "diamond",
+            inner: centered,
+            verts,
+            center: { x: verts.cx, y: verts.cy },
+          });
+        }
+      }
+    }
 
     const d = nodes.get(did)?.verts;
     const endFresh = nodes.get(endId);
