@@ -2295,10 +2295,10 @@ function alignLoopBodyColumn(svg) {
 
 /**
  * Nested IF … THEN … merge (ex. 3.E): Yes → assign → merge, No → merge.
- * Stack assign above merge on the Yes column; No enters merge mid-right;
- * loop return climbs OUTSIDE the merge box (no ghost stroke through the
- * rect) and joins the WHILE entry at a junction above the diamond TOP so
- * `count = one` and the return share one clean tip entry.
+ * Stack assign above merge on the Yes column; No jogs above the merge box
+ * then enters mid-right (no vertical through the merge height); loop return
+ * climbs outside the boxes and meets `count = one` AT the WHILE tip — one
+ * glued top entry, no floating T / inset gap.
  */
 function alignIfThenMerge(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -2477,65 +2477,72 @@ function alignIfThenMerge(svg) {
         { ...thenTop },
       ]),
     );
+    // Stop just short of the face (no marker): round linecaps otherwise
+    // bleed a few px into the opaque merge fill and read as a ghost stem.
     const thenPts = insetEndpoint(
       dedupePoints([{ ...thenBot }, { ...mergeTop }]),
+      2,
     );
-    // No: right stub → down to merge mid-right → enter mid of right face.
+    // No: drop beside the IF, stop ABOVE the merge box, then jog in at
+    // mid-right — never run a vertical alongside/through the merge height.
+    const CLEAR = 24;
+    const aboveMergeY = mergeTop.y - CLEAR;
+    const noLaneX = Math.max(noStub.x, mergeRight.x + CLEAR);
     const noPts = insetEndpoint(
       dedupePoints([
         { ...d.right },
         { ...noStub },
-        { x: noStub.x, y: mergeRight.y },
+        { x: noLaneX, y: noStub.y },
+        { x: noLaneX, y: aboveMergeY },
+        { x: mergeRight.x + CLEAR, y: aboveMergeY },
+        { x: mergeRight.x + CLEAR, y: mergeRight.y },
         { ...mergeRight },
       ]),
+      2,
     );
     // Climb fully LEFT of THEN/merge boxes (colX-40 was still inside the
     // wide merge rect → ghost vertical through "count = count + one").
-    const CLEAR = 24;
     const leftX =
       Math.min(
         mergeLeft.x,
         thenLeft?.x ?? Infinity,
         colX,
       ) - CLEAR;
-    // Junction on the spine above the diamond tip: entry + return share it.
-    const spineX = loopDiamond ? loopDiamond.top.x : colX;
-    const junctionY = loopDiamond
-      ? entryBot
-        ? (entryBot.y + loopDiamond.top.y) / 2
-        : loopDiamond.top.y - CLEAR
-      : null;
-    const junction =
-      loopDiamond && junctionY != null
-        ? { x: spineX, y: junctionY }
-        : null;
+    // One short stem into the WHILE tip: entry owns the final arrow;
+    // loop joins the stem (no marker) so two opposing tips never open a gap.
+    const tip = loopDiamond ? { ...loopDiamond.top } : null;
+    const STEM = 14;
+    const join =
+      tip != null ? { x: tip.x, y: tip.y - STEM } : null;
     const loopPts =
-      loop && loopDiamond && junction
-        ? insetEndpoint(
-            dedupePoints([
-              { ...mergeLeft },
-              { x: leftX, y: mergeLeft.y },
-              { x: leftX, y: junction.y },
-              { ...junction },
-              { ...loopDiamond.top },
-            ]),
-          )
+      loop && tip && join
+        ? dedupePoints([
+            { ...mergeLeft },
+            { x: leftX, y: mergeLeft.y },
+            { x: leftX, y: join.y },
+            { ...join },
+          ])
         : null;
+    // Stem into the tip vertex (+2px) so anti-aliased tip stroke doesn't
+    // read as a floating gap; no marker-end (markers opened a clear gap).
+    const tipLand = tip ? { x: tip.x, y: tip.y + 2 } : null;
     const entryPts =
-      entry && entryBot && loopDiamond && junction
-        ? insetEndpoint(
-            dedupePoints([
-              { ...entryBot },
-              { x: spineX, y: entryBot.y },
-              { ...junction },
-              { ...loopDiamond.top },
-            ]),
-          )
+      entry && entryBot && tipLand && join
+        ? dedupePoints([
+            { ...entryBot },
+            { x: entryBot.x, y: join.y },
+            { ...join },
+            { ...tipLand },
+          ])
         : null;
 
-    const mkEdge = (from, to, label, pts) => {
+    const mkEdge = (from, to, label, pts, markerEnd = marker) => {
       const lab = ` data-label="${escapeAttr(label ?? "")}"`;
-      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+      const mark =
+        markerEnd && markerEnd !== "none"
+          ? ` marker-end="${escapeAttr(markerEnd)}"`
+          : "";
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}"${mark} data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
     };
 
     next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
@@ -2545,16 +2552,17 @@ function alignIfThenMerge(svg) {
         return mkEdge(did, thenId, yes.label, yesPts);
       }
       if (from === thenId && to === mergeId) {
-        return mkEdge(thenId, mergeId, "", thenPts);
+        return mkEdge(thenId, mergeId, "", thenPts, "none");
       }
       if (from === did && to === mergeId) {
-        return mkEdge(did, mergeId, no.label, noPts);
+        return mkEdge(did, mergeId, no.label, noPts, "none");
       }
       if (loop && loopPts && from === mergeId && to === loop.to) {
-        return mkEdge(mergeId, loop.to, "", loopPts);
+        // Merge into the entry stem — no second arrowhead at the tip.
+        return mkEdge(mergeId, loop.to, "", loopPts, "none");
       }
       if (entry && entryPts && from === entry.from && to === entry.to) {
-        return mkEdge(entry.from, entry.to, "", entryPts);
+        return mkEdge(entry.from, entry.to, "", entryPts, "none");
       }
       return full;
     });
