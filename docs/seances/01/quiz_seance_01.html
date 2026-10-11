@@ -247,8 +247,8 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_01_answers_v2";
-      const checkedKey = "quiz_seance_01_checked_v2";
+      const storageKey = "quiz_seance_01_answers_v3";
+      const checkedKey = "quiz_seance_01_checked_v3";
 
 
       const questions = [
@@ -384,6 +384,41 @@
       let checked = false;
       const answers = {};
 
+      /** Display order of options (stable ids A–D); reshuffled each load / reset. */
+      const optionOrder = {};
+
+      function shuffleInPlace(arr) {
+        for (let i = arr.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+        }
+        return arr;
+      }
+
+      function orderedOptions(question) {
+        if (!optionOrder[question.id]) {
+          optionOrder[question.id] = shuffleInPlace(
+            question.options.map((option) => option.value)
+          );
+        }
+        return optionOrder[question.id].map((value, i) => {
+          const option = question.options.find((entry) => entry.value === value);
+          return {
+            ...option,
+            letter: String.fromCharCode(65 + i),
+          };
+        });
+      }
+
+      function reshuffleOptions() {
+        for (const key of Object.keys(optionOrder)) {
+          delete optionOrder[key];
+        }
+      }
+
+
       function loadState() {
         const rawAnswers = localStorage.getItem(storageKey);
         const rawChecked = localStorage.getItem(checkedKey);
@@ -429,7 +464,7 @@
               feedbackHtml = `<p class="question-feedback ${verdictClass}">${verdictText}</p>`;
             }
 
-            const optionsHtml = question.options
+            const optionsHtml = orderedOptions(question)
               .map((option) => {
                 const isCorrect = option.value === question.correct;
                 const isChosen = option.value === selected;
@@ -451,7 +486,7 @@
                       ${selected === option.value ? "checked" : ""}
                       ${checked ? "disabled" : ""}
                     />
-                    ${option.value}. ${option.label}${tag}
+                    ${option.letter}. ${option.label}${tag}
                   </label>
                 `;
               })
@@ -527,6 +562,7 @@
         for (const key of Object.keys(answers)) {
           delete answers[key];
         }
+        reshuffleOptions();
         checked = false;
         localStorage.removeItem(storageKey);
         localStorage.removeItem(checkedKey);
