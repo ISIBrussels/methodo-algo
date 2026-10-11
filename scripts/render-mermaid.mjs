@@ -520,6 +520,29 @@ function rewireDiamondPorts(svg) {
     }
   }
 
+  // Cascade the same shift to exclusive descendants (e.g. OUTPUT↑ then END),
+  // so LR/TB branch tails stay attached after the Yes/No target moves.
+  let cascaded = true;
+  while (cascaded) {
+    cascaded = false;
+    for (const [to, parents] of incomingFrom) {
+      if (shifts.has(to) || diamonds.has(to)) continue;
+      if (parents.length === 0) continue;
+      if (!parents.every((p) => shifts.has(p))) continue;
+      const s0 = shifts.get(parents[0]);
+      if (
+        !parents.every((p) => {
+          const s = shifts.get(p);
+          return s && s.dx === s0.dx && s.dy === s0.dy;
+        })
+      ) {
+        continue;
+      }
+      shifts.set(to, { ...s0 });
+      cascaded = true;
+    }
+  }
+
   let next = svg;
   for (const [id, { dx, dy }] of shifts) {
     if (Math.hypot(dx, dy) < 0.5) continue;
@@ -531,7 +554,9 @@ function rewireDiamondPorts(svg) {
       (_, open, inner, close) =>
         `${open}${translateNodeGroup(inner, dx, dy)}${close}`,
     );
-    // Move every edge endpoint that touches this node.
+    // Move every edge endpoint that touches this node. Do not drag the other
+    // end when that neighbour is also shifted (avoids double-applying dy on
+    // OUTPUT→END after cascade).
     next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
       const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
       const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
@@ -541,7 +566,7 @@ function rewireDiamondPorts(svg) {
       if (from === id) {
         const old = { ...pts[0] };
         pts[0] = { x: old.x + dx, y: old.y + dy };
-        if (pts.length > 1) {
+        if (pts.length > 1 && !shifts.has(to)) {
           if (Math.abs(pts[1].x - old.x) < 1) {
             pts[1] = { x: pts[0].x, y: pts[1].y };
           }
@@ -554,7 +579,7 @@ function rewireDiamondPorts(svg) {
         const last = pts.length - 1;
         const old = { ...pts[last] };
         pts[last] = { x: old.x + dx, y: old.y + dy };
-        if (last >= 1) {
+        if (last >= 1 && !shifts.has(from)) {
           if (Math.abs(pts[last - 1].x - old.x) < 1) {
             pts[last - 1] = { x: pts[last].x, y: pts[last - 1].y };
           }
@@ -835,6 +860,153 @@ function nudgeEdgeLabelsNearSource(svg) {
 }
 
 /**
+ * Empty / ZWSP-only rectangle nodes are layout junctions for ELK: they break
+ * bad cycles (e.g. diamond No → shared INPUT) without adding a real step.
+ * After diamond rewiring, merge edges through the junction and drop the box.
+ */
+function isJunctionLabel(label) {
+  return String(label).replace(/[\s\u200b\u200c\u200d\ufeff]/g, "") === "";
+}
+
+function nodeCenter(groupInner, shape) {
+  const poly = /<polygon points="([^"]+)"/.exec(groupInner);
+  const rect = /<rect\s+x="([^"]+)"\s+y="([^"]+)"\s+width="([^"]+)"\s+height="([^"]+)"/.exec(
+    groupInner,
+  );
+  if (poly) {
+    const pts = parsePoints(poly[1]);
+    if (pts.length === 0) return null;
+    const xs = pts.map((p) => p.x);
+    const ys = pts.map((p) => p.y);
+    return {
+      x: (Math.min(...xs) + Math.max(...xs)) / 2,
+      y: (Math.min(...ys) + Math.max(...ys)) / 2,
+    };
+  }
+  if (rect) {
+    return {
+      x: Number(rect[1]) + Number(rect[3]) / 2,
+      y: Number(rect[2]) + Number(rect[4]) / 2,
+    };
+  }
+  // stadium / circle text fallback
+  const text = /<text\b[^>]*\bx="([^"]+)"[^>]*\by="([^"]+)"/.exec(groupInner);
+  if (text) return { x: Number(text[1]), y: Number(text[2]) };
+  void shape;
+  return null;
+}
+
+function collapseJunctionNodes(svg) {
+  /** @type {Map<string, {x:number,y:number}>} */
+  const junctions = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-label="([^"]*)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    if (!isJunctionLabel(decodeEntities(m[2]))) continue;
+    const c = nodeCenter(m[4], m[3]);
+    if (c) junctions.set(m[1], c);
+  }
+  if (junctions.size === 0) return svg;
+
+  /** @type {{from:string,to:string,label:string,points:string,attrs:string}[]} */
+  const edges = [];
+  let next = svg.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = /data-label="([^"]*)"/.exec(attrs)?.[1] ?? "";
+    const points = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!from || !to || !points) return full;
+    edges.push({ from, to, label, points, attrs });
+    // Drop edges that touch a junction; rebuilt below.
+    if (junctions.has(from) || junctions.has(to)) return "";
+    return full;
+  });
+
+  const rebuilt = [];
+  for (const e of edges) {
+    if (junctions.has(e.to) && !junctions.has(e.from)) {
+      const jid = e.to;
+      const outs = edges.filter((o) => o.from === jid && !junctions.has(o.to));
+      const mid = junctions.get(jid);
+      const stroke = /stroke="([^"]+)"/.exec(e.attrs)?.[1] ?? "#757575";
+      const sw = /stroke-width="([^"]+)"/.exec(e.attrs)?.[1] ?? "1.5";
+      for (const o of outs) {
+        const inbound = parsePoints(e.points);
+        const outbound = parsePoints(o.points);
+        if (inbound.length < 2 || outbound.length < 2) continue;
+        // Clean U-turn through the junction: keep diamond exit routing,
+        // then horizontal at junction depth, then follow the outbound landing.
+        const end = outbound[outbound.length - 1];
+        const preEnd =
+          outbound.length >= 2 ? outbound[outbound.length - 2] : mid;
+        // Loop depth: keep the junction's y so the return runs under/over the body.
+        const loopY = mid.y;
+        const exitCol = inbound[Math.min(1, inbound.length - 1)];
+        const pts = dedupePoints([
+          ...inbound.slice(0, -1),
+          { x: exitCol.x, y: loopY },
+          { x: end.x, y: loopY },
+          { x: end.x, y: preEnd.y },
+          { ...end },
+        ]);
+        const label = e.label || o.label;
+        rebuilt.push(
+          `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" points="${formatPoints(pts)}" data-from="${escapeAttr(e.from)}" data-to="${escapeAttr(o.to)}" data-label="${escapeAttr(label)}"/>`,
+        );
+      }
+    } else if (junctions.has(e.from) || junctions.has(e.to)) {
+      // chain junction→junction or leftover: skip (handled via ins)
+      continue;
+    }
+  }
+
+  // Insert rebuilt edges before first remaining edge or before edge-labels.
+  if (rebuilt.length > 0) {
+    const insertAt = next.search(
+      /<polyline class="edge"|<g class="edge-label"|<\/svg>/,
+    );
+    if (insertAt >= 0) {
+      next = next.slice(0, insertAt) + rebuilt.join("") + next.slice(insertAt);
+    }
+  }
+
+  // Retarget Yes/No labels that pointed at a junction onto the merged target.
+  next = next.replace(
+    /<g class="edge-label"([^>]*)>([\s\S]*?)<\/g>/g,
+    (full, attrs, inner) => {
+      const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+      if (to && junctions.has(to)) {
+        const out = edges.find(
+          (o) => o.from === to && from && !junctions.has(o.to),
+        );
+        if (!out) return "";
+        const newAttrs = attrs.replace(
+          /\bdata-to="[^"]*"/,
+          `data-to="${escapeAttr(out.to)}"`,
+        );
+        return `<g class="edge-label"${newAttrs}>${inner}</g>`;
+      }
+      if (from && junctions.has(from)) return "";
+      return full;
+    },
+  );
+
+  // Remove junction node groups.
+  for (const id of junctions.keys()) {
+    const idAttr = escapeAttr(id);
+    next = next.replace(
+      new RegExp(
+        `<g class="node" data-id="${idAttr}"[^>]*>[\\s\\S]*?<\\/g>`,
+      ),
+      "",
+    );
+  }
+
+  return next;
+}
+
+/**
  * After diamond stubs / node shifts, geometry can sit outside the original
  * viewBox (negative x on TB Yes/No exits). Recompute root viewBox from
  * polyline/polygon points, rects and text so nothing is clipped.
@@ -921,8 +1093,10 @@ function renderDiagram(source) {
   return fitSvgViewBox(
     transparentizeEdgeLabels(
       nudgeEdgeLabelsNearSource(
-        rewireDiamondPorts(
-          retargetParallelogramPorts(applyParallelograms(svg, lean)),
+        collapseJunctionNodes(
+          rewireDiamondPorts(
+            retargetParallelogramPorts(applyParallelograms(svg, lean)),
+          ),
         ),
       ),
     ),

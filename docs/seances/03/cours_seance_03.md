@@ -156,30 +156,23 @@ Différence clé avec `WHILE` : le test est **après** le corps.
 
 ---
 
+<!-- _class: compact -->
+
 ## `REPEAT … UNTIL` en *flowchart*
 
-<div class="two-cols">
-
-<div>
-
-- Corps d'abord
-- Losange : **No** → on recommence, **Yes** → on sort
-
+Corps d'abord ; losange : **No** → on recommence, **Yes** → on sort.  
 `UNTIL` = « jusqu'à ce que … soit vrai » = sortie sur **Yes**.
 
-</div>
-
-<div class="max-mermaid-lg">
+<div class="max-mermaid-wide">
 
 ```mermaid
-flowchart TB
+flowchart LR
   A([START]) --> B[/INPUT password/]
-  B --> C{password = secret}
-  C -->|No| B
+  B --> C{"password =<br/>secret"}
+  C -->|No| J["​"]
+  J --> B
   C -->|Yes| D([END])
 ```
-
-</div>
 
 </div>
 
@@ -274,35 +267,25 @@ Avec les saisies `4`, `6`, `-1` : la boucle traite `4` et `6`, puis s'arrête. L
 
 ---
 
+<!-- _class: compact -->
+
 ## Sentinelle en *flowchart*
 
-<div class="two-cols">
+Lecture « amorcée » (`SENTINEL = -1`) : `INPUT` avant le test, puis corps (`sum`, `INPUT`), sortie sur **No**.
 
-<div>
-
-Lecture « amorcée » (`SENTINEL = -1`) :
-
-1. premier `INPUT value` **avant** le test
-2. test : `value <> SENTINEL`
-3. `INPUT value` en fin de corps
-4. si `value = SENTINEL` → **No** → sortie (valeur non traitée)
-
-</div>
-
-<div class="max-mermaid-lg">
+<div class="max-mermaid-wide">
 
 ```mermaid
-flowchart TB
+flowchart LR
   A([START]) --> B["sum = 0"]
   B --> C[/INPUT value/]
-  C --> D{value <> SENTINEL}
+  C --> D{"value <><br/>SENTINEL"}
   D -->|Yes| E["sum = sum + value"]
-  E --> C
+  E --> C2[/INPUT value/]
+  C2 --> D
   D -->|No| F[/OUTPUT sum/]
   F --> G([END])
 ```
-
-</div>
 
 </div>
 
