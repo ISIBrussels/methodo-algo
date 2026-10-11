@@ -111,7 +111,7 @@ flowchart TB
   A([START]) --> B[/INPUT password/]
   B --> C{password = secret}
   C -->|No| B
-  C -->|Yes| D[/OUTPUT "OK"/]
+  C -->|Yes| D[/OUTPUT OK/]
   D --> E([END])
 ```
 

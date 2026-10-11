@@ -1451,11 +1451,10 @@ function fitSvgViewBox(svg, padding = 8) {
 }
 
 /**
- * REPEAT … UNTIL TB spine: parallelogram (INPUT) → diamond test with No looping
- * back to the same INPUT. Align START centre, INPUT centre and diamond top tip
- * on one vertical. Exit INPUT on that same X at the bottom edge (lean ⇒ this
- * is the visual mid of the shape, coinciding with bottom-segment mid only when
- * sides are vertical). Yes→END and No→INPUT (stub + climb) are rebuilt.
+ * REPEAT … UNTIL TB spine: START → INPUT → diamond, No loops back to INPUT.
+ * Yes may go straight to END, or Yes → OUTPUT → END (exercices). Vertically
+ * stack the spine (ELK often parks the diamond above START on cycles) and
+ * park the Yes column left without overlapping INPUT.
  */
 function alignRepeatInputDiamond(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -1491,7 +1490,48 @@ function alignRepeatInputDiamond(svg) {
     incoming.get(e.to).push(e.from);
   }
 
+  const GAP = 48;
   let next = svg;
+
+  const shiftNode = (id, sdx, sdy) => {
+    if (Math.abs(sdx) < 0.5 && Math.abs(sdy) < 0.5) return;
+    const idAttr = escapeAttr(id);
+    next = next.replace(
+      new RegExp(
+        `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
+      ),
+      (_, open, inner, close) =>
+        `${open}${translateNodeGroup(inner, sdx, sdy)}${close}`,
+    );
+    const g = new RegExp(
+      `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
+    ).exec(next);
+    if (g) {
+      const poly = /<polygon points="([^"]+)"/.exec(g[2]);
+      nodes.set(id, {
+        shape: g[1],
+        inner: g[2],
+        verts: g[1] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+        center: nodeCenter(g[2], g[1]),
+      });
+    }
+  };
+
+  const nodeTopY = (id) => {
+    const n = nodes.get(id);
+    if (!n) return null;
+    if (n.verts) return n.verts.top.y;
+    const port = nodeFacePort(n.inner, n.shape, "top");
+    return port?.y ?? n.center?.y ?? null;
+  };
+  const nodeBotY = (id) => {
+    const n = nodes.get(id);
+    if (!n) return null;
+    if (n.verts) return n.verts.bottom.y;
+    const port = nodeFacePort(n.inner, n.shape, "bottom");
+    return port?.y ?? n.center?.y ?? null;
+  };
+
   for (const [did, dNode] of nodes) {
     if (!dNode.verts) continue;
     const drop = edges.find(
@@ -1514,16 +1554,32 @@ function alignRepeatInputDiamond(svg) {
     const yesEdge = edges.find(
       (e) => e.from === did && e.label.trim().toLowerCase() === "yes",
     );
-    // REPEAT password pattern only: No returns to the same INPUT.
+    // REPEAT pattern: No returns to the same INPUT.
     if (!noEdge || !yesEdge) continue;
 
-    const endId = yesEdge.to;
-    const endNode = nodes.get(endId);
-    // Exclusive Yes target (END); skip if Yes feeds a shared body.
-    if (!endNode?.center || endNode.verts) continue;
-    if ((incoming.get(endId) || []).length !== 1) continue;
+    // Yes → END, or Yes → OUTPUT → END (never treat OUTPUT as the terminal).
+    let outputId = null;
+    let endId = null;
+    const yesTarget = nodes.get(yesEdge.to);
+    if (!yesTarget?.center || yesTarget.verts) continue;
+    if (yesTarget.shape === "stadium") {
+      endId = yesEdge.to;
+    } else if (yesTarget.shape === "parallelogram") {
+      outputId = yesEdge.to;
+      if ((incoming.get(outputId) || []).length !== 1) continue;
+      const outToEnd = edges.find(
+        (e) =>
+          e.from === outputId &&
+          nodes.get(e.to)?.shape === "stadium" &&
+          (incoming.get(e.to) || []).length === 1,
+      );
+      if (!outToEnd) continue;
+      endId = outToEnd.to;
+    } else {
+      continue;
+    }
+    if (!nodes.get(endId)?.center) continue;
 
-    // START (or other non-diamond feeder) defines the vertical spine via its centre.
     const feed = edges.find(
       (e) =>
         e.to === inputId &&
@@ -1531,52 +1587,33 @@ function alignRepeatInputDiamond(svg) {
         !nodes.get(e.from)?.verts,
     );
     const feedNode = feed ? nodes.get(feed.from) : null;
-    const top0 = nodeFacePort(input.inner, input.shape, "top");
-    const bot0 = nodeFacePort(input.inner, input.shape, "bottom");
-    if (!top0 || !bot0) continue;
-    const feedPts = feed ? parsePoints(feed.points) : [];
+    const feedId = feed?.from ?? null;
     const spineX = feedNode?.center?.x ?? input.center.x;
 
-    const shiftNode = (id, sdx, sdy) => {
-      if (Math.abs(sdx) < 0.5 && Math.abs(sdy) < 0.5) return;
-      const idAttr = escapeAttr(id);
-      next = next.replace(
-        new RegExp(
-          `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
-        ),
-        (_, open, inner, close) =>
-          `${open}${translateNodeGroup(inner, sdx, sdy)}${close}`,
-      );
-      const g = new RegExp(
-        `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
-      ).exec(next);
-      if (g) {
-        const poly = /<polygon points="([^"]+)"/.exec(g[2]);
-        nodes.set(id, {
-          shape: g[1],
-          inner: g[2],
-          verts:
-            g[1] === "diamond" && poly ? diamondVertices(poly[1]) : null,
-          center: nodeCenter(g[2], g[1]),
-        });
+    // --- Vertical TB stack: START → INPUT → diamond ---
+    if (feedId) {
+      shiftNode(feedId, spineX - feedNode.center.x, 0);
+    }
+    {
+      const feedBot = feedId ? nodeBotY(feedId) : null;
+      const inTop = nodeTopY(inputId);
+      if (feedBot != null && inTop != null) {
+        shiftNode(inputId, spineX - nodes.get(inputId).center.x, feedBot + GAP - inTop);
+      } else {
+        shiftNode(inputId, spineX - nodes.get(inputId).center.x, 0);
       }
-    };
+    }
+    {
+      const inBot = nodeBotY(inputId);
+      const dTop = nodeTopY(did);
+      if (inBot != null && dTop != null) {
+        shiftNode(did, spineX - nodes.get(did).verts.top.x, inBot + GAP - dTop);
+      } else {
+        shiftNode(did, spineX - nodes.get(did).verts.top.x, 0);
+      }
+    }
 
-    // Keep INPUT centre on the START spine (do not park on bottom-mid: lean
-    // would slide the parallelogram off START).
-    shiftNode(inputId, spineX - input.center.x, 0);
-    const inputMid = nodes.get(inputId);
-    const bot = nodeFacePort(inputMid.inner, inputMid.shape, "bottom");
-    const top = nodeFacePort(inputMid.inner, inputMid.shape, "top");
-    const right = nodeFacePort(inputMid.inner, inputMid.shape, "right");
-    if (!bot || !top || !right) continue;
-
-    const ddx = spineX - dNode.verts.top.x;
-    shiftNode(did, ddx, 0);
-    shiftNode(endId, ddx, 0);
-
-    // After the polygon move, force label anchors onto the diamond centre
-    // (covers any tspan that translateNodeGroup might have missed).
+    // Recentre diamond label after moves.
     {
       const idAttr = escapeAttr(did);
       const g = new RegExp(
@@ -1599,55 +1636,110 @@ function alignRepeatInputDiamond(svg) {
     }
 
     const d = nodes.get(did)?.verts;
-    const endFresh = nodes.get(endId);
-    if (!d || !endFresh) continue;
+    const inputFresh = nodes.get(inputId);
+    const top = nodeFacePort(inputFresh.inner, inputFresh.shape, "top");
+    const bot = nodeFacePort(inputFresh.inner, inputFresh.shape, "bottom");
+    const right = nodeFacePort(inputFresh.inner, inputFresh.shape, "right");
+    if (!d || !top || !bot || !right) continue;
 
-    const endTop = nodeFacePort(endFresh.inner, endFresh.shape, "top");
-    if (!endTop) continue;
-
-    // Fine-tune END onto the Yes stub X (stadium top mid).
     const yesStub = diamondExitStub(d, "left");
-    shiftNode(endId, yesStub.x - endTop.x, 0);
-    const endTop2 = nodeFacePort(
+    const noStub = diamondExitStub(d, "right");
+    const yesColX = yesStub.x;
+
+    // Yes column: with OUTPUT, stack OUTPUT→END fully below the diamond
+    // (avoid parallelogram/rhombus overlap). Classic Yes→END stays mid-height
+    // on the Yes stub (cours slide 8).
+    if (outputId) {
+      const yesAnchorY = d.bottom.y + GAP;
+      const outTop = nodeTopY(outputId);
+      const outNode = nodes.get(outputId);
+      const outTopPort = nodeFacePort(outNode.inner, outNode.shape, "top");
+      if (outTop != null && outTopPort) {
+        shiftNode(outputId, yesColX - outTopPort.x, yesAnchorY - outTop);
+      }
+      const outBot = nodeBotY(outputId);
+      const endTop = nodeTopY(endId);
+      const endTopPort = nodeFacePort(
+        nodes.get(endId).inner,
+        nodes.get(endId).shape,
+        "top",
+      );
+      if (outBot != null && endTop != null && endTopPort) {
+        shiftNode(endId, yesColX - endTopPort.x, outBot + GAP - endTop);
+      }
+    } else {
+      const endTop = nodeTopY(endId);
+      const endBot = nodeBotY(endId);
+      const endTopPort = nodeFacePort(
+        nodes.get(endId).inner,
+        nodes.get(endId).shape,
+        "top",
+      );
+      if (endTop != null && endBot != null && endTopPort) {
+        const endCy = (endTop + endBot) / 2;
+        shiftNode(endId, yesColX - endTopPort.x, d.cy - endCy);
+      }
+    }
+
+    const outFresh = outputId ? nodes.get(outputId) : null;
+    const endFresh = nodes.get(endId);
+    const outTop2 = outFresh
+      ? nodeFacePort(outFresh.inner, outFresh.shape, "top")
+      : null;
+    const outBot2 = outFresh
+      ? nodeFacePort(outFresh.inner, outFresh.shape, "bottom")
+      : null;
+    const endTop2 = nodeFacePort(endFresh.inner, endFresh.shape, "top");
+    if (!endTop2) continue;
+    // Keep END on OUTPUT bottom mid when lean shifts top≠bottom.
+    if (outBot2) {
+      shiftNode(endId, outBot2.x - endTop2.x, 0);
+    }
+    const endTop3 = nodeFacePort(
       nodes.get(endId).inner,
       nodes.get(endId).shape,
       "top",
     );
-    if (!endTop2) continue;
+    if (!endTop3) continue;
 
-    const noStub = diamondExitStub(d, "right");
     const pad = 18;
     const colX = Math.max(noStub.x, right.x + pad);
-
     const stroke = /stroke="([^"]+)"/.exec(drop.attrs)?.[1] ?? "#757575";
     const sw = /stroke-width="([^"]+)"/.exec(drop.attrs)?.[1] ?? "1.5";
     const marker =
       /marker-end="([^"]*)"/.exec(drop.attrs)?.[1] || "url(#arrowhead)";
 
-    // Top/bottom edge hits on the shared centre axis (visual mid of INPUT).
     const attachTop = { x: spineX, y: top.y };
     const attachBot = { x: spineX, y: bot.y };
-    const feedStart = feedNode
-      ? nodeFacePort(feedNode.inner, feedNode.shape, "bottom")
+    const feedStart = feedId
+      ? nodeFacePort(nodes.get(feedId).inner, nodes.get(feedId).shape, "bottom")
       : null;
-    const feedPtsOut =
-      feedStart || feedPts.length
-        ? dedupePoints([
-            { x: spineX, y: feedStart?.y ?? feedPts[0].y },
-            { ...attachTop },
-          ])
-        : null;
+    const feedPtsOut = feedStart
+      ? dedupePoints([
+          { x: spineX, y: feedStart.y },
+          { ...attachTop },
+        ])
+      : null;
     const dropPts = dedupePoints([
       { ...attachBot },
       { x: spineX, y: d.top.y },
       { ...d.top },
     ]);
+    const yesLand = outTop2 ?? endTop3;
     const yesPts = dedupePoints([
       { ...d.left },
       { ...yesStub },
-      { x: yesStub.x, y: endTop2.y },
-      { ...endTop2 },
+      { x: yesStub.x, y: yesLand.y },
+      { ...yesLand },
     ]);
+    const outToEndPts =
+      outBot2 && endTop3
+        ? dedupePoints([
+            { ...outBot2 },
+            { x: outBot2.x, y: endTop3.y },
+            { ...endTop3 },
+          ])
+        : null;
     const noPts = dedupePoints([
       { ...d.right },
       { ...noStub },
@@ -1661,23 +1753,247 @@ function alignRepeatInputDiamond(svg) {
       return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
     };
 
-    const feedFrom = feed?.from;
     next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
       const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
       const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
-      if (feedFrom && feedPtsOut && from === feedFrom && to === inputId) {
-        return mkEdge(feedFrom, inputId, "", feedPtsOut);
+      if (feedId && feedPtsOut && from === feedId && to === inputId) {
+        return mkEdge(feedId, inputId, "", feedPtsOut);
       }
       if (from === inputId && to === did) {
         return mkEdge(inputId, did, "", dropPts);
       }
-      if (from === did && to === endId) {
-        return mkEdge(did, endId, yesEdge.label, yesPts);
+      if (from === did && to === yesEdge.to) {
+        return mkEdge(did, yesEdge.to, yesEdge.label, yesPts);
+      }
+      if (
+        outputId &&
+        outToEndPts &&
+        from === outputId &&
+        to === endId
+      ) {
+        return mkEdge(outputId, endId, "", outToEndPts);
       }
       if (from === did && to === inputId) {
         return mkEdge(did, inputId, noEdge.label, noPts);
       }
       return full;
+    });
+  }
+
+  return next;
+}
+
+/**
+ * TB cleanup: if a diamond sits above its unique unlabeled predecessor (ELK
+ * cycle artefact — e.g. nested IF above START), shift that diamond and its
+ * exclusive Yes-side chain below the predecessor.
+ */
+function placeDiamondsBelowPredecessors(svg) {
+  /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
+  const nodes = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    const poly = /<polygon points="([^"]+)"/.exec(m[3]);
+    nodes.set(m[1], {
+      shape: m[2],
+      inner: m[3],
+      verts: m[2] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(m[3], m[2]),
+    });
+  }
+
+  /** @type {{from:string,to:string,label:string}[]} */
+  const edges = [];
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = /data-label="([^"]*)"/.exec(attrs)?.[1] ?? "";
+    if (!from || !to) continue;
+    edges.push({ from, to, label });
+  }
+
+  /** @type {Map<string, string[]>} */
+  const incoming = new Map();
+  /** @type {Map<string, typeof edges>} */
+  const outgoing = new Map();
+  for (const e of edges) {
+    if (!incoming.has(e.to)) incoming.set(e.to, []);
+    incoming.get(e.to).push(e.from);
+    if (!outgoing.has(e.from)) outgoing.set(e.from, []);
+    outgoing.get(e.from).push(e);
+  }
+
+  const GAP = 48;
+  let next = svg;
+
+  const refresh = (id) => {
+    const idAttr = escapeAttr(id);
+    const g = new RegExp(
+      `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
+    ).exec(next);
+    if (!g) return;
+    const poly = /<polygon points="([^"]+)"/.exec(g[2]);
+    nodes.set(id, {
+      shape: g[1],
+      inner: g[2],
+      verts: g[1] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(g[2], g[1]),
+    });
+  };
+
+  const shiftNode = (id, sdx, sdy) => {
+    if (Math.abs(sdx) < 0.5 && Math.abs(sdy) < 0.5) return;
+    const idAttr = escapeAttr(id);
+    next = next.replace(
+      new RegExp(
+        `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
+      ),
+      (_, open, inner, close) =>
+        `${open}${translateNodeGroup(inner, sdx, sdy)}${close}`,
+    );
+    refresh(id);
+  };
+
+  const topY = (id) => {
+    const n = nodes.get(id);
+    if (!n) return null;
+    if (n.verts) return n.verts.top.y;
+    return nodeFacePort(n.inner, n.shape, "top")?.y ?? n.center?.y ?? null;
+  };
+  const botY = (id) => {
+    const n = nodes.get(id);
+    if (!n) return null;
+    if (n.verts) return n.verts.bottom.y;
+    return nodeFacePort(n.inner, n.shape, "bottom")?.y ?? n.center?.y ?? null;
+  };
+
+  for (const [did, dNode] of nodes) {
+    if (!dNode.verts) continue;
+    // Unique unlabeled predecessor (forward entry into the diamond).
+    const preds = (incoming.get(did) || []).filter((pid) => {
+      const e = edges.find((x) => x.from === pid && x.to === did);
+      return e && !e.label.trim() && pid !== did;
+    });
+    if (preds.length !== 1) continue;
+    const predId = preds[0];
+    const predBot = botY(predId);
+    const dTop = topY(did);
+    if (predBot == null || dTop == null) continue;
+    if (dTop >= predBot + GAP - 1) continue; // already below
+
+    const dy = predBot + GAP - dTop;
+
+    // Exclusive Yes chain until a merge node (shared incoming).
+    /** @type {string[]} */
+    const moveIds = [did];
+    const yes = (outgoing.get(did) || []).find(
+      (e) => e.label.trim().toLowerCase() === "yes",
+    );
+    let cursor = yes?.to;
+    while (cursor && nodes.has(cursor)) {
+      const ins = incoming.get(cursor) || [];
+      if (ins.length !== 1) break;
+      moveIds.push(cursor);
+      const outs = (outgoing.get(cursor) || []).filter((e) => e.to !== did);
+      if (outs.length !== 1) break;
+      cursor = outs[0].to;
+    }
+
+    for (const id of moveIds) shiftNode(id, 0, dy);
+
+    // Merge node where Yes-chain and No meet (e.g. count+1 after IF) — pull it
+    // below the shifted subgraph so No/Yes don't climb back to a stale rank.
+    const no = (outgoing.get(did) || []).find(
+      (e) => e.label.trim().toLowerCase() === "no",
+    );
+    const mergeId = no?.to;
+    if (mergeId && !moveIds.includes(mergeId) && nodes.has(mergeId)) {
+      const floor =
+        Math.max(
+          ...moveIds.map((id) => botY(id) ?? 0),
+          botY(did) ?? 0,
+        ) + GAP;
+      const mTop = topY(mergeId);
+      if (mTop != null && mTop < floor) {
+        shiftNode(mergeId, 0, floor - mTop);
+        moveIds.push(mergeId);
+      }
+    }
+
+    // Rebuild edges that touch moved nodes (simple vertical/orthogonal).
+    const stroke = "#757575";
+    const sw = "1.5";
+    const marker = "url(#arrowhead)";
+    const mkEdge = (from, to, label, pts) => {
+      const lab = ` data-label="${escapeAttr(label ?? "")}"`;
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+    };
+
+    next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+      const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+      const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      const label = /data-label="([^"]*)"/.exec(attrs)?.[1] ?? "";
+      if (!from || !to) return full;
+      if (!moveIds.includes(from) && !moveIds.includes(to)) return full;
+
+      const a = nodes.get(from);
+      const b = nodes.get(to);
+      if (!a?.center || !b?.center) return full;
+
+      // Loop return into diamond bottom, else face-to-face orth route.
+      if (b.verts && a.center.y > b.verts.bottom.y) {
+        const src =
+          nodeFacePort(a.inner, a.shape, "bottom") ||
+          nodeFacePort(a.inner, a.shape, "right") ||
+          a.center;
+        const pts = dedupePoints([
+          { ...src },
+          { x: b.verts.bottom.x, y: src.y },
+          { ...b.verts.bottom },
+        ]);
+        return mkEdge(from, to, label, pts);
+      }
+      if (a.verts && label.trim()) {
+        const side = label.trim().toLowerCase() === "yes" ? "left" : "right";
+        const stub = diamondExitStub(a.verts, side);
+        const land =
+          nodeFacePort(b.inner, b.shape, "top") ||
+          nodeFacePort(b.inner, b.shape, side) ||
+          b.center;
+        const pts = dedupePoints([
+          { ...a.verts[side] },
+          { ...stub },
+          { x: stub.x, y: land.y },
+          { ...land },
+        ]);
+        return mkEdge(from, to, label, pts);
+      }
+      const src = nodeFacePort(a.inner, a.shape, "bottom") || a.center;
+      const land = nodeFacePort(b.inner, b.shape, "top") || b.center;
+      if (b.verts) {
+        const pts = dedupePoints([
+          { ...src },
+          { x: b.verts.top.x, y: src.y },
+          { ...b.verts.top },
+        ]);
+        return mkEdge(from, to, label, pts);
+      }
+      const pts = dedupePoints([
+        { x: land.x, y: src.y },
+        { ...land },
+      ]);
+      // Prefer vertical drop when x already aligned.
+      if (Math.abs(src.x - land.x) < 1) {
+        return mkEdge(from, to, label, dedupePoints([{ ...src }, { ...land }]));
+      }
+      return mkEdge(
+        from,
+        to,
+        label,
+        dedupePoints([{ ...src }, { x: src.x, y: land.y }, { ...land }]),
+      );
     });
   }
 
@@ -1949,11 +2265,13 @@ function renderDiagram(source) {
   return fitSvgViewBox(
     transparentizeEdgeLabels(
       nudgeEdgeLabelsNearSource(
-        alignRepeatInputDiamond(
-          alignLoopBodyColumn(
-            collapseJunctionNodes(
-              rewireDiamondPorts(
-                retargetParallelogramPorts(applyParallelograms(svg, lean)),
+        placeDiamondsBelowPredecessors(
+          alignRepeatInputDiamond(
+            alignLoopBodyColumn(
+              collapseJunctionNodes(
+                rewireDiamondPorts(
+                  retargetParallelogramPorts(applyParallelograms(svg, lean)),
+                ),
               ),
             ),
           ),
