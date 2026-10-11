@@ -235,20 +235,30 @@ function diamondExitStub(d, side) {
   };
 }
 
-/** Visual midpoints of a parallelogram's top/bottom faces (skew shifts them). */
+/** Visual midpoints of a parallelogram's faces (skew shifts top/bottom). */
 function parallelogramPorts(pointsAttr) {
   const pts = parsePoints(pointsAttr);
   if (pts.length < 4) return null;
   const ys = pts.map((p) => p.y);
+  const xs = pts.map((p) => p.x);
   const minY = Math.min(...ys);
   const maxY = Math.max(...ys);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
   const top = pts.filter((p) => Math.abs(p.y - minY) < 0.5);
   const bot = pts.filter((p) => Math.abs(p.y - maxY) < 0.5);
   if (top.length < 2 || bot.length < 2) return null;
   const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+  // Slanted sides: leftmost / rightmost vertices (forward lean).
+  const leftPts = [...pts].sort((a, b) => a.x - b.x).slice(0, 2);
+  const rightPts = [...pts].sort((a, b) => b.x - a.x).slice(0, 2);
   return {
     top: mid(top[0], top[1]),
     bottom: mid(bot[0], bot[1]),
+    left: mid(leftPts[0], leftPts[1]),
+    right: mid(rightPts[0], rightPts[1]),
+    cx: (minX + maxX) / 2,
+    cy: (minY + maxY) / 2,
   };
 }
 
@@ -360,7 +370,9 @@ function nodeFacePort(groupInner, shape, side) {
   if (shape === "parallelogram" && poly) {
     const ports = parallelogramPorts(poly[1]);
     if (!ports) return null;
-    if (side === "top" || side === "bottom") return ports[side];
+    if (side === "top" || side === "bottom" || side === "left" || side === "right") {
+      return ports[side];
+    }
   }
   if (poly) {
     const d = diamondVertices(poly[1]);
@@ -899,12 +911,15 @@ function nodeCenter(groupInner, shape) {
 function collapseJunctionNodes(svg) {
   /** @type {Map<string, {x:number,y:number}>} */
   const junctions = new Map();
+  /** @type {Map<string, {shape:string, inner:string, center:{x:number,y:number}|null}>} */
+  const nodes = new Map();
   for (const m of svg.matchAll(
     /<g class="node" data-id="([^"]+)"[^>]*data-label="([^"]*)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
   )) {
+    const center = nodeCenter(m[4], m[3]);
+    nodes.set(m[1], { shape: m[3], inner: m[4], center });
     if (!isJunctionLabel(decodeEntities(m[2]))) continue;
-    const c = nodeCenter(m[4], m[3]);
-    if (c) junctions.set(m[1], c);
+    if (center) junctions.set(m[1], center);
   }
   if (junctions.size === 0) return svg;
 
@@ -934,24 +949,97 @@ function collapseJunctionNodes(svg) {
         const inbound = parsePoints(e.points);
         const outbound = parsePoints(o.points);
         if (inbound.length < 2 || outbound.length < 2) continue;
-        // Clean U-turn through the junction: keep diamond exit routing,
-        // then horizontal at junction depth, then follow the outbound landing.
-        const end = outbound[outbound.length - 1];
-        const preEnd =
-          outbound.length >= 2 ? outbound[outbound.length - 2] : mid;
-        // Loop depth: keep the junction's y so the return runs under/over the body.
-        const loopY = mid.y;
+        const target = nodes.get(o.to);
         const exitCol = inbound[Math.min(1, inbound.length - 1)];
-        const pts = dedupePoints([
-          ...inbound.slice(0, -1),
-          { x: exitCol.x, y: loopY },
-          { x: end.x, y: loopY },
-          { x: end.x, y: preEnd.y },
-          { ...end },
-        ]);
+        const start = inbound[0];
+        // Prefer a clear face on the real target (INPUT…), not ELK's
+        // outbound stub which often lands on the spine above the node.
+        let end = outbound[outbound.length - 1];
+        let sideApproach = null;
+        if (target?.center) {
+          const upLoop = target.center.y < start.y - 8;
+          const leftLoop = target.center.x < start.x - 8;
+          if (upLoop) {
+            // TB No→INPUT: climb outside the exit column, enter from the side.
+            sideApproach =
+              exitCol.x >= start.x ? "right" : "left";
+            const face =
+              nodeFacePort(target.inner, target.shape, sideApproach) ||
+              nodeFacePort(target.inner, target.shape, "bottom");
+            if (face) end = face;
+          } else if (leftLoop || target.center.x > start.x + 8) {
+            // LR No→INPUT: run below/above, enter from the bottom or top.
+            sideApproach = exitCol.y >= start.y ? "bottom" : "top";
+            const face =
+              nodeFacePort(target.inner, target.shape, sideApproach) ||
+              nodeFacePort(target.inner, target.shape, "left");
+            if (face) end = face;
+          }
+        }
+
+        let pts;
+        // Keep only the diamond exit stub (vertex → outward tip). Drop the
+        // long ELK run to the junction so the return stays compact.
+        const stubPts =
+          inbound.length >= 2 ? inbound.slice(0, 2) : [...inbound];
+        if (sideApproach === "right" || sideApproach === "left") {
+          // TB: drop clear of the diamond, climb OUTSIDE, enter inward.
+          const pad = 18;
+          const stubY = exitCol.y;
+          const colX =
+            sideApproach === "right"
+              ? Math.max(exitCol.x, end.x + pad)
+              : Math.min(exitCol.x, end.x - pad);
+          const fromDiamond = nodes.get(e.from);
+          const poly = fromDiamond
+            ? /<polygon points="([^"]+)"/.exec(fromDiamond.inner)
+            : null;
+          const dVerts =
+            fromDiamond?.shape === "diamond" && poly
+              ? diamondVertices(poly[1])
+              : null;
+          const clearY = dVerts ? dVerts.bottom.y + 24 : stubY + 28;
+          const turnY = Math.max(stubY + 28, clearY);
+          pts = dedupePoints([
+            ...stubPts,
+            { x: colX, y: stubY },
+            { x: colX, y: turnY },
+            { x: colX, y: end.y },
+            { ...end },
+          ]);
+        } else if (sideApproach === "bottom" || sideApproach === "top") {
+          // LR: run OUTSIDE the target face, then enter inward.
+          const pad = 18;
+          const stubX = exitCol.x;
+          const rowY =
+            sideApproach === "bottom"
+              ? Math.max(exitCol.y, end.y + pad)
+              : Math.min(exitCol.y, end.y - pad);
+          pts = dedupePoints([
+            ...stubPts,
+            { x: stubX, y: rowY },
+            { x: end.x, y: rowY },
+            { ...end },
+          ]);
+        } else {
+          // Fallback U-turn: keep diamond exit, loop at junction depth.
+          const preEnd =
+            outbound.length >= 2 ? outbound[outbound.length - 2] : mid;
+          pts = dedupePoints([
+            ...stubPts,
+            { x: exitCol.x, y: mid.y },
+            { x: end.x, y: mid.y },
+            { x: end.x, y: preEnd.y },
+            { ...end },
+          ]);
+        }
         const label = e.label || o.label;
+        const marker =
+          /marker-end="([^"]*)"/.exec(e.attrs)?.[1] ||
+          /marker-end="([^"]*)"/.exec(o.attrs)?.[1] ||
+          "url(#arrow)";
         rebuilt.push(
-          `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" points="${formatPoints(pts)}" data-from="${escapeAttr(e.from)}" data-to="${escapeAttr(o.to)}" data-label="${escapeAttr(label)}"/>`,
+          `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(e.from)}" data-to="${escapeAttr(o.to)}" data-label="${escapeAttr(label)}"/>`,
         );
       }
     } else if (junctions.has(e.from) || junctions.has(e.to)) {
@@ -1002,6 +1090,169 @@ function collapseJunctionNodes(svg) {
       "",
     );
   }
+
+  // ELK often parks exclusive Yes/No exits (e.g. END) below the ghost
+  // junction row. Pull them up under the diamond once the junction is gone.
+  next = pullBranchTargetsAfterJunctions(next);
+  return next;
+}
+
+/**
+ * After junction collapse, close the vertical gap under a diamond when an
+ * exclusive Yes/No target (and its exclusive descendants) still sit on the
+ * old junction row.
+ */
+function pullBranchTargetsAfterJunctions(svg) {
+  /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
+  const nodes = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    const poly = /<polygon points="([^"]+)"/.exec(m[3]);
+    nodes.set(m[1], {
+      shape: m[2],
+      inner: m[3],
+      verts: m[2] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(m[3], m[2]),
+    });
+  }
+
+  /** @type {Map<string, string[]>} */
+  const incoming = new Map();
+  /** @type {Map<string, string[]>} */
+  const outgoing = new Map();
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const from = /data-from="([^"]*)"/.exec(m[1])?.[1];
+    const to = /data-to="([^"]*)"/.exec(m[1])?.[1];
+    if (!from || !to) continue;
+    if (!incoming.has(to)) incoming.set(to, []);
+    incoming.get(to).push(from);
+    if (!outgoing.has(from)) outgoing.set(from, []);
+    outgoing.get(from).push(to);
+  }
+
+  /** @type {Map<string, number>} */
+  const shiftsY = new Map();
+  for (const [id, n] of nodes) {
+    if (!n.verts) continue;
+    const bottom = n.verts.bottom.y;
+    for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+      const from = /data-from="([^"]*)"/.exec(m[1])?.[1];
+      const to = /data-to="([^"]*)"/.exec(m[1])?.[1];
+      const label = (/data-label="([^"]*)"/.exec(m[1])?.[1] ?? "")
+        .trim()
+        .toLowerCase();
+      if (from !== id || !to || (label !== "yes" && label !== "no")) continue;
+      const target = nodes.get(to);
+      if (!target?.center || target.verts) continue;
+      // Shared loop targets (No → INPUT) must stay put.
+      if ((incoming.get(to) || []).length > 1) continue;
+      const face =
+        nodeFacePort(target.inner, target.shape, "top") || {
+          x: target.center.x,
+          y: target.center.y - 18,
+        };
+      const gap = face.y - bottom;
+      if (gap < 70) continue;
+      const desiredTopGap = 28;
+      const dy = bottom + desiredTopGap - face.y;
+      if (dy >= -1) continue;
+      shiftsY.set(to, dy);
+    }
+  }
+
+  // Cascade to exclusive descendants (OUTPUT → END, etc.).
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const [to, parents] of incoming) {
+      if (shiftsY.has(to) || nodes.get(to)?.verts) continue;
+      if (parents.length === 0) continue;
+      if (!parents.every((p) => shiftsY.has(p))) continue;
+      const dy0 = shiftsY.get(parents[0]);
+      if (!parents.every((p) => shiftsY.get(p) === dy0)) continue;
+      shiftsY.set(to, dy0);
+      grew = true;
+    }
+  }
+
+  if (shiftsY.size === 0) return svg;
+
+  let next = svg;
+  for (const [id, dy] of shiftsY) {
+    if (Math.abs(dy) < 0.5) continue;
+    const idAttr = escapeAttr(id);
+    next = next.replace(
+      new RegExp(
+        `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
+      ),
+      (_, open, inner, close) =>
+        `${open}${translateNodeGroup(inner, 0, dy)}${close}`,
+    );
+    next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+      const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+      const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
+      if (!pointsAttr || (from !== id && to !== id)) return full;
+      const pts = parsePoints(pointsAttr);
+      if (from === id) {
+        const old = { ...pts[0] };
+        pts[0] = { x: old.x, y: old.y + dy };
+        if (pts.length > 1 && !shiftsY.has(to) && Math.abs(pts[1].x - old.x) < 1) {
+          pts[1] = { x: pts[0].x, y: pts[1].y };
+        }
+      }
+      if (to === id) {
+        const last = pts.length - 1;
+        const old = { ...pts[last] };
+        pts[last] = { x: old.x, y: old.y + dy };
+        if (last >= 1 && !shiftsY.has(from)) {
+          if (Math.abs(pts[last - 1].x - old.x) < 1) {
+            pts[last - 1] = { x: pts[last].x, y: pts[last - 1].y };
+          }
+          if (Math.abs(pts[last - 1].y - old.y) < 1) {
+            pts[last - 1] = { x: pts[last - 1].x, y: pts[last].y };
+          }
+        }
+      }
+      return `<polyline class="edge"${attrs.replace(
+        /points="[^"]+"/,
+        `points="${formatPoints(dedupePoints(pts))}"`,
+      )}/>`;
+    });
+  }
+
+  // Rebuild Yes/No drops cleanly onto the shifted target top face.
+  next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = (/data-label="([^"]*)"/.exec(attrs)?.[1] ?? "")
+      .trim()
+      .toLowerCase();
+    const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!from || !to || !pointsAttr) return full;
+    if ((label !== "yes" && label !== "no") || !shiftsY.has(to)) return full;
+    if (!nodes.get(from)?.verts) return full;
+    const idAttr = escapeAttr(to);
+    const g = new RegExp(
+      `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
+    ).exec(next);
+    if (!g) return full;
+    const face = nodeFacePort(g[2], g[1], "top");
+    if (!face) return full;
+    const pts = parsePoints(pointsAttr);
+    if (pts.length < 2) return full;
+    const rebuilt = dedupePoints([
+      { ...pts[0] },
+      { ...pts[1] },
+      { x: pts[1].x, y: face.y },
+      { ...face },
+    ]);
+    return `<polyline class="edge"${attrs.replace(
+      /points="[^"]+"/,
+      `points="${formatPoints(rebuilt)}"`,
+    )}/>`;
+  });
 
   return next;
 }

@@ -163,15 +163,15 @@ Différence clé avec `WHILE` : le test est **après** le corps.
 Corps d'abord ; losange : **No** → on recommence, **Yes** → on sort.  
 `UNTIL` = « jusqu'à ce que … soit vrai » = sortie sur **Yes**.
 
-<div class="max-mermaid-wide">
+<div class="max-mermaid-lg">
 
 ```mermaid
-flowchart LR
+flowchart TB
   A([START]) --> B[/INPUT password/]
   B --> C{"password =<br/>secret"}
+  C -->|Yes| D([END])
   C -->|No| J["​"]
   J --> B
-  C -->|Yes| D([END])
 ```
 
 </div>
@@ -271,12 +271,12 @@ Avec les saisies `4`, `6`, `-1` : la boucle traite `4` et `6`, puis s'arrête. L
 
 ## Sentinelle en *flowchart*
 
-Lecture « amorcée » (`SENTINEL = -1`) : `INPUT` avant le test, puis corps (`sum`, `INPUT`), sortie sur **No**.
+Lecture « amorcée » (`SENTINEL = -1`) : `INPUT` avant le test, corps (`sum` puis `INPUT`), sortie sur **No**.
 
-<div class="max-mermaid-wide">
+<div class="mid-mermaid">
 
 ```mermaid
-flowchart LR
+flowchart TB
   A([START]) --> B["sum = 0"]
   B --> C[/INPUT value/]
   C --> D{"value <><br/>SENTINEL"}
