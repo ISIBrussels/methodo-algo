@@ -375,7 +375,7 @@ END IF
 
 ---
 
-## Exercice 2.A — Quantité hors bornes (`OR` + validation)
+## Exercice 2.A : Quantité hors bornes (`OR` + validation)
 
 ```text
 INPUT quantity
@@ -394,7 +394,7 @@ OUTPUT verdict
 
 ---
 
-## Exercice 2.B — Maximum puis niveau (deux décisions en séquence)
+## Exercice 2.B : Maximum puis niveau (deux décisions en séquence)
 
 <div class="two-cols">
 
@@ -431,7 +431,7 @@ OUTPUT band
 
 ---
 
-## Exercice 2.C — Entrée billetterie (`IF` imbriqué)
+## Exercice 2.C : Entrée billetterie (`IF` imbriqué)
 
 ```text
 INPUT hasTicket, age
@@ -454,7 +454,7 @@ OUTPUT entry
 
 ---
 
-## Exercice 2.D — Confort thermique (`ELSE IF` court)
+## Exercice 2.D : Confort thermique (`ELSE IF` court)
 
 ```text
 INPUT temperature
@@ -475,7 +475,7 @@ OUTPUT comfort
 
 ---
 
-## Exercice 2.E — Mentions (cascade)
+## Exercice 2.E : Mentions (cascade)
 
 ```text
 INPUT mark

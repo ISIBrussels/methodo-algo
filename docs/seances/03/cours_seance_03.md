@@ -18,7 +18,7 @@ Boucles (1) : WHILE / REPEAT … UNTIL
 
 ## Pourquoi des boucles ?
 
-En séances 1–2 : **séquence** et **décisions** — chaque étape s'exécute **au plus une fois**.
+En séances 1 et 2 : **séquence** et **décisions**, chaque étape s'exécute **au plus une fois**.
 
 Souvent, on doit **répéter** une action :
 
@@ -194,7 +194,7 @@ flowchart TB
 | Condition | on reste tant que **vraie** | on sort quand **vraie** |
 | Usage typique | « tant que … » | « jusqu'à ce que … » (saisie, validation) |
 
-Même problème souvent exprimable des deux façons — on choisit selon le sens naturel.
+Même problème souvent exprimable des deux façons : on choisit selon le sens naturel.
 
 ---
 
@@ -247,6 +247,10 @@ Une **valeur sentinelle** (*sentinel value*) est une valeur **choisie d'avance**
 
 Exemple : on fixe `SENTINEL = -1`. On lit des nombres dans `value` et on s'arrête quand `value = SENTINEL`.
 
+<div class="two-cols">
+
+<div>
+
 ```text
 sum = 0
 SENTINEL = -1
@@ -258,7 +262,15 @@ END WHILE
 OUTPUT sum
 ```
 
+</div>
+
+<div>
+
 Avec les saisies `4`, `6`, `-1` : la boucle traite `4` et `6`, puis s'arrête. Le `-1` n'entre **pas** dans la somme.
+
+</div>
+
+</div>
 
 ---
 
@@ -277,7 +289,7 @@ Lecture « amorcée » (`SENTINEL = -1`) :
 
 </div>
 
-<div class="max-mermaid">
+<div class="max-mermaid-lg">
 
 ```mermaid
 flowchart TB
@@ -410,7 +422,7 @@ Une ***trace table*** sur un petit jeu de données révèle vite le bug.
 
 ---
 
-## Exercice 3.A — Compteur `WHILE`
+## Exercice 3.A : Compteur `WHILE`
 
 ```text
 count = 0
@@ -427,7 +439,7 @@ END WHILE
 
 ---
 
-## Exercice 3.B — Mot de passe (`REPEAT … UNTIL`)
+## Exercice 3.B : Mot de passe (`REPEAT … UNTIL`)
 
 ```text
 REPEAT
@@ -443,7 +455,7 @@ OUTPUT "OK"
 
 ---
 
-## Exercice 3.C — Validation de note (*input validation*)
+## Exercice 3.C : Validation de note (*input validation*)
 
 ```text
 REPEAT
@@ -459,7 +471,7 @@ OUTPUT mark
 
 ---
 
-## Exercice 3.D — Somme jusqu'à sentinelle
+## Exercice 3.D : Somme jusqu'à sentinelle
 
 ```text
 sum = 0
@@ -479,7 +491,7 @@ OUTPUT sum
 
 ---
 
-## Exercice 3.E — Minimum de N saisies
+## Exercice 3.E : Minimum de N saisies
 
 ```text
 INPUT first

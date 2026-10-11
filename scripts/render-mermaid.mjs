@@ -481,6 +481,19 @@ function rewireDiamondPorts(svg) {
     }
   }
 
+  // Incoming edges per node. Skip shifting shared spine / loop-back targets
+  // (e.g. REPEAT No → INPUT that START already feeds) — that pulls the column
+  // off-axis and clips the diagram.
+  /** @type {Map<string, string[]>} */
+  const incomingFrom = new Map();
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const from = /data-from="([^"]*)"/.exec(m[1])?.[1];
+    const to = /data-to="([^"]*)"/.exec(m[1])?.[1];
+    if (!from || !to) continue;
+    if (!incomingFrom.has(to)) incomingFrom.set(to, []);
+    incomingFrom.get(to).push(from);
+  }
+
   // Shift non-diamond Yes/No targets so their face centre sits on the exit axis.
   /** @type {Map<string, {dx:number, dy:number}>} */
   const shifts = new Map();
@@ -492,6 +505,8 @@ function rewireDiamondPorts(svg) {
       const target = nodes.get(e.to);
       if (!target || target.shape === "diamond") continue;
       if (shifts.has(e.to)) continue;
+      const others = (incomingFrom.get(e.to) || []).filter((src) => src !== from);
+      if (others.length > 0) continue;
       const face =
         assigned === "left" || assigned === "right" ? "top" : "left";
       const port = nodeFacePort(target.inner, target.shape, face);
@@ -819,6 +834,80 @@ function nudgeEdgeLabelsNearSource(svg) {
   );
 }
 
+/**
+ * After diamond stubs / node shifts, geometry can sit outside the original
+ * viewBox (negative x on TB Yes/No exits). Recompute root viewBox from
+ * polyline/polygon points, rects and text so nothing is clipped.
+ * Marker points use "x y, x y" (not "x,y") — ignore non-finite parses.
+ */
+function fitSvgViewBox(svg, padding = 8) {
+  const xs = [];
+  const ys = [];
+
+  const push = (x, y) => {
+    if (Number.isFinite(x) && Number.isFinite(y)) {
+      xs.push(x);
+      ys.push(y);
+    }
+  };
+
+  for (const m of svg.matchAll(/\bpoints="([^"]+)"/g)) {
+    const attr = m[1].trim();
+    if (/^-?[\d.]+,/.test(attr)) {
+      for (const p of parsePoints(attr)) push(p.x, p.y);
+    } else {
+      for (const pair of attr.split(/\s*,\s*/)) {
+        const [x, y] = pair.trim().split(/\s+/).map(Number);
+        push(x, y);
+      }
+    }
+  }
+  for (const m of svg.matchAll(/<rect\b([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const x = Number(/\bx="([^"]+)"/.exec(attrs)?.[1]);
+    const y = Number(/\by="([^"]+)"/.exec(attrs)?.[1]);
+    const w = Number(/\bwidth="([^"]+)"/.exec(attrs)?.[1]);
+    const h = Number(/\bheight="([^"]+)"/.exec(attrs)?.[1]);
+    if (![x, y, w, h].every(Number.isFinite)) continue;
+    push(x, y);
+    push(x + w, y + h);
+  }
+  for (const m of svg.matchAll(/<text\b([^>]*)>/g)) {
+    const attrs = m[1];
+    push(
+      Number(/\bx="([^"]+)"/.exec(attrs)?.[1]),
+      Number(/\by="([^"]+)"/.exec(attrs)?.[1]),
+    );
+  }
+
+  if (xs.length === 0 || ys.length === 0) return svg;
+
+  const minX = Math.min(...xs) - padding;
+  const minY = Math.min(...ys) - padding;
+  const width = Math.max(...xs) + padding - minX;
+  const height = Math.max(...ys) + padding - minY;
+  if (!(width > 0) || !(height > 0)) return svg;
+
+  return svg.replace(/^<svg\b([^>]*)>/, (_, attrs) => {
+    let next = attrs;
+    if (/\bviewBox="/.test(next)) {
+      next = next.replace(
+        /\bviewBox="[^"]+"/,
+        `viewBox="${minX} ${minY} ${width} ${height}"`,
+      );
+    } else {
+      next += ` viewBox="${minX} ${minY} ${width} ${height}"`;
+    }
+    if (/\bwidth="/.test(next)) {
+      next = next.replace(/\bwidth="[^"]+"/, `width="${width}"`);
+    }
+    if (/\bheight="/.test(next)) {
+      next = next.replace(/\bheight="[^"]+"/, `height="${height}"`);
+    }
+    return `<svg${next}>`;
+  });
+}
+
 function renderDiagram(source) {
   const { source: prepared, lean } = preprocessParallelograms(source);
   const svg = renderMermaidSVG(prepared, {
@@ -829,10 +918,12 @@ function renderDiagram(source) {
     line: "#757575",
     accent: "#0075c9",
   });
-  return transparentizeEdgeLabels(
-    nudgeEdgeLabelsNearSource(
-      rewireDiamondPorts(
-        retargetParallelogramPorts(applyParallelograms(svg, lean)),
+  return fitSvgViewBox(
+    transparentizeEdgeLabels(
+      nudgeEdgeLabelsNearSource(
+        rewireDiamondPorts(
+          retargetParallelogramPorts(applyParallelograms(svg, lean)),
+        ),
       ),
     ),
   );

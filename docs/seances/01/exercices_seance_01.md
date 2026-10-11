@@ -11,7 +11,7 @@ Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 1.A — `DIV` et `MOD`
+## 1.A : `DIV` et `MOD`
 
 Algorithme :
 
@@ -61,7 +61,7 @@ flowchart TB
 
 ---
 
-## 1.B — Prix TTC
+## 1.B : Prix TTC
 
 > Lire un prix hors taxes (`priceHT`) et un taux (`rate`).  
 > Calculer le prix TTC : `priceTTC = priceHT * (1 + rate)`.  
@@ -99,7 +99,7 @@ flowchart TB
 
 ---
 
-## 1.C — Heures et minutes
+## 1.C : Heures et minutes
 
 Algorithme, avec `totalMinutes = 135` :
 
@@ -146,7 +146,7 @@ flowchart TB
 
 ---
 
-## 1.D — Moyenne de deux notes
+## 1.D : Moyenne de deux notes
 
 > Lire deux notes (`mark1`, `mark2`).  
 > Calculer la moyenne : `average = (mark1 + mark2) / 2`.  
@@ -184,7 +184,7 @@ flowchart TB
 
 ---
 
-## 1.E — Température Celsius → Fahrenheit
+## 1.E : Température Celsius → Fahrenheit
 
 Algorithme, avec `celsius = 20` :
 

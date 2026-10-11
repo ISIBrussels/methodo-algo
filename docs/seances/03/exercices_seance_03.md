@@ -12,7 +12,7 @@ Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes ap
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 3.A — Compteur `WHILE`
+## 3.A : Compteur `WHILE`
 
 Algorithme (`N` donné) :
 
@@ -71,7 +71,7 @@ flowchart TB
 
 ---
 
-## 3.B — Mot de passe (`REPEAT … UNTIL`)
+## 3.B : Mot de passe (`REPEAT … UNTIL`)
 
 Algorithme (`secret` connu) :
 
@@ -119,7 +119,7 @@ flowchart TB
 
 ---
 
-## 3.C — Validation de note (*input validation*)
+## 3.C : Validation de note (*input validation*)
 
 Algorithme (note valide entre `minMark` et `maxMark`, inclus) :
 
@@ -161,7 +161,7 @@ flowchart TB
 
 ---
 
-## 3.D — Somme jusqu'à sentinelle (*accumulator* + *sentinel*)
+## 3.D : Somme jusqu'à sentinelle (*accumulator* + *sentinel*)
 
 Algorithme (`SENTINEL` = valeur sentinelle, ici `-1`) :
 
@@ -214,7 +214,7 @@ flowchart TB
 
 ---
 
-## 3.E — Minimum de N saisies
+## 3.E : Minimum de N saisies
 
 Algorithme :
 

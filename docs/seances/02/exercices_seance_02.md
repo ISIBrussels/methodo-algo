@@ -12,7 +12,7 @@ Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes ap
   <a href="../../index.html">Accueil</a>
 </nav>
 
-## 2.A — Quantité hors bornes (`OR` + validation)
+## 2.A : Quantité hors bornes (`OR` + validation)
 
 Algorithme :
 
@@ -67,7 +67,7 @@ flowchart TB
 
 ---
 
-## 2.B — Maximum puis niveau (deux décisions en séquence)
+## 2.B : Maximum puis niveau (deux décisions en séquence)
 
 Algorithme :
 
@@ -139,7 +139,7 @@ flowchart TB
 
 ---
 
-## 2.C — Entrée billetterie (`IF` imbriqué)
+## 2.C : Entrée billetterie (`IF` imbriqué)
 
 Algorithme :
 
@@ -203,7 +203,7 @@ flowchart TB
 
 ---
 
-## 2.D — Confort thermique (`ELSE IF` court)
+## 2.D : Confort thermique (`ELSE IF` court)
 
 Algorithme :
 
@@ -266,7 +266,7 @@ flowchart TB
 
 ---
 
-## 2.E — Mentions (cascade)
+## 2.E : Mentions (cascade)
 
 Algorithme :
 

@@ -44,9 +44,9 @@ L'algorithme **précède** le programme. Ce cours s'arrête à l'**algorithme** 
 
 Tout traitement suit la même démarche :
 
-1. Entrée (*input*) — données d'entrée (saisie, valeurs connues)
-2. Traitement (*process*) — calculs, transformations, enchaînement d'étapes
-3. Sortie (*output*) — résultat affiché ou produit
+1. Entrée (*input*) : données d'entrée (saisie, valeurs connues)
+2. Traitement (*process*) : calculs, transformations, enchaînement d'étapes
+3. Sortie (*output*) : résultat affiché ou produit
 
 Avant de concevoir l'algorithme : qu'est-ce qui entre ? que fait-on ? que sort-on ?
 
@@ -219,7 +219,7 @@ Compétence d'examen : vérifier un algorithme **sans machine**.
 
 ---
 
-## Exemple : *trace table* — somme
+## Exemple : *trace table* : somme
 
 ```text
 INPUT a, b
@@ -239,7 +239,7 @@ On ne réécrit une case que quand la variable **change**.
 
 ---
 
-## Exemple : *trace table* — `DIV` et `MOD`
+## Exemple : *trace table* : `DIV` et `MOD`
 
 <div class="two-cols">
 
@@ -279,7 +279,7 @@ OUTPUT q, r
 
 ---
 
-## Exercice 1.A — `DIV` et `MOD`
+## Exercice 1.A : `DIV` et `MOD`
 
 ```text
 a = 10
@@ -295,7 +295,7 @@ OUTPUT result
 
 ---
 
-## Exercice 1.B — Prix TTC
+## Exercice 1.B : Prix TTC
 
 > Lire un prix HT (`priceHT`) et un taux (`rate`)  
 > Calculer le prix TTC  
@@ -311,7 +311,7 @@ Formule : `priceTTC = priceHT * (1 + rate)`
 
 ---
 
-## Exercice 1.C — Heures et minutes
+## Exercice 1.C : Heures et minutes
 
 ```text
 totalMinutes = 135
@@ -327,7 +327,7 @@ OUTPUT hours, minutes
 
 ---
 
-## Exercice 1.D — Moyenne de deux notes
+## Exercice 1.D : Moyenne de deux notes
 
 > Lire deux notes (`mark1`, `mark2`)  
 > Calculer la moyenne  
@@ -343,7 +343,7 @@ Formule : `average = (mark1 + mark2) / 2`
 
 ---
 
-## Exercice 1.E — Température Celsius → Fahrenheit
+## Exercice 1.E : Température Celsius → Fahrenheit
 
 ```text
 celsius = 20
