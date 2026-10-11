@@ -1682,7 +1682,9 @@ function alignRepeatInputDiamond(svg) {
 
 /**
  * Sentinel (primed) TB layout: Yes body + trailing INPUT left, No body right,
- * return climbs the center channel into the diamond BOTTOM tip (no left spaghetti).
+ * return leaves the trailing INPUT at mid-right (skewed face), short stub
+ * right into the center channel, then climbs vertically into the diamond
+ * BOTTOM tip (no left spaghetti, no bottom-corner exit).
  */
 function alignLoopBodyColumn(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -1828,8 +1830,10 @@ function alignLoopBodyColumn(svg) {
     const bodyBot2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "bottom");
     const bodyTop2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "top");
     const childTop2 = nodeFacePort(childFresh.inner, childFresh.shape, "top");
-    const childBot2 = nodeFacePort(childFresh.inner, childFresh.shape, "bottom");
-    if (!bodyBot2 || !bodyTop2 || !childTop2 || !childBot2) continue;
+    // Exit loop-return from the visual mid of the right slanted face
+    // (not bottom mid — lean makes that look like the SE corner).
+    const childRight2 = nodeFacePort(childFresh.inner, childFresh.shape, "right");
+    if (!bodyBot2 || !bodyTop2 || !childTop2 || !childRight2) continue;
 
     const noTop = noFresh
       ? nodeFacePort(noFresh.inner, noFresh.shape, "top")
@@ -1865,11 +1869,11 @@ function alignLoopBodyColumn(svg) {
       { x: yesColNow, y: bodyBot2.y },
       { x: yesColNow, y: childTop2.y },
     ]);
-    // Return: INPUT → horizontal under the diamond → straight vertical climb
-    // into the bottom tip (no late jog near the tip).
+    // Return: mid-right of INPUT → short horizontal stub into the channel →
+    // straight vertical climb into the bottom tip (no late jog near the tip).
     const returnPts = dedupePoints([
-      { ...childBot2 },
-      { x: d.bottom.x, y: childBot2.y },
+      { ...childRight2 },
+      { x: d.bottom.x, y: childRight2.y },
       { ...d.bottom },
     ]);
     const yesEdgePts = dedupePoints([
