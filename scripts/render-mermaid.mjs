@@ -1349,8 +1349,8 @@ function fitSvgViewBox(svg, padding = 8) {
 }
 
 /**
- * Sentinel / WHILE body: keep the trailing INPUT under the Yes column and
- * route the return up the outside (no floating node under the diamond).
+ * Sentinel (primed) TB layout: Yes body + trailing INPUT left, No body right,
+ * return climbs the center channel into the diamond BOTTOM tip (no left spaghetti).
  */
 function alignLoopBodyColumn(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -1413,17 +1413,47 @@ function alignLoopBodyColumn(svg) {
       continue;
     }
 
+    const noEdge = edges.find(
+      (e) => e.from === did && e.label.trim().toLowerCase() === "no",
+    );
+    const noBodyId = noEdge?.to;
+    const noBody = noBodyId ? nodes.get(noBodyId) : null;
+    // Optional exclusive No→END (or similar) under the No column.
+    let endId = null;
+    if (noBodyId) {
+      const noOuts = edges.filter((e) => e.from === noBodyId);
+      const endEdge = noOuts.find(
+        (e) => e.to !== did && (incoming.get(e.to) || []).length === 1,
+      );
+      if (endEdge && nodes.get(endEdge.to)?.center) endId = endEdge.to;
+    }
+
     const yesPts = parsePoints(yes.points);
-    const colX = yesPts.length >= 2 ? yesPts[1].x : body.center.x;
-    const shiftNode = (id, dx) => {
-      if (Math.abs(dx) < 0.5) return;
+    const noPts = noEdge ? parsePoints(noEdge.points) : [];
+    const stubYesX = yesPts.length >= 2 ? yesPts[1].x : body.center.x;
+    const stubNoX =
+      noPts.length >= 2 ? noPts[1].x : noBody?.center.x ?? stubYesX + 120;
+    // Widen the channel between Yes/No columns so the return climb is readable.
+    const SPREAD = 40;
+    const yesColX = stubYesX - SPREAD;
+    const noColX = stubNoX + SPREAD;
+
+    const d = dNode.verts;
+    const bodyTop0 = nodeFacePort(body.inner, body.shape, "top");
+    if (!bodyTop0) continue;
+    // Compress the empty band under the diamond (classic TB, less tall).
+    const GAP_BELOW_DIAMOND = 40;
+    const dy = d.bottom.y + GAP_BELOW_DIAMOND - bodyTop0.y;
+
+    const shiftNode = (id, dx, ddy) => {
+      if (Math.abs(dx) < 0.5 && Math.abs(ddy) < 0.5) return;
       const idAttr = escapeAttr(id);
       next = next.replace(
         new RegExp(
           `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
         ),
         (_, open, inner, close) =>
-          `${open}${translateNodeGroup(inner, dx, 0)}${close}`,
+          `${open}${translateNodeGroup(inner, dx, ddy)}${close}`,
       );
       const g = new RegExp(
         `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
@@ -1438,44 +1468,98 @@ function alignLoopBodyColumn(svg) {
       }
     };
 
-    shiftNode(childId, colX - child.center.x);
-    if (
-      (incoming.get(bodyId) || []).length === 1 &&
-      Math.abs(body.center.x - colX) > 6
-    ) {
-      shiftNode(bodyId, colX - body.center.x);
+    // Move Yes column (sum + trailing INPUT) left + up.
+    if ((incoming.get(bodyId) || []).length === 1) {
+      shiftNode(bodyId, yesColX - body.center.x, dy);
+    } else {
+      shiftNode(bodyId, 0, dy);
+    }
+    const childBefore = nodes.get(childId);
+    shiftNode(childId, yesColX - childBefore.center.x, dy);
+
+    // Move No column (OUTPUT + END) right + up.
+    if (noBodyId && noBody?.center) {
+      shiftNode(noBodyId, noColX - noBody.center.x, dy);
+    }
+    if (endId) {
+      const endBefore = nodes.get(endId);
+      shiftNode(endId, noColX - endBefore.center.x, dy);
     }
 
     const bodyFresh = nodes.get(bodyId);
     const childFresh = nodes.get(childId);
+    const noFresh = noBodyId ? nodes.get(noBodyId) : null;
+    const endFresh = endId ? nodes.get(endId) : null;
     const bodyBot2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "bottom");
     const bodyTop2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "top");
     const childTop2 = nodeFacePort(childFresh.inner, childFresh.shape, "top");
     const childBot2 = nodeFacePort(childFresh.inner, childFresh.shape, "bottom");
     if (!bodyBot2 || !bodyTop2 || !childTop2 || !childBot2) continue;
 
+    const bodyRight = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "right");
+    const noLeft = noFresh
+      ? nodeFacePort(noFresh.inner, noFresh.shape, "left")
+      : null;
+    const noTop = noFresh
+      ? nodeFacePort(noFresh.inner, noFresh.shape, "top")
+      : null;
+    const noBot = noFresh
+      ? nodeFacePort(noFresh.inner, noFresh.shape, "bottom")
+      : null;
+    const endTop = endFresh
+      ? nodeFacePort(endFresh.inner, endFresh.shape, "top")
+      : null;
+
     const stroke = /stroke="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "#757575";
     const sw = /stroke-width="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "1.5";
     const marker =
       /marker-end="([^"]*)"/.exec(loopChild.attrs)?.[1] || "url(#arrowhead)";
 
-    const dropPts = dedupePoints([
-      { x: colX, y: bodyBot2.y },
-      { x: colX, y: childTop2.y },
-    ]);
+    const yesColNow = bodyTop2.x;
+    const noColNow = noTop?.x ?? noColX;
+    const gapX =
+      bodyRight && noLeft
+        ? (bodyRight.x + noLeft.x) / 2
+        : d.bottom.x;
+    const approachY = Math.min(
+      d.bottom.y + 18,
+      (d.bottom.y + bodyTop2.y) / 2,
+    );
 
-    // Return: left outside Yes column, climb clear of the body, enter diamond
-    // bottom (horizontal just under the tip — not through sum/OUTPUT).
-    const d = dNode.verts;
-    const colReturn = Math.min(colX, childBot2.x) - 22;
-    const approachY = d.bottom.y + 18;
+    const dropPts = dedupePoints([
+      { x: yesColNow, y: bodyBot2.y },
+      { x: yesColNow, y: childTop2.y },
+    ]);
+    // Return: INPUT → right into the Yes|No channel → up → diamond bottom tip.
     const returnPts = dedupePoints([
       { ...childBot2 },
-      { x: colReturn, y: childBot2.y },
-      { x: colReturn, y: approachY },
+      { x: gapX, y: childBot2.y },
+      { x: gapX, y: approachY },
       { x: d.bottom.x, y: approachY },
       { ...d.bottom },
     ]);
+    const yesEdgePts = dedupePoints([
+      { ...yesPts[0] },
+      { x: yesColNow, y: yesPts[0].y },
+      { x: yesColNow, y: bodyTop2.y },
+      { ...bodyTop2 },
+    ]);
+    const noEdgePts =
+      noTop && noPts.length
+        ? dedupePoints([
+            { ...noPts[0] },
+            { x: noColNow, y: noPts[0].y },
+            { x: noColNow, y: noTop.y },
+            { ...noTop },
+          ])
+        : null;
+    const endDropPts =
+      noBot && endTop
+        ? dedupePoints([
+            { x: noColNow, y: noBot.y },
+            { x: noColNow, y: endTop.y },
+          ])
+        : null;
 
     const mkEdge = (from, to, label, pts) => {
       const lab = ` data-label="${escapeAttr(label ?? "")}"`;
@@ -1492,14 +1576,13 @@ function alignLoopBodyColumn(svg) {
         return mkEdge(childId, did, "", returnPts);
       }
       if (from === did && to === bodyId) {
-        const stub = yesPts[1] || yesPts[0];
-        const rebuilt = dedupePoints([
-          { ...yesPts[0] },
-          { ...stub },
-          { x: stub.x, y: bodyTop2.y },
-          { ...bodyTop2 },
-        ]);
-        return mkEdge(did, bodyId, yes.label, rebuilt);
+        return mkEdge(did, bodyId, yes.label, yesEdgePts);
+      }
+      if (noBodyId && from === did && to === noBodyId && noEdgePts) {
+        return mkEdge(did, noBodyId, noEdge?.label ?? "No", noEdgePts);
+      }
+      if (endId && noBodyId && from === noBodyId && to === endId && endDropPts) {
+        return mkEdge(noBodyId, endId, "", endDropPts);
       }
       return full;
     });
