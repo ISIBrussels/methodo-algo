@@ -814,31 +814,24 @@ function rewireDiamondPorts(svg) {
  * Nudge each labeled edge's label near the source exit (~28px along the path).
  */
 function nudgeEdgeLabelsNearSource(svg) {
-  const EDGE_RE =
-    /<polyline class="edge"[^>]*\bdata-from="([^"]*)"[^>]*\bdata-to="([^"]*)"[^>]*\bdata-label="([^"]+)"[^>]*\bpoints="([^"]+)"[^>]*\/>/g;
-  const EDGE_RE_ALT =
-    /<polyline class="edge"[^>]*\bpoints="([^"]+)"[^>]*\bdata-from="([^"]*)"[^>]*\bdata-to="([^"]*)"[^>]*\bdata-label="([^"]+)"[^>]*\/>/g;
-
   /** @type {Map<string, {x:number,y:number}>} */
   const targets = new Map();
 
-  const collect = (from, to, label, pointsAttr) => {
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = /data-label="([^"]*)"/.exec(attrs)?.[1];
+    const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!from || !to || !label || !pointsAttr) continue;
+    if (!label.trim()) continue;
     const points = parsePoints(pointsAttr);
-    if (points.length < 2) return;
+    if (points.length < 2) continue;
     const total = pathLength(points);
     // Stay near the diamond exit; never past ~35% of a short edge.
     const dist = Math.min(28, Math.max(14, total * 0.22));
     const pos = pointAtDistance(points, dist);
     targets.set(`${from}\0${to}\0${label}`, pos);
-  };
-
-  for (const m of svg.matchAll(EDGE_RE)) {
-    collect(m[1], m[2], m[3], m[4]);
-  }
-  // Attribute order may vary; pick up any the first regex missed.
-  for (const m of svg.matchAll(EDGE_RE_ALT)) {
-    const key = `${m[2]}\0${m[3]}\0${m[4]}`;
-    if (!targets.has(key)) collect(m[2], m[3], m[4], m[1]);
   }
 
   if (targets.size === 0) return svg;
@@ -859,9 +852,44 @@ function nudgeEdgeLabelsNearSource(svg) {
       if (!textMatch) return full;
       const oldX = Number(textMatch[1]);
       const oldY = Number(textMatch[2]);
-      const dx = pos.x - oldX;
-      const dy = pos.y - oldY;
-      if (Math.hypot(dx, dy) < 8) return full; // already near source
+      // Park Yes/No on the diamond EXIT STUB (first segment), off the stroke —
+      // not mid-path (which often already turned onto the branch drop).
+      const pts = (() => {
+        for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+          const a = m[1];
+          const f = /data-from="([^"]*)"/.exec(a)?.[1];
+          const t = /data-to="([^"]*)"/.exec(a)?.[1];
+          const lab = /data-label="([^"]*)"/.exec(a)?.[1];
+          const p = /points="([^"]+)"/.exec(a)?.[1];
+          if (f === from && t === to && lab === label && p) return parsePoints(p);
+        }
+        return null;
+      })();
+      let aimX = pos.x;
+      let aimY = pos.y;
+      if (pts && pts.length >= 2) {
+        const stubMid = {
+          x: (pts[0].x + pts[1].x) / 2,
+          y: (pts[0].y + pts[1].y) / 2,
+        };
+        const horizontal =
+          Math.abs(pts[1].y - pts[0].y) < Math.abs(pts[1].x - pts[0].x);
+        if (horizontal) {
+          // Below the stub; for a left exit also clear of the vertical drop
+          // that starts at the stub tip (avoid "Yes" sitting on the shaft).
+          const tip = pts[1];
+          const leftish = tip.x < pts[0].x;
+          aimX = leftish ? tip.x - 20 : stubMid.x;
+          aimY = stubMid.y + 18;
+        } else {
+          const rightish = pts[1].x >= pts[0].x;
+          aimX = stubMid.x + (rightish ? 16 : -16);
+          aimY = stubMid.y;
+        }
+      }
+      const dx = aimX - oldX;
+      const dy = aimY - oldY;
+      if (Math.hypot(dx, dy) < 0.5) return full;
 
       const shifted = inner
         .replace(/\bx="([^"]+)"/g, (_, v) => `x="${Number(v) + dx}"`)
@@ -983,27 +1011,16 @@ function collapseJunctionNodes(svg) {
         const stubPts =
           inbound.length >= 2 ? inbound.slice(0, 2) : [...inbound];
         if (sideApproach === "right" || sideApproach === "left") {
-          // TB: drop clear of the diamond, climb OUTSIDE, enter inward.
+          // TB No→INPUT: sortie latérale, remontée directe (pas de stub vers le bas).
           const pad = 18;
           const stubY = exitCol.y;
           const colX =
             sideApproach === "right"
               ? Math.max(exitCol.x, end.x + pad)
               : Math.min(exitCol.x, end.x - pad);
-          const fromDiamond = nodes.get(e.from);
-          const poly = fromDiamond
-            ? /<polygon points="([^"]+)"/.exec(fromDiamond.inner)
-            : null;
-          const dVerts =
-            fromDiamond?.shape === "diamond" && poly
-              ? diamondVertices(poly[1])
-              : null;
-          const clearY = dVerts ? dVerts.bottom.y + 24 : stubY + 28;
-          const turnY = Math.max(stubY + 28, clearY);
           pts = dedupePoints([
             ...stubPts,
             { x: colX, y: stubY },
-            { x: colX, y: turnY },
             { x: colX, y: end.y },
             { ...end },
           ]);
@@ -1037,9 +1054,9 @@ function collapseJunctionNodes(svg) {
         const marker =
           /marker-end="([^"]*)"/.exec(e.attrs)?.[1] ||
           /marker-end="([^"]*)"/.exec(o.attrs)?.[1] ||
-          "url(#arrow)";
+          "url(#arrowhead)";
         rebuilt.push(
-          `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(e.from)}" data-to="${escapeAttr(o.to)}" data-label="${escapeAttr(label)}"/>`,
+          `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(e.from)}" data-to="${escapeAttr(o.to)}" data-label="${escapeAttr(label)}"/>`,
         );
       }
     } else if (junctions.has(e.from) || junctions.has(e.to)) {
@@ -1331,6 +1348,166 @@ function fitSvgViewBox(svg, padding = 8) {
   });
 }
 
+/**
+ * Sentinel / WHILE body: keep the trailing INPUT under the Yes column and
+ * route the return up the outside (no floating node under the diamond).
+ */
+function alignLoopBodyColumn(svg) {
+  /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
+  const nodes = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    const poly = /<polygon points="([^"]+)"/.exec(m[3]);
+    nodes.set(m[1], {
+      shape: m[2],
+      inner: m[3],
+      verts: m[2] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(m[3], m[2]),
+    });
+  }
+
+  /** @type {{from:string,to:string,label:string,points:string,attrs:string,full:string}[]} */
+  const edges = [];
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = /data-label="([^"]*)"/.exec(attrs)?.[1] ?? "";
+    const points = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!from || !to || !points) continue;
+    edges.push({ from, to, label, points, attrs, full: m[0] });
+  }
+
+  /** @type {Map<string, string[]>} */
+  const incoming = new Map();
+  for (const e of edges) {
+    if (!incoming.has(e.to)) incoming.set(e.to, []);
+    incoming.get(e.to).push(e.from);
+  }
+
+  let next = svg;
+  for (const [did, dNode] of nodes) {
+    if (!dNode.verts) continue;
+    const yes = edges.find(
+      (e) => e.from === did && e.label.trim().toLowerCase() === "yes",
+    );
+    if (!yes) continue;
+    const bodyId = yes.to;
+    const body = nodes.get(bodyId);
+    if (!body?.center || body.verts) continue;
+
+    // Exclusive child of the Yes body that loops back to this diamond.
+    const bodyOuts = edges.filter((e) => e.from === bodyId);
+    const loopChild = bodyOuts.find(
+      (e) =>
+        e.to !== did &&
+        (incoming.get(e.to) || []).length === 1 &&
+        edges.some((r) => r.from === e.to && r.to === did),
+    );
+    if (!loopChild) continue;
+    const childId = loopChild.to;
+    const child = nodes.get(childId);
+    // Sentinel pattern only: trailing INPUT in the Yes body (skip WHILE counter…).
+    if (!child?.center || child.verts || child.shape !== "parallelogram") {
+      continue;
+    }
+
+    const yesPts = parsePoints(yes.points);
+    const colX = yesPts.length >= 2 ? yesPts[1].x : body.center.x;
+    const shiftNode = (id, dx) => {
+      if (Math.abs(dx) < 0.5) return;
+      const idAttr = escapeAttr(id);
+      next = next.replace(
+        new RegExp(
+          `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
+        ),
+        (_, open, inner, close) =>
+          `${open}${translateNodeGroup(inner, dx, 0)}${close}`,
+      );
+      const g = new RegExp(
+        `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
+      ).exec(next);
+      if (g) {
+        nodes.set(id, {
+          shape: g[1],
+          inner: g[2],
+          verts: null,
+          center: nodeCenter(g[2], g[1]),
+        });
+      }
+    };
+
+    shiftNode(childId, colX - child.center.x);
+    if (
+      (incoming.get(bodyId) || []).length === 1 &&
+      Math.abs(body.center.x - colX) > 6
+    ) {
+      shiftNode(bodyId, colX - body.center.x);
+    }
+
+    const bodyFresh = nodes.get(bodyId);
+    const childFresh = nodes.get(childId);
+    const bodyBot2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "bottom");
+    const bodyTop2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "top");
+    const childTop2 = nodeFacePort(childFresh.inner, childFresh.shape, "top");
+    const childBot2 = nodeFacePort(childFresh.inner, childFresh.shape, "bottom");
+    if (!bodyBot2 || !bodyTop2 || !childTop2 || !childBot2) continue;
+
+    const stroke = /stroke="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "#757575";
+    const sw = /stroke-width="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "1.5";
+    const marker =
+      /marker-end="([^"]*)"/.exec(loopChild.attrs)?.[1] || "url(#arrowhead)";
+
+    const dropPts = dedupePoints([
+      { x: colX, y: bodyBot2.y },
+      { x: colX, y: childTop2.y },
+    ]);
+
+    // Return: left outside Yes column, climb clear of the body, enter diamond
+    // bottom (horizontal just under the tip — not through sum/OUTPUT).
+    const d = dNode.verts;
+    const colReturn = Math.min(colX, childBot2.x) - 22;
+    const approachY = d.bottom.y + 18;
+    const returnPts = dedupePoints([
+      { ...childBot2 },
+      { x: colReturn, y: childBot2.y },
+      { x: colReturn, y: approachY },
+      { x: d.bottom.x, y: approachY },
+      { ...d.bottom },
+    ]);
+
+    const mkEdge = (from, to, label, pts) => {
+      const lab = ` data-label="${escapeAttr(label ?? "")}"`;
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+    };
+
+    next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+      const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+      const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      if (from === bodyId && to === childId) {
+        return mkEdge(bodyId, childId, "", dropPts);
+      }
+      if (from === childId && to === did) {
+        return mkEdge(childId, did, "", returnPts);
+      }
+      if (from === did && to === bodyId) {
+        const stub = yesPts[1] || yesPts[0];
+        const rebuilt = dedupePoints([
+          { ...yesPts[0] },
+          { ...stub },
+          { x: stub.x, y: bodyTop2.y },
+          { ...bodyTop2 },
+        ]);
+        return mkEdge(did, bodyId, yes.label, rebuilt);
+      }
+      return full;
+    });
+  }
+
+  return next;
+}
+
 function renderDiagram(source) {
   const { source: prepared, lean } = preprocessParallelograms(source);
   const svg = renderMermaidSVG(prepared, {
@@ -1344,9 +1521,11 @@ function renderDiagram(source) {
   return fitSvgViewBox(
     transparentizeEdgeLabels(
       nudgeEdgeLabelsNearSource(
-        collapseJunctionNodes(
-          rewireDiamondPorts(
-            retargetParallelogramPorts(applyParallelograms(svg, lean)),
+        alignLoopBodyColumn(
+          collapseJunctionNodes(
+            rewireDiamondPorts(
+              retargetParallelogramPorts(applyParallelograms(svg, lean)),
+            ),
           ),
         ),
       ),
