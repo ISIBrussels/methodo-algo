@@ -249,14 +249,18 @@ function parallelogramPorts(pointsAttr) {
   const bot = pts.filter((p) => Math.abs(p.y - maxY) < 0.5);
   if (top.length < 2 || bot.length < 2) return null;
   const mid = (a, b) => ({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-  // Slanted sides: leftmost / rightmost vertices (forward lean).
-  const leftPts = [...pts].sort((a, b) => a.x - b.x).slice(0, 2);
-  const rightPts = [...pts].sort((a, b) => b.x - a.x).slice(0, 2);
+  // Slanted left/right faces: endpoints are the max/min-X corners of the
+  // top and bottom edges (not "two rightmost by x", which is ambiguous when
+  // skew is small). Midpoint of top-right↔bottom-right = mid of right lean.
+  const topLeft = top.reduce((a, b) => (a.x < b.x ? a : b));
+  const topRight = top.reduce((a, b) => (a.x > b.x ? a : b));
+  const botLeft = bot.reduce((a, b) => (a.x < b.x ? a : b));
+  const botRight = bot.reduce((a, b) => (a.x > b.x ? a : b));
   return {
     top: mid(top[0], top[1]),
     bottom: mid(bot[0], bot[1]),
-    left: mid(leftPts[0], leftPts[1]),
-    right: mid(rightPts[0], rightPts[1]),
+    left: mid(topLeft, botLeft),
+    right: mid(topRight, botRight),
     cx: (minX + maxX) / 2,
     cy: (minY + maxY) / 2,
   };
@@ -1830,9 +1834,11 @@ function alignLoopBodyColumn(svg) {
     const bodyBot2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "bottom");
     const bodyTop2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "top");
     const childTop2 = nodeFacePort(childFresh.inner, childFresh.shape, "top");
-    // Exit loop-return from the visual mid of the right slanted face
-    // (not bottom mid — lean makes that look like the SE corner).
-    const childRight2 = nodeFacePort(childFresh.inner, childFresh.shape, "right");
+    // Exit loop-return at the exact midpoint of the right slanted segment
+    // (top-right ↔ bottom-right vertices) — never bottom mid / SE corner.
+    const childPoly = /<polygon points="([^"]+)"/.exec(childFresh.inner)?.[1];
+    const childPorts = childPoly ? parallelogramPorts(childPoly) : null;
+    const childRight2 = childPorts?.right ?? null;
     if (!bodyBot2 || !bodyTop2 || !childTop2 || !childRight2) continue;
 
     const noTop = noFresh
