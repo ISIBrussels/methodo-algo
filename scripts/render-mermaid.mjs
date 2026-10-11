@@ -1393,18 +1393,26 @@ function fitSvgViewBox(svg, padding = 8) {
     }
   };
 
-  for (const m of svg.matchAll(/\bpoints="([^"]+)"/g)) {
+  // Marker polygons use points="0 0, 8 2.5, 0 5" (space-separated). If those
+  // pin minY to 0 while nodes were shifted down (REPEAT / nested-IF fixes),
+  // the SVG keeps a huge empty band above START — the "marge vide" under
+  // trace tables in exercices corrigés. Measure geometry outside <defs> only.
+  const geometry = svg.replace(/<defs[\s\S]*?<\/defs>/gi, "");
+
+  for (const m of geometry.matchAll(/\bpoints="([^"]+)"/g)) {
     const attr = m[1].trim();
     if (/^-?[\d.]+,/.test(attr)) {
       for (const p of parsePoints(attr)) push(p.x, p.y);
     } else {
+      // Non-comma "x y" pairs still appear on some shapes; keep them, but
+      // defs/markers are already stripped above.
       for (const pair of attr.split(/\s*,\s*/)) {
         const [x, y] = pair.trim().split(/\s+/).map(Number);
         push(x, y);
       }
     }
   }
-  for (const m of svg.matchAll(/<rect\b([^>]*)\/>/g)) {
+  for (const m of geometry.matchAll(/<rect\b([^>]*)\/?>/g)) {
     const attrs = m[1];
     const x = Number(/\bx="([^"]+)"/.exec(attrs)?.[1]);
     const y = Number(/\by="([^"]+)"/.exec(attrs)?.[1]);
@@ -1414,12 +1422,22 @@ function fitSvgViewBox(svg, padding = 8) {
     push(x, y);
     push(x + w, y + h);
   }
-  for (const m of svg.matchAll(/<text\b([^>]*)>/g)) {
+  for (const m of geometry.matchAll(/<text\b([^>]*)>/g)) {
     const attrs = m[1];
     push(
       Number(/\bx="([^"]+)"/.exec(attrs)?.[1]),
       Number(/\by="([^"]+)"/.exec(attrs)?.[1]),
     );
+  }
+  for (const m of geometry.matchAll(/<ellipse\b([^>]*)\/?>/g)) {
+    const attrs = m[1];
+    const cx = Number(/\bcx="([^"]+)"/.exec(attrs)?.[1]);
+    const cy = Number(/\bcy="([^"]+)"/.exec(attrs)?.[1]);
+    const rx = Number(/\brx="([^"]+)"/.exec(attrs)?.[1]);
+    const ry = Number(/\bry="([^"]+)"/.exec(attrs)?.[1]);
+    if (![cx, cy, rx, ry].every(Number.isFinite)) continue;
+    push(cx - rx, cy - ry);
+    push(cx + rx, cy + ry);
   }
 
   if (xs.length === 0 || ys.length === 0) return svg;
@@ -2252,6 +2270,203 @@ function alignLoopBodyColumn(svg) {
   return next;
 }
 
+/**
+ * Nested IF … THEN … merge (ex. 3.E): Yes → assign → merge, No → merge.
+ * Stack assign above merge on the Yes column; No enters merge mid-right;
+ * merge returns cleanly to the loop diamond bottom — no top-edge slide,
+ * orphan marker, or double climb.
+ */
+function alignIfThenMerge(svg) {
+  /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
+  const nodes = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    const poly = /<polygon points="([^"]+)"/.exec(m[3]);
+    nodes.set(m[1], {
+      shape: m[2],
+      inner: m[3],
+      verts: m[2] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(m[3], m[2]),
+    });
+  }
+
+  /** @type {{from:string,to:string,label:string,attrs:string}[]} */
+  const edges = [];
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = /data-label="([^"]*)"/.exec(attrs)?.[1] ?? "";
+    if (!from || !to) continue;
+    edges.push({ from, to, label, attrs });
+  }
+
+  /** @type {Map<string, string[]>} */
+  const incoming = new Map();
+  for (const e of edges) {
+    if (!incoming.has(e.to)) incoming.set(e.to, []);
+    incoming.get(e.to).push(e.from);
+  }
+
+  const GAP = 48;
+  let next = svg;
+
+  const refresh = (id) => {
+    const idAttr = escapeAttr(id);
+    const g = new RegExp(
+      `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
+    ).exec(next);
+    if (!g) return;
+    const poly = /<polygon points="([^"]+)"/.exec(g[2]);
+    nodes.set(id, {
+      shape: g[1],
+      inner: g[2],
+      verts: g[1] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(g[2], g[1]),
+    });
+  };
+
+  const shiftNode = (id, sdx, sdy) => {
+    if (Math.abs(sdx) < 0.5 && Math.abs(sdy) < 0.5) return;
+    const idAttr = escapeAttr(id);
+    next = next.replace(
+      new RegExp(
+        `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
+      ),
+      (_, open, inner, close) =>
+        `${open}${translateNodeGroup(inner, sdx, sdy)}${close}`,
+    );
+    refresh(id);
+  };
+
+  for (const [did, dNode] of nodes) {
+    if (!dNode.verts) continue;
+    const yes = edges.find(
+      (e) => e.from === did && e.label.trim().toLowerCase() === "yes",
+    );
+    const no = edges.find(
+      (e) => e.from === did && e.label.trim().toLowerCase() === "no",
+    );
+    if (!yes || !no) continue;
+
+    const thenId = yes.to;
+    const mergeId = no.to;
+    const thenNode = nodes.get(thenId);
+    const mergeNode = nodes.get(mergeId);
+    // THEN is a plain box; No lands on the merge box; THEN feeds merge.
+    if (!thenNode?.center || thenNode.verts) continue;
+    if (!mergeNode?.center || mergeNode.verts) continue;
+    if (thenId === mergeId) continue;
+    if (!edges.some((e) => e.from === thenId && e.to === mergeId)) continue;
+    const mergeIns = incoming.get(mergeId) || [];
+    if (!mergeIns.includes(did) || !mergeIns.includes(thenId)) continue;
+    // THEN exclusive from this IF (no other fan-in).
+    if ((incoming.get(thenId) || []).length !== 1) continue;
+
+    const d = dNode.verts;
+    const yesStub = diamondExitStub(d, "left");
+    const noStub = diamondExitStub(d, "right");
+    const colX = yesStub.x;
+
+    // Stack THEN then merge under the Yes column, fully below the diamond.
+    {
+      const thenTop = nodeFacePort(thenNode.inner, thenNode.shape, "top");
+      if (!thenTop) continue;
+      shiftNode(thenId, colX - thenTop.x, d.bottom.y + GAP - thenTop.y);
+    }
+    {
+      const thenFresh = nodes.get(thenId);
+      const thenBot = nodeFacePort(thenFresh.inner, thenFresh.shape, "bottom");
+      const mergeTop0 = nodeFacePort(
+        nodes.get(mergeId).inner,
+        nodes.get(mergeId).shape,
+        "top",
+      );
+      if (!thenBot || !mergeTop0) continue;
+      shiftNode(mergeId, colX - mergeTop0.x, thenBot.y + GAP - mergeTop0.y);
+    }
+
+    const thenFresh = nodes.get(thenId);
+    const mergeFresh = nodes.get(mergeId);
+    const thenTop = nodeFacePort(thenFresh.inner, thenFresh.shape, "top");
+    const thenBot = nodeFacePort(thenFresh.inner, thenFresh.shape, "bottom");
+    const mergeTop = nodeFacePort(mergeFresh.inner, mergeFresh.shape, "top");
+    const mergeBot = nodeFacePort(mergeFresh.inner, mergeFresh.shape, "bottom");
+    const mergeRight = nodeFacePort(
+      mergeFresh.inner,
+      mergeFresh.shape,
+      "right",
+    );
+    if (!thenTop || !thenBot || !mergeTop || !mergeBot || !mergeRight) continue;
+
+    // Optional loop-back from merge to a diamond above (WHILE header).
+    const loop = edges.find(
+      (e) =>
+        e.from === mergeId &&
+        nodes.get(e.to)?.verts &&
+        (nodes.get(e.to)?.center?.y ?? Infinity) < mergeFresh.center.y,
+    );
+    const loopDiamond = loop ? nodes.get(loop.to)?.verts : null;
+
+    const stroke = /stroke="([^"]+)"/.exec(yes.attrs)?.[1] ?? "#757575";
+    const sw = /stroke-width="([^"]+)"/.exec(yes.attrs)?.[1] ?? "1.5";
+    const marker =
+      /marker-end="([^"]*)"/.exec(yes.attrs)?.[1] || "url(#arrowhead)";
+
+    const yesPts = dedupePoints([
+      { ...d.left },
+      { ...yesStub },
+      { x: colX, y: thenTop.y },
+      { ...thenTop },
+    ]);
+    const thenPts = dedupePoints([{ ...thenBot }, { ...mergeTop }]);
+    // No: right stub → down to merge mid-right → enter mid of right face.
+    const noPts = dedupePoints([
+      { ...d.right },
+      { ...noStub },
+      { x: noStub.x, y: mergeRight.y },
+      { ...mergeRight },
+    ]);
+    // Climb on the LEFT of the Yes/THEN column so the return does not run
+    // parallel to the No drop (that pair read as a "double trait" up to the loop).
+    const loopPts =
+      loop && loopDiamond
+        ? dedupePoints([
+            { ...mergeBot },
+            { x: colX - 40, y: mergeBot.y },
+            { x: colX - 40, y: loopDiamond.bottom.y },
+            { ...loopDiamond.bottom },
+          ])
+        : null;
+
+    const mkEdge = (from, to, label, pts) => {
+      const lab = ` data-label="${escapeAttr(label ?? "")}"`;
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+    };
+
+    next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+      const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+      const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      if (from === did && to === thenId) {
+        return mkEdge(did, thenId, yes.label, yesPts);
+      }
+      if (from === thenId && to === mergeId) {
+        return mkEdge(thenId, mergeId, "", thenPts);
+      }
+      if (from === did && to === mergeId) {
+        return mkEdge(did, mergeId, no.label, noPts);
+      }
+      if (loop && loopPts && from === mergeId && to === loop.to) {
+        return mkEdge(mergeId, loop.to, "", loopPts);
+      }
+      return full;
+    });
+  }
+
+  return next;
+}
+
 function renderDiagram(source) {
   const { source: prepared, lean } = preprocessParallelograms(source);
   const svg = renderMermaidSVG(prepared, {
@@ -2265,12 +2480,14 @@ function renderDiagram(source) {
   return fitSvgViewBox(
     transparentizeEdgeLabels(
       nudgeEdgeLabelsNearSource(
-        placeDiamondsBelowPredecessors(
-          alignRepeatInputDiamond(
-            alignLoopBodyColumn(
-              collapseJunctionNodes(
-                rewireDiamondPorts(
-                  retargetParallelogramPorts(applyParallelograms(svg, lean)),
+        alignIfThenMerge(
+          placeDiamondsBelowPredecessors(
+            alignRepeatInputDiamond(
+              alignLoopBodyColumn(
+                collapseJunctionNodes(
+                  rewireDiamondPorts(
+                    retargetParallelogramPorts(applyParallelograms(svg, lean)),
+                  ),
                 ),
               ),
             ),

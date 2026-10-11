@@ -190,6 +190,11 @@ jobs:
                   border: 1px solid var(--color-border);
                 }
 
+                /* Corrigé: keep trace table and flowchart close (no big air gap). */
+                details.corrige table {
+                  margin: 0.75rem 0 0.35rem;
+                }
+
                 thead th {
                   background: var(--color-primary);
                   color: #ffffff;
@@ -223,6 +228,10 @@ jobs:
                   display: flex;
                   justify-content: center;
                   margin: 1.25rem 0;
+                }
+
+                details.corrige .mermaid-diagram {
+                  margin: 0.35rem 0 0.5rem;
                 }
 
                 .mermaid-diagram svg {
