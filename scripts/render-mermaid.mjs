@@ -1350,10 +1350,10 @@ function fitSvgViewBox(svg, padding = 8) {
 
 /**
  * REPEAT … UNTIL TB spine: parallelogram (INPUT) → diamond test with No looping
- * back to the same INPUT. Parallelogram lean means bottom-mid ≠ bbox centre, so
- * ELK's drop jogs into the diamond tip. Anchor the exit on the bottom-segment
- * midpoint and shift the diamond so its top tip sits on that same vertical.
- * Yes→END and No→INPUT (stub + climb) are rebuilt; shared INPUT stays put.
+ * back to the same INPUT. Align START centre, INPUT centre and diamond top tip
+ * on one vertical. Exit INPUT on that same X at the bottom edge (lean ⇒ this
+ * is the visual mid of the shape, coinciding with bottom-segment mid only when
+ * sides are vertical). Yes→END and No→INPUT (stub + climb) are rebuilt.
  */
 function alignRepeatInputDiamond(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -1401,7 +1401,7 @@ function alignRepeatInputDiamond(svg) {
     if (!drop) continue;
     const inputId = drop.from;
     const input = nodes.get(inputId);
-    if (!input) continue;
+    if (!input?.center) continue;
 
     const noEdge = edges.find(
       (e) =>
@@ -1421,10 +1421,19 @@ function alignRepeatInputDiamond(svg) {
     if (!endNode?.center || endNode.verts) continue;
     if ((incoming.get(endId) || []).length !== 1) continue;
 
-    const botMid = nodeFacePort(input.inner, input.shape, "bottom");
-    if (!botMid) continue;
-
-    const dx = botMid.x - dNode.verts.top.x;
+    // START (or other non-diamond feeder) defines the vertical spine via its centre.
+    const feed = edges.find(
+      (e) =>
+        e.to === inputId &&
+        e.from !== did &&
+        !nodes.get(e.from)?.verts,
+    );
+    const feedNode = feed ? nodes.get(feed.from) : null;
+    const top0 = nodeFacePort(input.inner, input.shape, "top");
+    const bot0 = nodeFacePort(input.inner, input.shape, "bottom");
+    if (!top0 || !bot0) continue;
+    const feedPts = feed ? parsePoints(feed.points) : [];
+    const spineX = feedNode?.center?.x ?? input.center.x;
 
     const shiftNode = (id, sdx, sdy) => {
       if (Math.abs(sdx) < 0.5 && Math.abs(sdy) < 0.5) return;
@@ -1451,19 +1460,25 @@ function alignRepeatInputDiamond(svg) {
       }
     };
 
-    shiftNode(did, dx, 0);
-    // Keep END under the Yes exit column as the diamond slides.
-    shiftNode(endId, dx, 0);
+    // Keep INPUT centre on the START spine (do not park on bottom-mid: lean
+    // would slide the parallelogram off START).
+    shiftNode(inputId, spineX - input.center.x, 0);
+    const inputMid = nodes.get(inputId);
+    const bot = nodeFacePort(inputMid.inner, inputMid.shape, "bottom");
+    const top = nodeFacePort(inputMid.inner, inputMid.shape, "top");
+    const right = nodeFacePort(inputMid.inner, inputMid.shape, "right");
+    if (!bot || !top || !right) continue;
+
+    const ddx = spineX - dNode.verts.top.x;
+    shiftNode(did, ddx, 0);
+    shiftNode(endId, ddx, 0);
 
     const d = nodes.get(did)?.verts;
-    const inputFresh = nodes.get(inputId);
     const endFresh = nodes.get(endId);
-    if (!d || !inputFresh || !endFresh) continue;
+    if (!d || !endFresh) continue;
 
-    const bot = nodeFacePort(inputFresh.inner, inputFresh.shape, "bottom");
-    const right = nodeFacePort(inputFresh.inner, inputFresh.shape, "right");
     const endTop = nodeFacePort(endFresh.inner, endFresh.shape, "top");
-    if (!bot || !right || !endTop) continue;
+    if (!endTop) continue;
 
     // Fine-tune END onto the Yes stub X (stadium top mid).
     const yesStub = diamondExitStub(d, "left");
@@ -1484,9 +1499,22 @@ function alignRepeatInputDiamond(svg) {
     const marker =
       /marker-end="([^"]*)"/.exec(drop.attrs)?.[1] || "url(#arrowhead)";
 
+    // Top/bottom edge hits on the shared centre axis (visual mid of INPUT).
+    const attachTop = { x: spineX, y: top.y };
+    const attachBot = { x: spineX, y: bot.y };
+    const feedStart = feedNode
+      ? nodeFacePort(feedNode.inner, feedNode.shape, "bottom")
+      : null;
+    const feedPtsOut =
+      feedStart || feedPts.length
+        ? dedupePoints([
+            { x: spineX, y: feedStart?.y ?? feedPts[0].y },
+            { ...attachTop },
+          ])
+        : null;
     const dropPts = dedupePoints([
-      { ...bot },
-      { x: bot.x, y: d.top.y },
+      { ...attachBot },
+      { x: spineX, y: d.top.y },
       { ...d.top },
     ]);
     const yesPts = dedupePoints([
@@ -1508,9 +1536,13 @@ function alignRepeatInputDiamond(svg) {
       return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
     };
 
+    const feedFrom = feed?.from;
     next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
       const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
       const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      if (feedFrom && feedPtsOut && from === feedFrom && to === inputId) {
+        return mkEdge(feedFrom, inputId, "", feedPtsOut);
+      }
       if (from === inputId && to === did) {
         return mkEdge(inputId, did, "", dropPts);
       }
