@@ -356,35 +356,107 @@ function translateNodeGroup(groupInner, dx, dy) {
   return next;
 }
 
-/** Pin diamond <text>/<tspan> on the rhombus centre (text-anchor=middle). */
+/**
+ * Pin diamond label on the rhombus centre.
+ * Horizontal: text-anchor=middle at cx.
+ * Vertical: centre the multi-line ink bbox (tspan/dy stack) on cy.
+ * Ink extents match Chromium getBBox for this font stack
+ * (~1.08·fs above / ~0.31·fs below each baseline). First-line dy bias
+ * from beautiful-mermaid is folded into <text y> so the stack is even.
+ */
 function centerDiamondLabel(groupInner, cx, cy) {
-  let next = groupInner.replace(/<text\b([^>]*)>/g, (_, attrs) => {
-    let out = attrs;
-    if (/\sx="[^"]*"/.test(out) || /^x="/.test(out.trim())) {
-      out = out.replace(/(^|\s)x="[^"]+"/, `$1x="${cx}"`);
-    } else {
-      out = ` x="${cx}"${out}`;
-    }
-    if (/\sy="[^"]*"/.test(out) || /^y="/.test(out.trim())) {
-      out = out.replace(/(^|\s)y="[^"]+"/, `$1y="${cy}"`);
-    } else {
-      out = ` y="${cy}"${out}`;
-    }
-    if (!/text-anchor=/.test(out)) {
-      out += ` text-anchor="middle"`;
-    }
-    return `<text${out}>`;
-  });
-  next = next.replace(/<tspan\b([^>]*)>/g, (_, attrs) => {
-    let out = attrs;
-    if (/(^|\s)x="/.test(out)) {
-      out = out.replace(/(^|\s)x="[^"]+"/, `$1x="${cx}"`);
-    } else {
-      out = ` x="${cx}"${out}`;
-    }
-    return `<tspan${out}>`;
-  });
-  return next;
+  return groupInner.replace(
+    /<text\b([^>]*)>([\s\S]*?)<\/text>/g,
+    (_, attrs, inner) => {
+      const fs = Number(/font-size="([^"]+)"/.exec(attrs)?.[1] ?? 13);
+      const inkAbove = fs * 1.08;
+      const inkBelow = fs * 0.31;
+      let textY = Number(/(?:^|\s)y="([^"]+)"/.exec(attrs)?.[1] ?? cy);
+
+      /** @type {{absY: number|null, dy: number|null}[]} */
+      const spans = [];
+      const tspanRe = /<tspan\b([^>]*)>/g;
+      let m;
+      while ((m = tspanRe.exec(inner))) {
+        const a = m[1];
+        const abs = /(?:^|\s)y="([^"]+)"/.exec(a);
+        const dy = /(?:^|\s)dy="([^"]+)"/.exec(a);
+        spans.push({
+          absY: abs ? Number(abs[1]) : null,
+          dy: dy ? Number(dy[1]) : null,
+        });
+      }
+
+      // Absolute baselines before rewrite (SVG dy is cumulative).
+      let yCursor = textY;
+      const baselines = [];
+      if (spans.length === 0) {
+        baselines.push(textY);
+      } else {
+        for (const sp of spans) {
+          if (sp.absY != null) yCursor = sp.absY;
+          if (sp.dy != null) yCursor += sp.dy;
+          baselines.push(yCursor);
+        }
+      }
+
+      const top = baselines[0] - inkAbove;
+      const bottom = baselines[baselines.length - 1] + inkBelow;
+      const mid = (top + bottom) / 2;
+      const delta = cy - mid;
+
+      // Rebase: fold first dy into textY, keep inter-line steps.
+      /** @type {(number|null)[]} */
+      let newDys = spans.map((sp) => sp.dy);
+      if (spans.length > 0 && spans.every((sp) => sp.absY == null)) {
+        textY = baselines[0] + delta; // first baseline after shift
+        newDys = spans.map((sp, i) => (i === 0 ? 0 : sp.dy));
+      } else {
+        textY += delta;
+      }
+
+      let outAttrs = attrs;
+      if (/(?:^|\s)x="/.test(outAttrs)) {
+        outAttrs = outAttrs.replace(/(^|\s)x="[^"]+"/, `$1x="${cx}"`);
+      } else {
+        outAttrs = ` x="${cx}"${outAttrs}`;
+      }
+      if (/(?:^|\s)y="/.test(outAttrs)) {
+        outAttrs = outAttrs.replace(/(^|\s)y="[^"]+"/, `$1y="${textY}"`);
+      } else {
+        outAttrs = ` y="${textY}"${outAttrs}`;
+      }
+      if (!/text-anchor=/.test(outAttrs)) {
+        outAttrs += ` text-anchor="middle"`;
+      }
+
+      let spanIdx = 0;
+      const newInner = inner.replace(/<tspan\b([^>]*)>/g, (_full, a) => {
+        const sp = spans[spanIdx];
+        const dyVal = newDys[spanIdx];
+        spanIdx += 1;
+        let next = a;
+        if (/(?:^|\s)x="/.test(next)) {
+          next = next.replace(/(^|\s)x="[^"]+"/, `$1x="${cx}"`);
+        } else {
+          next = ` x="${cx}"${next}`;
+        }
+        if (sp?.absY != null) {
+          next = next.replace(/(^|\s)y="[^"]+"/, `$1y="${sp.absY + delta}"`);
+        }
+        if (dyVal != null) {
+          if (/(?:^|\s)dy="/.test(next)) {
+            next = next.replace(/(^|\s)dy="[^"]+"/, `$1dy="${dyVal}"`);
+          } else {
+            next += ` dy="${dyVal}"`;
+          }
+        }
+        return `<tspan${next}>`;
+      });
+
+      return `<text${outAttrs}>${newInner}</text>`;
+    },
+  );
 }
 
 /** Attachment point on a node face toward a diamond exit. */
