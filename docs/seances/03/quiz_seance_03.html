@@ -117,7 +117,6 @@
       .answers label.correct {
         background: var(--color-row-alt);
         color: var(--color-primary);
-        font-weight: 600;
       }
 
       .answers label.wrong {
@@ -256,7 +255,7 @@
           text: "Une itération (<em>iteration</em>), c'est…",
           options: [
             { value: "A", label: "la fin définitive du programme" },
-            { value: "B", label: "<strong>un tour</strong> d'exécution du corps de la boucle" },
+            { value: "B", label: "un tour d'exécution du corps de la boucle" },
             { value: "C", label: "uniquement le symbole <code>START</code>" },
             { value: "D", label: "une affectation sans condition" },
           ],
@@ -267,7 +266,7 @@
           id: "q2",
           text: "Dans un <code>WHILE … DO … END WHILE</code>, la condition est testée…",
           options: [
-            { value: "A", label: "<strong>avant</strong> chaque exécution du corps" },
+            { value: "A", label: "avant chaque exécution du corps" },
             { value: "B", label: "uniquement après le dernier tour" },
             { value: "C", label: "jamais : le corps tourne toujours" },
             { value: "D", label: "seulement au moment du <code>START</code>" },
@@ -280,7 +279,7 @@
           text: "Avec <code>REPEAT … UNTIL</code>, le nombre minimal d'exécutions du corps est…",
           options: [
             { value: "A", label: "zéro" },
-            { value: "B", label: "<strong>un</strong> (au moins une fois)" },
+            { value: "B", label: "un (au moins une fois)" },
             { value: "C", label: "toujours exactement deux" },
             { value: "D", label: "infini" },
           ],
@@ -304,7 +303,7 @@
           text: "Une boucle infinie (<em>infinite loop</em>) survient souvent si…",
           options: [
             { value: "A", label: "on initialise correctement le compteur" },
-            { value: "B", label: "on <strong>oublie</strong> de modifier la variable testée dans le corps" },
+            { value: "B", label: "on oublie de modifier la variable testée dans le corps" },
             { value: "C", label: "on utilise un losange Yes/No" },
             { value: "D", label: "on écrit <code>END WHILE</code>" },
           ],
@@ -316,7 +315,7 @@
           text: "Un compteur (<em>counter</em>) sert surtout à…",
           options: [
             { value: "A", label: "stocker le résultat d'une somme progressive" },
-            { value: "B", label: "<strong>compter</strong> combien de fois quelque chose s'est produit" },
+            { value: "B", label: "compter combien de fois quelque chose s'est produit" },
             { value: "C", label: "marquer la fin des données avec une valeur spéciale" },
             { value: "D", label: "remplacer le symbole <code>OUTPUT</code>" },
           ],
@@ -340,7 +339,7 @@
           text: "Une valeur sentinelle (<em>sentinel</em>)…",
           options: [
             { value: "A", label: "est toujours ajoutée à la somme" },
-            { value: "B", label: "signale la <strong>fin</strong> des données et n'est en général <strong>pas</strong> traitée comme une donnée" },
+            { value: "B", label: "signale la fin des données et n'est en général pas traitée comme une donnée" },
             { value: "C", label: "remplace le mot-clé <code>WHILE</code>" },
             { value: "D", label: "est obligatoire dans tout <code>IF</code>" },
           ],
@@ -352,7 +351,7 @@
           text: "Pour une validation de saisie (<em>input validation</em>), on…",
           options: [
             { value: "A", label: "accepte la première saisie quoi qu'il arrive" },
-            { value: "B", label: "<strong>redemande</strong> tant que la valeur est hors domaine" },
+            { value: "B", label: "redemande tant que la valeur est hors domaine" },
             { value: "C", label: "interdit tout <code>REPEAT</code>" },
             { value: "D", label: "utilise uniquement un <code>IF</code> sans boucle" },
           ],
@@ -363,7 +362,7 @@
           id: "q10",
           text: "Pour trouver le minimum parmi N saisies successives, une bonne stratégie est…",
           options: [
-            { value: "A", label: "d'initialiser <code>minimum</code> avec la <strong>première</strong> valeur, puis de comparer les suivantes" },
+            { value: "A", label: "d'initialiser <code>minimum</code> avec la première valeur, puis de comparer les suivantes" },
             { value: "B", label: "d'ignorer la première saisie" },
             { value: "C", label: "de n'utiliser que des <code>IF</code> sans boucle, même si N est grand" },
             { value: "D", label: "de mettre la sentinelle dans le minimum" },
