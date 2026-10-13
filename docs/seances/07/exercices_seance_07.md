@@ -19,7 +19,6 @@
 ## Clôture
 
 - Synthèse : search / sort / ordres de grandeur.
-- Annonce séance 8 *(optionnelle)* : blanc d'examen.
 
 <nav class="page-nav">
   <a href="cours_seance_07.html">← Cours</a>

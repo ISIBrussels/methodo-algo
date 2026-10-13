@@ -2,8 +2,8 @@
 
 Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) à l'ISIB - HE2B.
 
-- **Durée totale** : 10 h 30 (+ 1 h 30 optionnelle)
-- **Organisation** : 7 séances de 1 h 30 + 1 séance optionnelle (révision / examen blanc)
+- **Durée totale** : 10 h 30
+- **Organisation** : 7 séances de 1 h 30
 - **Format** : cours magistral en amphithéâtre (pas de laboratoire / TP machine)
 - **Support** : **flowcharts** avec passage progressif au **pseudocode** ; texte FR ; flowcharts + *pseudocode* EN
 
@@ -24,7 +24,6 @@ Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) 
 | 5 | 1 h 30 | Tableaux (arrays) |
 | 6 | 1 h 30 | Fonctions et procédures |
 | 7 | 1 h 30 | Recherche, tri et efficacité |
-| 8 *(opt.)* | 1 h 30 | Révision et examen blanc |
 
 ## Séances
 
@@ -35,7 +34,6 @@ Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) 
 - **Séance 5 — Tableaux (arrays)** : [Cours](docs/seances/05/cours_seance_05.md) · [Quiz](docs/seances/05/quiz_seance_05.html) · [Exercices](docs/seances/05/exercices_seance_05.md)
 - **Séance 6 — Fonctions et procédures** : [Cours](docs/seances/06/cours_seance_06.md) · [Quiz](docs/seances/06/quiz_seance_06.html) · [Exercices](docs/seances/06/exercices_seance_06.md)
 - **Séance 7 — Recherche, tri et efficacité** : [Cours](docs/seances/07/cours_seance_07.md) · [Quiz](docs/seances/07/quiz_seance_07.html) · [Exercices](docs/seances/07/exercices_seance_07.md)
-- **Séance 8 *(optionnelle)* — Révision et examen blanc** : [Cours](docs/seances/08/cours_seance_08.md) · [Quiz](docs/seances/08/quiz_seance_08.html) · [Exercices](docs/seances/08/exercices_seance_08.md)
 
 ## Structure du dépôt
 
