@@ -1687,11 +1687,11 @@ function alignRepeatInputDiamond(svg) {
     const noStub = diamondExitStub(d, "right");
     const yesColX = yesStub.x;
 
-    // Yes column: with OUTPUT, stack OUTPUT→END fully below the diamond
-    // (avoid parallelogram/rhombus overlap). Classic Yes→END stays mid-height
-    // on the Yes stub (cours slide 8).
+    // Yes column: stack Yes target(s) fully below the diamond so END never
+    // sits on the left tip (mid-height overlap made Yes→END unreadable).
+    // Path: left tip → stub → drop → top mid of first Yes target.
+    const yesAnchorY = d.bottom.y + GAP;
     if (outputId) {
-      const yesAnchorY = d.bottom.y + GAP;
       const outTop = nodeTopY(outputId);
       const outNode = nodes.get(outputId);
       const outTopPort = nodeFacePort(outNode.inner, outNode.shape, "top");
@@ -1710,15 +1710,13 @@ function alignRepeatInputDiamond(svg) {
       }
     } else {
       const endTop = nodeTopY(endId);
-      const endBot = nodeBotY(endId);
       const endTopPort = nodeFacePort(
         nodes.get(endId).inner,
         nodes.get(endId).shape,
         "top",
       );
-      if (endTop != null && endBot != null && endTopPort) {
-        const endCy = (endTop + endBot) / 2;
-        shiftNode(endId, yesColX - endTopPort.x, d.cy - endCy);
+      if (endTop != null && endTopPort) {
+        shiftNode(endId, yesColX - endTopPort.x, yesAnchorY - endTop);
       }
     }
 

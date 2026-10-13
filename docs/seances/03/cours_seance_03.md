@@ -169,9 +169,9 @@ Corps d'abord ; losange : **No** → on recommence, **Yes** → on sort.
 flowchart TB
   A([START]) --> B[/INPUT password/]
   B --> C{"password =<br/>secret"}
-  C -->|Yes| D([END])
   C -->|No| J["​"]
   J --> B
+  C -->|Yes| D([END])
 ```
 
 </div>
