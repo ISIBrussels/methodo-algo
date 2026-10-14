@@ -273,10 +273,10 @@ Avec les saisies `4`, `6`, `-1` : la boucle traite `4` et `6`, puis s'arrête. L
 
 Lecture « amorcée » (`SENTINEL = -1`) : `INPUT` avant le test, corps (`sum` puis `INPUT`), sortie sur **No**.
 
-<div class="mid-mermaid">
+<div class="max-mermaid-wide">
 
 ```mermaid
-flowchart TB
+flowchart LR
   A([START]) --> B["sum = 0"]
   B --> C[/INPUT value/]
   C --> D{"value <><br/>SENTINEL"}

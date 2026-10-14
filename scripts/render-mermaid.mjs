@@ -337,17 +337,27 @@ function retargetParallelogramPorts(svg) {
     const p = ports.get(to);
     const prev = pts[pts.length - 2];
     const end = pts[pts.length - 1];
-    // Only vertical approaches (typical TB I/O landing).
-    if (Math.abs(prev.x - end.x) > 1 && Math.abs(prev.y - end.y) <= 1) {
-      return full;
-    }
-    if (Math.abs(prev.x - end.x) > 1) return full;
+    const vertical =
+      Math.abs(prev.x - end.x) <= 1 && Math.abs(prev.y - end.y) > 1;
+    const horizontal =
+      Math.abs(prev.y - end.y) <= 1 && Math.abs(prev.x - end.x) > 1;
+    if (!vertical && !horizontal) return full;
 
-    const target = prev.y <= end.y ? p.top : p.bottom;
+    const target = vertical
+      ? prev.y <= end.y
+        ? p.top
+        : p.bottom
+      : prev.x <= end.x
+        ? p.left
+        : p.right;
     if (Math.hypot(target.x - end.x, target.y - end.y) <= 0.5) return full;
 
     pts[pts.length - 1] = { ...target };
-    pts[pts.length - 2] = { x: target.x, y: prev.y };
+    if (vertical) {
+      pts[pts.length - 2] = { x: target.x, y: prev.y };
+    } else {
+      pts[pts.length - 2] = { x: prev.x, y: target.y };
+    }
     pts = dedupePoints(pts);
     return `<polyline class="edge"${attrs.replace(
       /points="[^"]+"/,
@@ -1917,6 +1927,17 @@ function placeDiamondsBelowPredecessors(svg) {
     });
     if (preds.length !== 1) continue;
     const predId = preds[0];
+    const predNode = nodes.get(predId);
+    // Skip LR spines (predecessor clearly to the left) — TB-only pass.
+    if (
+      predNode?.center &&
+      dNode.center &&
+      dNode.center.x - predNode.center.x > 30 &&
+      Math.abs(dNode.center.x - predNode.center.x) >
+        Math.abs(dNode.center.y - predNode.center.y) + 10
+    ) {
+      continue;
+    }
     const predBot = botY(predId);
     const dTop = topY(did);
     if (predBot == null || dTop == null) continue;
@@ -2040,10 +2061,13 @@ function placeDiamondsBelowPredecessors(svg) {
 }
 
 /**
- * Sentinel (primed) TB layout: Yes body + trailing INPUT left, No body right,
- * return leaves the trailing INPUT at mid-right (skewed face), short stub
- * right into the center channel, then climbs vertically into the diamond
- * BOTTOM tip (no left spaghetti, no bottom-corner exit).
+ * Sentinel (primed) layout:
+ * - TB: Yes body + trailing INPUT left, No body right; return from INPUT
+ *   mid-right into diamond BOTTOM tip.
+ * - LR: Yes/No rows above/below (top/bottom tips); bodies to the right;
+ *   return from trailing INPUT (face toward diamond) down/up the free
+ *   mid band to the RIGHT tip (LR analogue of TB bottom-tip return —
+ *   avoids crossing the Yes/No shafts).
  */
 function alignLoopBodyColumn(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -2111,7 +2135,7 @@ function alignLoopBodyColumn(svg) {
     );
     const noBodyId = noEdge?.to;
     const noBody = noBodyId ? nodes.get(noBodyId) : null;
-    // Optional exclusive No→END (or similar) under the No column.
+    // Optional exclusive No→END (or similar) under the No column / row.
     let endId = null;
     if (noBodyId) {
       const noOuts = edges.filter((e) => e.from === noBodyId);
@@ -2123,20 +2147,17 @@ function alignLoopBodyColumn(svg) {
 
     const yesPts = parsePoints(yes.points);
     const noPts = noEdge ? parsePoints(noEdge.points) : [];
-    const stubYesX = yesPts.length >= 2 ? yesPts[1].x : body.center.x;
-    const stubNoX =
-      noPts.length >= 2 ? noPts[1].x : noBody?.center.x ?? stubYesX + 120;
-    // Widen the channel between Yes/No columns so the return climb is readable.
-    const SPREAD = 40;
-    const yesColX = stubYesX - SPREAD;
-    const noColX = stubNoX + SPREAD;
+    // LR Yes/No leave via vertical stubs (top/bottom); TB via horizontal.
+    const isLR =
+      yesPts.length >= 2 &&
+      Math.abs(yesPts[1].y - yesPts[0].y) >=
+        Math.abs(yesPts[1].x - yesPts[0].x);
 
     const d = dNode.verts;
-    const bodyTop0 = nodeFacePort(body.inner, body.shape, "top");
-    if (!bodyTop0) continue;
-    // Compress the empty band under the diamond (classic TB, less tall).
-    const GAP_BELOW_DIAMOND = 40;
-    const dy = d.bottom.y + GAP_BELOW_DIAMOND - bodyTop0.y;
+    const stroke = /stroke="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "#757575";
+    const sw = /stroke-width="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "1.5";
+    const marker =
+      /marker-end="([^"]*)"/.exec(loopChild.attrs)?.[1] || "url(#arrowhead)";
 
     const shiftNode = (id, dx, ddy) => {
       if (Math.abs(dx) < 0.5 && Math.abs(ddy) < 0.5) return;
@@ -2160,6 +2181,193 @@ function alignLoopBodyColumn(svg) {
         });
       }
     };
+
+    const mkEdge = (from, to, label, pts) => {
+      const lab = ` data-label="${escapeAttr(label ?? "")}"`;
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+    };
+
+    if (isLR) {
+      const yesSide = yesPts[0].y <= d.cy ? "top" : "bottom";
+      const noSide = yesSide === "top" ? "bottom" : "top";
+      const yesStub = diamondExitStub(d, yesSide);
+      const noStub = diamondExitStub(d, noSide);
+      const GAP_X = 44;
+      const GAP_ROW = 28;
+
+      // Anchor Yes/No rows on stub Y, bodies to the right of the diamond.
+      const yesRowY =
+        yesSide === "top" ? yesStub.y - GAP_ROW : yesStub.y + GAP_ROW;
+      const noRowY =
+        noSide === "top" ? noStub.y - GAP_ROW : noStub.y + GAP_ROW;
+      const branchX0 = d.right.x + GAP_X;
+
+      const bodyLeft0 = nodeFacePort(body.inner, body.shape, "left");
+      if (!bodyLeft0) continue;
+      if ((incoming.get(bodyId) || []).length === 1) {
+        shiftNode(bodyId, branchX0 - bodyLeft0.x, yesRowY - bodyLeft0.y);
+      } else {
+        shiftNode(bodyId, 0, yesRowY - bodyLeft0.y);
+      }
+
+      {
+        const bodyNow = nodes.get(bodyId);
+        const bodyRight = nodeFacePort(bodyNow.inner, bodyNow.shape, "right");
+        const childLeft0 = nodeFacePort(child.inner, child.shape, "left");
+        if (!bodyRight || !childLeft0) continue;
+        shiftNode(
+          childId,
+          bodyRight.x + GAP_X - childLeft0.x,
+          yesRowY - childLeft0.y,
+        );
+      }
+
+      if (noBodyId && noBody?.center) {
+        const noLeft0 = nodeFacePort(noBody.inner, noBody.shape, "left");
+        if (noLeft0) {
+          shiftNode(noBodyId, branchX0 - noLeft0.x, noRowY - noLeft0.y);
+        }
+      }
+      if (endId && noBodyId) {
+        const noNow = nodes.get(noBodyId);
+        const noRight = noNow
+          ? nodeFacePort(noNow.inner, noNow.shape, "right")
+          : null;
+        const endLeft0 = nodeFacePort(
+          nodes.get(endId).inner,
+          nodes.get(endId).shape,
+          "left",
+        );
+        if (noRight && endLeft0) {
+          shiftNode(
+            endId,
+            noRight.x + GAP_X - endLeft0.x,
+            noRowY - endLeft0.y,
+          );
+        }
+      }
+
+      // Parallelogram lean: keep END on OUTPUT right-face mid (not top mid).
+      if (endId && noBodyId) {
+        const noNow = nodes.get(noBodyId);
+        const noPoly = noNow
+          ? /<polygon points="([^"]+)"/.exec(noNow.inner)?.[1]
+          : null;
+        const noPorts = noPoly ? parallelogramPorts(noPoly) : null;
+        const endNow = nodes.get(endId);
+        const endLeft = endNow
+          ? nodeFacePort(endNow.inner, endNow.shape, "left")
+          : null;
+        if (noPorts?.right && endLeft) {
+          shiftNode(endId, noPorts.right.x + GAP_X - endLeft.x, noPorts.right.y - endLeft.y);
+        }
+      }
+
+      const bodyFresh = nodes.get(bodyId);
+      const childFresh = nodes.get(childId);
+      const noFresh = noBodyId ? nodes.get(noBodyId) : null;
+      const endFresh = endId ? nodes.get(endId) : null;
+      const bodyLeft = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "left");
+      const bodyRight = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "right");
+      const childPoly = /<polygon points="([^"]+)"/.exec(childFresh.inner)?.[1];
+      const childPorts = childPoly ? parallelogramPorts(childPoly) : null;
+      const childLeft = childPorts?.left ?? null;
+      // Leave return on the face toward the diamond (not the body→INPUT left entry).
+      const childReturn =
+        yesSide === "top" ? childPorts?.bottom : childPorts?.top;
+      const noPoly = noFresh
+        ? /<polygon points="([^"]+)"/.exec(noFresh.inner)?.[1]
+        : null;
+      const noPorts = noPoly ? parallelogramPorts(noPoly) : null;
+      const noLeft = noPorts?.left ?? null;
+      const noRight = noPorts?.right ?? null;
+      const endLeft = endFresh
+        ? nodeFacePort(endFresh.inner, endFresh.shape, "left")
+        : null;
+      if (!bodyLeft || !bodyRight || !childLeft || !childReturn) continue;
+
+      // Yes: tip → stub → elbow → body left mid (row may sit off the stub Y).
+      const yesUse = dedupePoints([
+        { ...d[yesSide] },
+        { ...yesStub },
+        { x: yesStub.x, y: bodyLeft.y },
+        { ...bodyLeft },
+      ]);
+
+      const bodyChildPts =
+        Math.abs(bodyRight.y - childLeft.y) <= 1.5
+          ? dedupePoints([{ ...bodyRight }, { ...childLeft }])
+          : dedupePoints([
+              { ...bodyRight },
+              { x: bodyRight.x, y: childLeft.y },
+              { ...childLeft },
+            ]);
+
+      // Return: bottom/top mid of trailing INPUT → vertical into the free
+      // mid band (between Yes/No rows) → horizontal into RIGHT tip.
+      const returnPts = dedupePoints([
+        { ...childReturn },
+        { x: childReturn.x, y: d.right.y },
+        { ...d.right },
+      ]);
+
+      const noEdgePts =
+        noLeft != null
+          ? dedupePoints([
+              { ...d[noSide] },
+              { ...noStub },
+              { x: noStub.x, y: noLeft.y },
+              { ...noLeft },
+            ])
+          : null;
+      const endPts =
+        noRight && endLeft
+          ? Math.abs(noRight.y - endLeft.y) <= 1.5
+            ? dedupePoints([{ ...noRight }, { ...endLeft }])
+            : dedupePoints([
+                { ...noRight },
+                { x: noRight.x, y: endLeft.y },
+                { ...endLeft },
+              ])
+          : null;
+
+      next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+        const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+        const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+        if (from === bodyId && to === childId) {
+          return mkEdge(bodyId, childId, "", bodyChildPts);
+        }
+        if (from === childId && to === did) {
+          return mkEdge(childId, did, "", returnPts);
+        }
+        if (from === did && to === bodyId) {
+          return mkEdge(did, bodyId, yes.label, yesUse);
+        }
+        if (noBodyId && from === did && to === noBodyId && noEdgePts) {
+          return mkEdge(did, noBodyId, noEdge?.label ?? "No", noEdgePts);
+        }
+        if (endId && noBodyId && from === noBodyId && to === endId && endPts) {
+          return mkEdge(noBodyId, endId, "", endPts);
+        }
+        return full;
+      });
+      continue;
+    }
+
+    // --- TB (existing) ---
+    const stubYesX = yesPts.length >= 2 ? yesPts[1].x : body.center.x;
+    const stubNoX =
+      noPts.length >= 2 ? noPts[1].x : noBody?.center.x ?? stubYesX + 120;
+    // Widen the channel between Yes/No columns so the return climb is readable.
+    const SPREAD = 40;
+    const yesColX = stubYesX - SPREAD;
+    const noColX = stubNoX + SPREAD;
+
+    const bodyTop0 = nodeFacePort(body.inner, body.shape, "top");
+    if (!bodyTop0) continue;
+    // Compress the empty band under the diamond (classic TB, less tall).
+    const GAP_BELOW_DIAMOND = 40;
+    const dy = d.bottom.y + GAP_BELOW_DIAMOND - bodyTop0.y;
 
     // Move Yes column (sum + trailing INPUT) left + up.
     if ((incoming.get(bodyId) || []).length === 1) {
@@ -2218,11 +2426,6 @@ function alignLoopBodyColumn(svg) {
       ? nodeFacePort(endFresh.inner, endFresh.shape, "top")
       : null;
 
-    const stroke = /stroke="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "#757575";
-    const sw = /stroke-width="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "1.5";
-    const marker =
-      /marker-end="([^"]*)"/.exec(loopChild.attrs)?.[1] || "url(#arrowhead)";
-
     const yesColNow = bodyTop2.x;
     const noColNow = noTop?.x ?? noColX;
 
@@ -2260,11 +2463,6 @@ function alignLoopBodyColumn(svg) {
             { ...endTop },
           ])
         : null;
-
-    const mkEdge = (from, to, label, pts) => {
-      const lab = ` data-label="${escapeAttr(label ?? "")}"`;
-      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(pts)}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
-    };
 
     next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
       const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
