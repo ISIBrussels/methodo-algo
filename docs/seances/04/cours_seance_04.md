@@ -16,17 +16,16 @@ Boucles (2) : FOR et boucles imbriquées
 
 ---
 
-## Après la séance 3
+## Pourquoi un `FOR` ?
 
-En séance 3 : `WHILE` et `REPEAT … UNTIL`, avec les patterns *counter*, *accumulator*, *sentinel*, validation.
-
-Souvent le nombre de tours est **connu à l'avance** :
+Parfois le nombre de tours est **connu à l'avance** :
 
 - afficher les entiers de 1 à N,
 - répéter une action **exactement** N fois,
 - parcourir une plage avec un pas fixe (`STEP`).
 
-C'est le rôle de la boucle **`FOR`**.
+`WHILE` / `REPEAT` restent utiles quand l'arrêt dépend d'une **condition ouverte**.  
+Quand la plage est claire : boucle **`FOR`**.
 
 ---
 
