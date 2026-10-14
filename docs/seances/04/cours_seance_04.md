@@ -279,7 +279,7 @@ Nombre total d'itérations du corps interne : `N * M`.
 
 ## Trace : imbrication avec `N = 3`, `M = 2`
 
-<div class="three-cols">
+<div class="two-cols">
 
 <div>
 
@@ -302,13 +302,6 @@ Ordre : on **termine** la boucle interne avant de passer au `i` suivant.
 | 1 | 1 | `1 1` |
 | 1 | 2 | `1 2` |
 | 2 | 1 | `2 1` |
-
-</div>
-
-<div>
-
-| `i` | `j` | Affichage |
-| ---: | ---: | --- |
 | 2 | 2 | `2 2` |
 | 3 | 1 | `3 1` |
 | 3 | 2 | `3 2` |
@@ -341,7 +334,11 @@ Idée : ligne = `i`, colonne = `j`, cellule = `i * j`.
 
 ## Motif en étoiles (aperçu)
 
-Autre usage : dessiner un motif ligne par ligne.
+Autre usage : dessiner un motif ligne par ligne. La borne interne dépend de la variable **externe** (`row`).
+
+<div class="two-cols">
+
+<div>
 
 ```text
 FOR row = 1 TO N DO
@@ -353,6 +350,10 @@ FOR row = 1 TO N DO
 END FOR
 ```
 
+</div>
+
+<div>
+
 Avec `N = 4` :
 
 ```text
@@ -362,7 +363,9 @@ Avec `N = 4` :
 ****
 ```
 
-La borne interne dépend de la variable **externe** (`row`) : imbrication utile, pas seulement deux plages fixes.
+</div>
+
+</div>
 
 ---
 
@@ -372,20 +375,22 @@ La borne interne dépend de la variable **externe** (`row`) : imbrication utile,
 
 Deux niveaux = deux tests, deux retours. Sur papier, le *pseudocode* reste souvent plus lisible.
 
-<div class="max-mermaid-lg">
+<div class="max-mermaid-wide-lg">
 
 ```mermaid
-flowchart TB
+flowchart LR
   A([START]) --> B["i = 1"]
   B --> C{i <= N}
+  C -->|No| I([END])
   C -->|Yes| D["j = 1"]
   D --> E{j <= M}
   E -->|Yes| F[/OUTPUT i, j/]
   F --> G["j = j + 1"]
-  G --> E
+  G --> J["​"]
+  J --> E
   E -->|No| H["i = i + 1"]
-  H --> C
-  C -->|No| I([END])
+  H --> K["​"]
+  K --> C
 ```
 
 </div>

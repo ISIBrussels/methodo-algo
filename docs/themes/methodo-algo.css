@@ -295,16 +295,32 @@ section .max-mermaid-wide .mermaid-diagram svg {
   max-width: 100%;
 }
 
+/* LR dense (ex. nested loops) : plus haut sans toucher au chrome */
+section .max-mermaid-wide-lg .mermaid-diagram {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0.15em 0 0;
+}
+
+section .max-mermaid-wide-lg .mermaid-diagram svg {
+  height: 430px;
+  width: auto;
+  max-width: 100%;
+}
+
 /* Titre plus haut sur slides Mermaid max */
 section:has(.max-mermaid),
 section:has(.max-mermaid-lg),
-section:has(.max-mermaid-wide) {
+section:has(.max-mermaid-wide),
+section:has(.max-mermaid-wide-lg) {
   padding-top: 44px;
 }
 
 section:has(.max-mermaid) h2,
 section:has(.max-mermaid-lg) h2,
-section:has(.max-mermaid-wide) h2 {
+section:has(.max-mermaid-wide) h2,
+section:has(.max-mermaid-wide-lg) h2 {
   margin-bottom: 0.2em;
 }
 
