@@ -186,7 +186,7 @@ Exemples typiques :
 
 - « pour chaque entier de 1 à N »
 - « répéter exactement N fois »
-- plus tard (S5) : parcourir un *array* d'indices `1..N`
+- « parcourir un tableau (*array*) »
 
 ---
 
