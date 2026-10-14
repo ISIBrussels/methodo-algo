@@ -275,7 +275,13 @@ Nombre total d'itérations du corps interne : `N * M`.
 
 ---
 
+<!-- _class: compact -->
+
 ## Trace : imbrication avec `N = 3`, `M = 2`
+
+<div class="three-cols">
+
+<div>
 
 ```text
 FOR i = 1 TO 3 DO
@@ -285,16 +291,31 @@ FOR i = 1 TO 3 DO
 END FOR
 ```
 
+Ordre : on **termine** la boucle interne avant de passer au `i` suivant.
+
+</div>
+
+<div>
+
 | `i` | `j` | Affichage |
 | ---: | ---: | --- |
 | 1 | 1 | `1 1` |
 | 1 | 2 | `1 2` |
 | 2 | 1 | `2 1` |
+
+</div>
+
+<div>
+
+| `i` | `j` | Affichage |
+| ---: | ---: | --- |
 | 2 | 2 | `2 2` |
 | 3 | 1 | `3 1` |
 | 3 | 2 | `3 2` |
 
-Ordre : on **termine** la boucle interne avant de passer au `i` suivant.
+</div>
+
+</div>
 
 ---
 

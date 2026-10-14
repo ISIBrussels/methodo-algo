@@ -222,6 +222,29 @@ section .two-cols table {
   margin: 0;
 }
 
+/* Layout 3 colonnes (ex. pseudocode | trace | trace) */
+section .three-cols {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
+  gap: 0.75em;
+  align-items: start;
+}
+
+section .three-cols pre {
+  margin: 0;
+  font-size: 0.78em;
+}
+
+section .three-cols table {
+  margin: 0;
+  font-size: 0.85em;
+}
+
+section .three-cols p {
+  margin: 0.45em 0 0;
+  font-size: 0.9em;
+}
+
 /* Mermaid réduit dans une colonne (évite débord footer) */
 section .compact-mermaid .mermaid-diagram {
   margin: 0;
