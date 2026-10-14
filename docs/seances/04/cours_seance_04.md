@@ -18,7 +18,7 @@ Boucles (2) : FOR et boucles imbriquées
 
 ## Pourquoi un `FOR` ?
 
-Parfois le nombre de tours est **connu à l'avance** :
+Parfois le nombre d'itérations est **connu à l'avance** :
 
 - afficher les entiers de 1 à N,
 - répéter une action **exactement** N fois,
@@ -54,7 +54,7 @@ END FOR
 | `1 TO N` | plage inclusive |
 | `DO` … `END FOR` | corps |
 
-Par défaut, le pas (*step*) vaut **+1** : `i` passe à `i + 1` après chaque tour.
+Par défaut, le pas (*step*) vaut **+1** : `i` passe à `i + 1` après chaque itération.
 
 </div>
 
@@ -74,7 +74,7 @@ WHILE i <= N DO
 END WHILE
 ```
 
-Ingrédients déjà vus en S3 :
+Trois étapes (déjà vues en S3) :
 
 1. **initialiser** la variable de contrôle
 2. **tester** la borne
@@ -153,6 +153,8 @@ Règle : tant que la variable de contrôle **n'a pas dépassé** la borne d'arri
 
 ---
 
+<!-- _class: compact -->
+
 ## Trace table : `FOR` simple
 
 ```text
@@ -161,15 +163,14 @@ FOR i = 1 TO 3 DO
 END FOR
 ```
 
-| Tour | `i` (début) | Corps | `i` après |
+| Itération | `i` début | Corps | `i` après |
 | --- | ---: | --- | ---: |
 | 1 | 1 | `OUTPUT 1` | 2 |
 | 2 | 2 | `OUTPUT 2` | 3 |
 | 3 | 3 | `OUTPUT 3` | 4 |
 | stop | 4 | test `4 <= 3` → sortie | |
 
-Affichage : `1` puis `2` puis `3`.  
-La valeur `4` sert seulement à **quitter** : elle n'est pas affichée.
+Affichage : `1`, `2`, `3`. La valeur `4` sert seulement à **quitter**.
 
 ---
 
@@ -177,7 +178,7 @@ La valeur `4` sert seulement à **quitter** : elle n'est pas affichée.
 
 `FOR` convient quand :
 
-- le **nombre de tours** (ou la plage) est **connu** avant d'entrer,
+- le **nombre d'itérations** (ou la plage) est **connu** avant d'entrer,
 - la variable de contrôle suit une **progression régulière** (`+1`, `-1`, `STEP`),
 - on n'a **pas** besoin d'une condition métier complexe au milieu.
 
@@ -194,8 +195,8 @@ Exemples typiques :
 | Situation | Boucle |
 | --- | --- |
 | Plage connue, pas régulier | **`FOR`** |
-| Condition avant, 0 tour possible | **`WHILE`** |
-| Au moins un tour, puis test d'arrêt | **`REPEAT … UNTIL`** |
+| Condition avant, 0 itération possible | **`WHILE`** |
+| Au moins une itération, puis test d'arrêt | **`REPEAT … UNTIL`** |
 | Sentinelle / validation de saisie | souvent `WHILE` ou `REPEAT` |
 | Compteur simple 1..N | **`FOR`** (plus clair qu'un `WHILE`) |
 
@@ -225,7 +226,7 @@ Avec `N = 4` : `sum` vaut successivement `1`, `3`, `6`, `10`.
 
 ## Erreur *off-by-one*
 
-Se tromper d'**une** unité sur les bornes : trop peu ou trop de tours.
+Se tromper d'**une** unité sur les bornes : trop peu ou trop d'itérations.
 
 Objectif : afficher les entiers de **1 à N inclus**.
 
@@ -236,7 +237,7 @@ Objectif : afficher les entiers de **1 à N inclus**.
 | `FOR i = 0 TO N` | `0 1 2 3` (en trop) |
 | `FOR i = 1 TO N + 1` | `1 2 3 4` (en trop) |
 
-Toujours se demander : **première** valeur ? **dernière** ? **combien** de tours ?
+Toujours se demander : **première** valeur ? **dernière** ? **combien** d'itérations ?
 
 ---
 
@@ -270,7 +271,7 @@ END FOR
 - Boucle **interne** (*inner*) : `j`
 
 Pour **chaque** valeur de `i`, on parcourt **toutes** les valeurs de `j`.  
-Nombre total de tours du corps interne : `N * M`.
+Nombre total d'itérations du corps interne : `N * M`.
 
 ---
 
@@ -385,7 +386,7 @@ Trace sur petit `N` : le meilleur filet de sécurité.
 
 ## Synthèse : trois boucles
 
-| Boucle | Test | Tours mini | Force |
+| Boucle | Test | Itérations mini | Force |
 | --- | --- | ---: | --- |
 | `WHILE` | avant | 0 | condition ouverte |
 | `REPEAT … UNTIL` | après | 1 | « jusqu'à ce que » |
