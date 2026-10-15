@@ -2768,12 +2768,13 @@ function alignIfThenMerge(svg) {
 }
 
 /**
- * Nested FOR loops (TB): outer diamond → init → inner diamond → body →
- * inner increment → inner; inner No → outer increment → outer; outer No → END.
- * beautiful-mermaid often parks the inner Yes body *above* the inner diamond;
- * force a clean stacked layout with corner exits and bottom-tip returns.
+ * Nested FOR loops (LR, linear rail):
+ *   START → i=1 → i<=N → j=1 → j<=M → OUTPUT → j++
+ * Yes continues on the horizontal rail (right tip → next).
+ * No exits: outer ↑ END, inner ↓ i++.
+ * Returns above (j++) / below (i++) the rail — never through OUTPUT.
  */
-function alignNestedLoopsTB(svg) {
+function alignNestedLoopsLR(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
   const nodes = new Map();
   for (const m of svg.matchAll(
@@ -2808,13 +2809,7 @@ function alignNestedLoopsTB(svg) {
   }
 
   const lab = (e) => e.label.trim().toLowerCase();
-  const findEdge = (from, to, label = null) =>
-    edges.find(
-      (e) =>
-        e.from === from &&
-        e.to === to &&
-        (label == null || lab(e) === label),
-    );
+  const findEdge = (from, to) => edges.find((e) => e.from === from && e.to === to);
 
   let match = null;
   for (const [oid, oNode] of nodes) {
@@ -2847,24 +2842,36 @@ function alignNestedLoopsTB(svg) {
     if (!iInc?.center || iInc.verts) continue;
     if (!findEdge(iIncId, oid)) continue;
     const endId = oNo.to;
-    const end = nodes.get(endId);
-    if (!end?.center) continue;
-    match = {
-      oid,
-      iid,
-      initId,
-      bodyId,
-      jIncId,
-      iIncId,
-      endId,
-    };
+    if (!nodes.get(endId)?.center) continue;
+
+    // Need START → … → outer on a chain (A→B→C).
+    const preds = edges.filter((e) => e.to === oid && !e.label.trim());
+    if (preds.length < 1) continue;
+    match = { oid, iid, initId, bodyId, jIncId, iIncId, endId };
     break;
   }
   if (!match) return svg;
 
   const { oid, iid, initId, bodyId, jIncId, iIncId, endId } = match;
-  const GAP = 28;
-  const STUB = DIAMOND_EXIT_STUB_PX;
+
+  // Spine nodes left of outer diamond (typically A, B).
+  const spineLeft = [];
+  let cur = oid;
+  for (let guard = 0; guard < 8; guard++) {
+    const ins = edges.filter(
+      (e) => e.to === cur && !lab(e) && e.from !== iIncId && e.from !== jIncId,
+    );
+    if (ins.length !== 1) break;
+    spineLeft.unshift(ins[0].from);
+    cur = ins[0].from;
+  }
+
+  const railIds = [...spineLeft, oid, initId, iid, bodyId, jIncId];
+  const GAP_X = 78;
+  const RAIL_Y = 210;
+  const ABOVE = 88;
+  const BELOW = 100;
+  const LOOP_PAD = 36;
 
   let next = svg;
   const refresh = (id) => {
@@ -2898,70 +2905,34 @@ function alignNestedLoopsTB(svg) {
     if (!n?.center) return;
     shiftNode(id, x - n.center.x, y - n.center.y);
   };
-  const halfH = (id) => {
+  const halfW = (id) => {
     const n = nodes.get(id);
-    if (!n) return 18;
-    if (n.verts) return (n.verts.bottom.y - n.verts.top.y) / 2;
-    const top = nodeFacePort(n.inner, n.shape, "top");
-    const bot = nodeFacePort(n.inner, n.shape, "bottom");
-    if (top && bot) return (bot.y - top.y) / 2;
-    return 18;
+    if (!n) return 28;
+    if (n.verts) return (n.verts.right.x - n.verts.left.x) / 2;
+    const L = nodeFacePort(n.inner, n.shape, "left");
+    const R = nodeFacePort(n.inner, n.shape, "right");
+    if (L && R) return (R.x - L.x) / 2;
+    return 28;
   };
 
-  // Outer Yes = right tip, No = left tip (stable TB nested layout).
-  const outer = nodes.get(oid).verts;
-  const yesCol = diamondExitStub(outer, "right").x;
-  const noCol = diamondExitStub(outer, "left").x;
-  const spine = outer.cx;
-
-  let y = outer.bottom.y + GAP + halfH(initId);
-  moveCenterTo(initId, yesCol, y);
-
-  y =
-    (nodeFacePort(nodes.get(initId).inner, nodes.get(initId).shape, "bottom")
-      ?.y ?? nodes.get(initId).center.y + halfH(initId)) +
-    GAP +
-    halfH(iid);
-  moveCenterTo(iid, yesCol, y);
-  refresh(iid);
-  const inner = nodes.get(iid).verts;
-  const innerYesCol = diamondExitStub(inner, "right").x;
-  const innerNoCol = diamondExitStub(inner, "left").x;
-
-  y = inner.bottom.y + GAP + halfH(bodyId);
-  moveCenterTo(bodyId, innerYesCol, y);
-
-  y =
-    (nodeFacePort(nodes.get(bodyId).inner, nodes.get(bodyId).shape, "bottom")
-      ?.y ?? nodes.get(bodyId).center.y + halfH(bodyId)) +
-    GAP +
-    halfH(jIncId);
-  moveCenterTo(jIncId, innerYesCol, y);
-
-  const jBot =
-    nodeFacePort(nodes.get(jIncId).inner, nodes.get(jIncId).shape, "bottom")
-      ?.y ?? nodes.get(jIncId).center.y + halfH(jIncId);
-  // Outer increment sits under the inner No column, clear of the Yes stack.
-  y = Math.max(jBot, inner.bottom.y) + GAP + halfH(iIncId);
-  moveCenterTo(iIncId, innerNoCol, y);
-
-  // END below-left of outer diamond (clear of the tip).
-  refresh(oid);
-  const oPlace = nodes.get(oid).verts;
-  const endX = oPlace.left.x - 64;
-  const endY = oPlace.bottom.y + GAP + halfH(endId) + 8;
-  moveCenterTo(endId, endX, endY);
-
-  // Refresh diamonds after shifts for accurate tips.
+  // Place linear rail left → right.
+  let x = 40;
+  for (const id of railIds) {
+    x += halfW(id);
+    moveCenterTo(id, x, RAIL_Y);
+    x += halfW(id) + GAP_X;
+  }
   refresh(oid);
   refresh(iid);
+  const o0 = nodes.get(oid).verts;
+  const i0 = nodes.get(iid).verts;
+  moveCenterTo(endId, o0.cx, RAIL_Y - ABOVE);
+  moveCenterTo(iIncId, i0.cx, RAIL_Y + BELOW);
+
+  for (const id of [...railIds, endId, iIncId]) refresh(id);
+
   const o = nodes.get(oid).verts;
   const inn = nodes.get(iid).verts;
-  const oYesStub = diamondExitStub(o, "right");
-  const oNoStub = diamondExitStub(o, "left");
-  const iYesStub = diamondExitStub(inn, "right");
-  const iNoStub = diamondExitStub(inn, "left");
-
   const stroke =
     /stroke="([^"]+)"/.exec(edges[0]?.attrs ?? "")?.[1] ?? "#757575";
   const sw =
@@ -2977,127 +2948,137 @@ function alignNestedLoopsTB(svg) {
     return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(insetEndpoint(pts)))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${labAttr}/>`;
   };
 
+  const leftOf = (id) =>
+    nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "left");
+  const rightOf = (id) =>
+    nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "right");
   const topOf = (id) =>
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "top");
   const botOf = (id) =>
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "bottom");
-  const rightOf = (id) =>
-    nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "right");
 
-  const initTop = topOf(initId);
-  const initBot = botOf(initId);
-  const bodyTop = topOf(bodyId);
-  const bodyBot = botOf(bodyId);
-  const jTop = topOf(jIncId);
-  const jBot2 = botOf(jIncId);
-  const jRight = rightOf(jIncId);
-  const iIncTop = topOf(iIncId);
-  const iIncBot = botOf(iIncId);
-  const endTop = topOf(endId);
+  /** Horizontal rail segment between two non-diamond faces (or into diamond left). */
+  const railSeg = (fromId, toId) => {
+    const a = nodes.get(fromId);
+    const b = nodes.get(toId);
+    const start = a.verts ? a.verts.right : rightOf(fromId);
+    const end = b.verts ? b.verts.left : leftOf(toId);
+    return [start, { x: end.x, y: start.y }, end];
+  };
 
-  // Outer return climbs RIGHT of the Yes stack so it never crosses No→END.
-  const outerReturnX = Math.max(jRight?.x ?? innerYesCol, iYesStub.x) + 40;
-  const loopGap = 12;
+  // Yes on rail uses right tip (linear). No uses top (END) / bottom (i++).
+  const oYesStub = { x: o.right.x + 8, y: o.right.y };
+  const oNoStub = diamondExitStub(o, "top");
+  const iYesStub = { x: inn.right.x + 8, y: inn.right.y };
+  const iNoStub = diamondExitStub(inn, "bottom");
 
-  const edgeMap = new Map([
-    [
-      `${oid}->${initId}`,
-      mkEdge(oid, initId, "Yes", [
-        o.right,
-        oYesStub,
-        { x: oYesStub.x, y: initTop.y },
-        initTop,
-      ]),
-    ],
-    [
-      `${initId}->${iid}`,
-      mkEdge(initId, iid, "", [
-        initBot,
-        { x: initBot.x, y: inn.top.y },
-        inn.top,
-      ]),
-    ],
-    [
-      `${iid}->${bodyId}`,
-      mkEdge(iid, bodyId, "Yes", [
-        inn.right,
-        iYesStub,
-        { x: iYesStub.x, y: bodyTop.y },
-        bodyTop,
-      ]),
-    ],
-    [
-      `${bodyId}->${jIncId}`,
-      mkEdge(bodyId, jIncId, "", [
-        bodyBot,
-        { x: bodyBot.x, y: jTop.y },
-        jTop,
-      ]),
-    ],
-    // Inner return: climb between diamond centre and Yes body (not on the
-    // D→E spine x), then into the bottom tip — avoids looking like j=1 reset.
-    [
-      `${jIncId}->${iid}`,
-      mkEdge(jIncId, iid, "", [
-        jBot2,
-        { x: jBot2.x, y: jBot2.y + loopGap },
-        {
-          x: (inn.cx + (bodyTop?.x ?? innerYesCol)) / 2,
-          y: jBot2.y + loopGap,
-        },
-        {
-          x: (inn.cx + (bodyTop?.x ?? innerYesCol)) / 2,
-          y: inn.bottom.y + loopGap,
-        },
-        { x: inn.bottom.x, y: inn.bottom.y + loopGap },
-        inn.bottom,
-      ]),
-    ],
-    [
-      `${iid}->${iIncId}`,
-      mkEdge(iid, iIncId, "No", [
-        inn.left,
-        iNoStub,
-        { x: iNoStub.x, y: iIncTop.y },
-        iIncTop,
-      ]),
-    ],
-    [
-      `${iIncId}->${oid}`,
-      mkEdge(iIncId, oid, "", [
-        iIncBot,
-        { x: iIncBot.x, y: iIncBot.y + loopGap },
-        { x: outerReturnX, y: iIncBot.y + loopGap },
-        { x: outerReturnX, y: o.bottom.y + loopGap },
-        { x: o.bottom.x, y: o.bottom.y + loopGap },
-        o.bottom,
-      ]),
-    ],
-    [
-      `${oid}->${endId}`,
-      mkEdge(oid, endId, "No", [
-        o.left,
-        oNoStub,
-        { x: endTop.x, y: oNoStub.y },
-        endTop,
-      ]),
-    ],
-  ]);
+  const initL = leftOf(initId);
+  const bodyL = leftOf(bodyId);
+  const jL = leftOf(jIncId);
+  const jR = rightOf(jIncId);
+  const jT = topOf(jIncId);
+  const iIncT = topOf(iIncId);
+  const iIncB = botOf(iIncId);
+  const iIncL = leftOf(iIncId);
+  const endB = botOf(endId);
 
-  // Keep A→B→C (and any other) edges; replace matched nested edges.
+  const aboveY = Math.min(jT.y, RAIL_Y) - LOOP_PAD;
+  const belowY = Math.max(iIncB.y, RAIL_Y) + LOOP_PAD;
+
+  /** @type {Map<string, string>} */
+  const edgeMap = new Map();
+
+  // Spine left of outer: A→B→C …
+  for (let i = 0; i < spineLeft.length; i++) {
+    const from = spineLeft[i];
+    const to = i + 1 < spineLeft.length ? spineLeft[i + 1] : oid;
+    edgeMap.set(`${from}->${to}`, mkEdge(from, to, "", railSeg(from, to)));
+  }
+
+  edgeMap.set(
+    `${oid}->${initId}`,
+    mkEdge(oid, initId, "Yes", [
+      o.right,
+      oYesStub,
+      { x: initL.x, y: oYesStub.y },
+      initL,
+    ]),
+  );
+  edgeMap.set(
+    `${initId}->${iid}`,
+    mkEdge(initId, iid, "", railSeg(initId, iid)),
+  );
+  edgeMap.set(
+    `${iid}->${bodyId}`,
+    mkEdge(iid, bodyId, "Yes", [
+      inn.right,
+      iYesStub,
+      { x: bodyL.x, y: iYesStub.y },
+      bodyL,
+    ]),
+  );
+  edgeMap.set(
+    `${bodyId}->${jIncId}`,
+    mkEdge(bodyId, jIncId, "", railSeg(bodyId, jIncId)),
+  );
+
+  // Inner return ABOVE the rail (over OUTPUT), into inner left tip.
+  edgeMap.set(
+    `${jIncId}->${iid}`,
+    mkEdge(jIncId, iid, "", [
+      jT,
+      { x: jT.x, y: aboveY },
+      { x: inn.left.x - 10, y: aboveY },
+      { x: inn.left.x - 10, y: inn.left.y },
+      inn.left,
+    ]),
+  );
+
+  // Inner No ↓ to i++
+  edgeMap.set(
+    `${iid}->${iIncId}`,
+    mkEdge(iid, iIncId, "No", [
+      inn.bottom,
+      iNoStub,
+      { x: iNoStub.x, y: iIncT.y },
+      iIncT,
+    ]),
+  );
+
+  // Outer return BELOW the rail into outer bottom tip.
+  edgeMap.set(
+    `${iIncId}->${oid}`,
+    mkEdge(iIncId, oid, "", [
+      iIncB,
+      { x: iIncB.x, y: belowY },
+      { x: o.bottom.x, y: belowY },
+      o.bottom,
+    ]),
+  );
+
+  // Outer No ↑ to END
+  edgeMap.set(
+    `${oid}->${endId}`,
+    mkEdge(oid, endId, "No", [
+      o.top,
+      oNoStub,
+      { x: oNoStub.x, y: endB.y },
+      endB,
+    ]),
+  );
+
   next = next.replace(/<polyline class="edge"[^>]*\/>/g, (full) => {
     const from = /data-from="([^"]*)"/.exec(full)?.[1];
     const to = /data-to="([^"]*)"/.exec(full)?.[1];
     if (!from || !to) return full;
-    const key = `${from}->${to}`;
-    return edgeMap.get(key) ?? full;
+    return edgeMap.get(`${from}->${to}`) ?? full;
   });
 
-  void spine;
-  void STUB;
-  void noCol;
+  void iIncL;
+  void jR;
   return next;
 }
+
 
 function renderDiagram(source) {
   const { source: prepared, lean } = preprocessParallelograms(source);
@@ -3112,7 +3093,7 @@ function renderDiagram(source) {
   return fitSvgViewBox(
     transparentizeEdgeLabels(
       nudgeEdgeLabelsNearSource(
-        alignNestedLoopsTB(
+        alignNestedLoopsLR(
           alignIfThenMerge(
             placeDiamondsBelowPredecessors(
               alignRepeatInputDiamond(
