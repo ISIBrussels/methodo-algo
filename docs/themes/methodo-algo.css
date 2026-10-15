@@ -272,6 +272,10 @@ section .max-mermaid .mermaid-diagram svg {
   max-height: 470px;
 }
 
+section.compact .max-mermaid .mermaid-diagram svg {
+  max-height: 430px;
+}
+
 /* Encore plus haut quand le layout laisse de la place (slide 4 Pass/Fail) */
 section .max-mermaid-lg .mermaid-diagram {
   margin: 0;
