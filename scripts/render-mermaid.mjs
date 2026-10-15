@@ -2768,11 +2768,170 @@ function alignIfThenMerge(svg) {
 }
 
 /**
+ * FOR body (TB): Yes → OUTPUT (parallelogram) → increment (rect) → diamond.
+ * After parallelogram skew, Mermaid's OUTPUT→i++ drop jogs and can hit the
+ * rectangle off-axis. Align the increment under the parallelogram bottom mid
+ * and draw a straight vertical arrival on the rectangle top.
+ */
+function alignForOutputIncrementTB(svg) {
+  /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
+  const nodes = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    const poly = /<polygon points="([^"]+)"/.exec(m[3]);
+    nodes.set(m[1], {
+      shape: m[2],
+      inner: m[3],
+      verts: m[2] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(m[3], m[2]),
+    });
+  }
+
+  /** @type {{from:string,to:string,label:string,points:string,attrs:string}[]} */
+  const edges = [];
+  for (const m of svg.matchAll(/<polyline class="edge"([^>]*)\/>/g)) {
+    const attrs = m[1];
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+    const label = /data-label="([^"]*)"/.exec(attrs)?.[1] ?? "";
+    const points = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!from || !to || !points) continue;
+    edges.push({ from, to, label, points, attrs });
+  }
+
+  /** @type {Map<string, string[]>} */
+  const outgoing = new Map();
+  for (const e of edges) {
+    if (!outgoing.has(e.from)) outgoing.set(e.from, []);
+    outgoing.get(e.from).push(e.to);
+  }
+
+  let next = svg;
+  const refresh = (id) => {
+    const idAttr = escapeAttr(id);
+    const g = new RegExp(
+      `<g class="node" data-id="${idAttr}"[^>]*data-shape="([^"]+)"[^>]*>([\\s\\S]*?)<\\/g>`,
+    ).exec(next);
+    if (!g) return;
+    const poly = /<polygon points="([^"]+)"/.exec(g[2]);
+    nodes.set(id, {
+      shape: g[1],
+      inner: g[2],
+      verts: g[1] === "diamond" && poly ? diamondVertices(poly[1]) : null,
+      center: nodeCenter(g[2], g[1]),
+    });
+  };
+  const shiftNode = (id, dx, dy) => {
+    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) return;
+    const idAttr = escapeAttr(id);
+    next = next.replace(
+      new RegExp(
+        `(<g class="node" data-id="${idAttr}"[^>]*>)([\\s\\S]*?)(<\\/g>)`,
+      ),
+      (_, open, inner, close) =>
+        `${open}${translateNodeGroup(inner, dx, dy)}${close}`,
+    );
+    refresh(id);
+  };
+
+  for (const [did, dNode] of nodes) {
+    if (!dNode.verts) continue;
+    // Skip LR spines (horizontal Yes stub).
+    const yes = edges.find(
+      (e) => e.from === did && e.label.trim().toLowerCase() === "yes",
+    );
+    if (!yes) continue;
+    const yesPts = parsePoints(yes.points);
+    if (
+      yesPts.length >= 2 &&
+      Math.abs(yesPts[1].y - yesPts[0].y) >=
+        Math.abs(yesPts[1].x - yesPts[0].x)
+    ) {
+      continue;
+    }
+
+    const outId = yes.to;
+    const outNode = nodes.get(outId);
+    if (!outNode?.center || outNode.shape !== "parallelogram") continue;
+
+    const outTargets = (outgoing.get(outId) || []).filter((t) => t !== did);
+    if (outTargets.length !== 1) continue;
+    const incId = outTargets[0];
+    const incNode = nodes.get(incId);
+    if (
+      !incNode?.center ||
+      incNode.verts ||
+      incNode.shape === "parallelogram" ||
+      incNode.shape === "stadium"
+    ) {
+      continue;
+    }
+    // Increment must loop back to this diamond.
+    if (!(outgoing.get(incId) || []).includes(did)) continue;
+
+    const outBot = nodeFacePort(outNode.inner, outNode.shape, "bottom");
+    const incTop0 = nodeFacePort(incNode.inner, incNode.shape, "top");
+    if (!outBot || !incTop0) continue;
+    // Only when the increment sits below the OUTPUT (TB drop).
+    if (incTop0.y < outBot.y + 8) continue;
+
+    // Align rectangle top mid under parallelogram bottom mid → straight drop.
+    shiftNode(incId, outBot.x - incTop0.x, 0);
+    refresh(outId);
+    refresh(incId);
+    refresh(did);
+
+    const outFresh = nodes.get(outId);
+    const incFresh = nodes.get(incId);
+    const dFresh = nodes.get(did);
+    const src = nodeFacePort(outFresh.inner, outFresh.shape, "bottom");
+    const land = nodeFacePort(incFresh.inner, incFresh.shape, "top");
+    const retRight = nodeFacePort(incFresh.inner, incFresh.shape, "right");
+    if (!src || !land || !retRight || !dFresh?.verts) continue;
+
+    const stroke = /stroke="([^"]+)"/.exec(yes.attrs)?.[1] ?? "#757575";
+    const sw = /stroke-width="([^"]+)"/.exec(yes.attrs)?.[1] ?? "1.5";
+    const marker =
+      /marker-end="([^"]*)"/.exec(yes.attrs)?.[1] || "url(#arrowhead)";
+    const mkEdge = (from, to, label, pts) => {
+      const lab = ` data-label="${escapeAttr(label ?? "")}"`;
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(insetEndpoint(pts)))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+    };
+
+    // Leave from the increment RIGHT mid so the straight OUTPUT→increment
+    // drop owns the top face alone (no T-junction / false jog at arrival).
+    const climbX = dFresh.verts.bottom.x;
+    const returnPts = [
+      { ...retRight },
+      { x: climbX, y: retRight.y },
+      { ...dFresh.verts.bottom },
+    ];
+
+    const dropPts = [{ ...src }, { ...land }];
+
+    next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+      const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+      const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      if (from === outId && to === incId) {
+        return mkEdge(outId, incId, "", dropPts);
+      }
+      if (from === incId && to === did) {
+        return mkEdge(incId, did, "", returnPts);
+      }
+      return full;
+    });
+  }
+
+  return next;
+}
+
+/**
  * Nested FOR loops (LR, linear rail):
  *   START → i=1 → i<=N → j=1 → j<=M → OUTPUT → j++
  * Yes continues on the horizontal rail (right tip → next).
  * No exits: outer ↑ END, inner ↓ i++.
- * Returns above (j++) / below (i++) the rail — never through OUTPUT.
+ * Returns above (j++ into TOP tip) / below (i++ into outer bottom tip).
  */
 function alignNestedLoopsLR(svg) {
   /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null, center:{x:number,y:number}|null}>} */
@@ -2982,8 +3141,16 @@ function alignNestedLoopsLR(svg) {
   const iIncL = leftOf(iIncId);
   const endB = botOf(endId);
 
-  const aboveY = Math.min(jT.y, RAIL_Y) - LOOP_PAD;
-  const belowY = Math.max(iIncB.y, RAIL_Y) + LOOP_PAD;
+  // Keep enough vertical run into the tips for ARROWHEAD_INSET_PX (~10px)
+  // so insetEndpoint does not collapse the final segment onto the elbow.
+  const aboveY = Math.min(
+    Math.min(jT.y, RAIL_Y) - LOOP_PAD,
+    inn.top.y - (ARROWHEAD_INSET_PX + 14),
+  );
+  const belowY = Math.max(
+    Math.max(iIncB.y, RAIL_Y) + LOOP_PAD,
+    o.bottom.y + (ARROWHEAD_INSET_PX + 14),
+  );
 
   /** @type {Map<string, string>} */
   const edgeMap = new Map();
@@ -3022,15 +3189,15 @@ function alignNestedLoopsLR(svg) {
     mkEdge(bodyId, jIncId, "", railSeg(bodyId, jIncId)),
   );
 
-  // Inner return ABOVE the rail (over OUTPUT), into inner left tip.
+  // Inner return ABOVE the rail (over OUTPUT), into inner TOP tip
+  // (left tip stays free for j = 1 → diamond entry on the rail).
   edgeMap.set(
     `${jIncId}->${iid}`,
     mkEdge(jIncId, iid, "", [
       jT,
       { x: jT.x, y: aboveY },
-      { x: inn.left.x - 10, y: aboveY },
-      { x: inn.left.x - 10, y: inn.left.y },
-      inn.left,
+      { x: inn.top.x, y: aboveY },
+      inn.top,
     ]),
   );
 
@@ -3094,13 +3261,17 @@ function renderDiagram(source) {
     transparentizeEdgeLabels(
       nudgeEdgeLabelsNearSource(
         alignNestedLoopsLR(
-          alignIfThenMerge(
-            placeDiamondsBelowPredecessors(
-              alignRepeatInputDiamond(
-                alignLoopBodyColumn(
-                  collapseJunctionNodes(
-                    rewireDiamondPorts(
-                      retargetParallelogramPorts(applyParallelograms(svg, lean)),
+          alignForOutputIncrementTB(
+            alignIfThenMerge(
+              placeDiamondsBelowPredecessors(
+                alignRepeatInputDiamond(
+                  alignLoopBodyColumn(
+                    collapseJunctionNodes(
+                      rewireDiamondPorts(
+                        retargetParallelogramPorts(
+                          applyParallelograms(svg, lean),
+                        ),
+                      ),
                     ),
                   ),
                 ),
