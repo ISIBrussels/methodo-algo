@@ -235,6 +235,23 @@ function diamondExitStub(d, side) {
   };
 }
 
+/**
+ * Point a few px inside the tip (toward center). Tip exits that start exactly
+ * on the vertex still read as a dark AA hole on zooms; starting under the
+ * fill lets the stroke emerge through the tip (same idea as tipLand +2 on
+ * WHILE entries).
+ */
+function diamondTipInside(d, side, inset = 4) {
+  const v = d[side];
+  const dx = d.cx - v.x;
+  const dy = d.cy - v.y;
+  const len = Math.hypot(dx, dy) || 1;
+  return {
+    x: v.x + (dx / len) * inset,
+    y: v.y + (dy / len) * inset,
+  };
+}
+
 /** Visual midpoints of a parallelogram's faces (skew shifts top/bottom). */
 function parallelogramPorts(pointsAttr) {
   const pts = parsePoints(pointsAttr);
@@ -309,11 +326,13 @@ function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
 
 /**
  * Aim past a port along the approach so {@link insetEndpoint} leaves the
- * vertex a few px under the fill — native markers sit ~1–2px short of the
- * path end, so flush landings still look gapped on dark zooms. Used only by
+ * vertex under the fill. Native marker tip is ~1px past the path end
+ * (refX=7, tip at 8); the triangle is ~8px long, so we need ~+12px past the
+ * border after inset — otherwise the arrowhead base sits in the dark and
+ * zooms read as a “trou” even when the tip pixel touches. Used only by
  * S4 align* rewrites (does not change global marker / default inset).
  */
-function aimPastPort(from, port, past = ARROWHEAD_INSET_PX + 6) {
+function aimPastPort(from, port, past = ARROWHEAD_INSET_PX + 12) {
   const dx = port.x - from.x;
   const dy = port.y - from.y;
   const len = Math.hypot(dx, dy) || 1;
@@ -2901,12 +2920,12 @@ function alignForOutputIncrementTB(svg) {
     // Align rectangle top mid under parallelogram bottom mid → straight drop.
     shiftNode(incId, outBot.x - incTop0.x, 0);
 
-    // Pull OUTPUT / END / increment toward the diamond (same idea as
-    // GAP_BELOW_DIAMOND): shorten the empty band so Yes/No drops and the
-    // OUTPUT→i++ shaft match the tight S3 WHILE spacing.
+    // Pull OUTPUT / END / increment toward the diamond — same band as
+    // GAP_BELOW_DIAMOND (40) on S3 WHILE so Yes/No drops and OUTPUT→i++
+    // match the tight spacing where arrows already look glued.
     refresh(did);
     const d0 = nodes.get(did).verts;
-    const GAP_DROP = 52; // stub lane → target top (arrow body + inset)
+    const GAP_DROP = 40; // stub lane → target top (= GAP_BELOW_DIAMOND)
     const outTop0 = nodeFacePort(nodes.get(outId).inner, nodes.get(outId).shape, "top");
     if (outTop0) {
       shiftNode(outId, 0, d0.left.y + GAP_DROP - outTop0.y);
@@ -2927,8 +2946,8 @@ function alignForOutputIncrementTB(svg) {
     const outBot1 = nodeFacePort(nodes.get(outId).inner, nodes.get(outId).shape, "bottom");
     const incTop1 = nodeFacePort(nodes.get(incId).inner, nodes.get(incId).shape, "top");
     if (outBot1 && incTop1) {
-      // Keep a short straight shaft under OUTPUT (S3-like ~48px).
-      const GAP_IO = 48;
+      // Same short shaft as GAP_DROP / S3 body stack.
+      const GAP_IO = 40;
       shiftNode(incId, outBot1.x - incTop1.x, outBot1.y + GAP_IO - incTop1.y);
     }
 
@@ -2970,6 +2989,7 @@ function alignForOutputIncrementTB(svg) {
     ];
     const dropPts = [{ ...src }, aimPastPort(src, land)];
     const yesEdgePts = [
+      diamondTipInside(dFresh.verts, "left"),
       { ...dFresh.verts.left },
       { ...yesStub },
       { x: yesStub.x, y: outTop.y },
@@ -2978,6 +2998,7 @@ function alignForOutputIncrementTB(svg) {
     const noEdgePts =
       endTop && no
         ? [
+            diamondTipInside(dFresh.verts, "right"),
             { ...dFresh.verts.right },
             { ...noStub },
             { x: noStub.x, y: endTop.y },
@@ -3109,8 +3130,8 @@ function alignNestedLoopsLR(svg) {
   const railIds = [...spineLeft, oid, initId, iid, bodyId, jIncId];
   const GAP_X = 78;
   const RAIL_Y = 210;
-  // Clear tip→face for No stubs + inset (park END / i++ off the tips).
-  const GAP_NO_EXIT = 56;
+  // Tip→face for No stubs: room for shaft + buried arrowhead (aimPast inset+12).
+  const GAP_NO_EXIT = 48;
   const LOOP_PAD = 36;
 
   let next = svg;
@@ -3218,10 +3239,15 @@ function alignNestedLoopsLR(svg) {
   };
 
   // Yes on rail uses right tip (linear). No uses top (END) / bottom (i++).
+  // Start under the tip fill so exits don’t read as dark AA holes on zooms.
   const oYesStub = { x: o.right.x + 8, y: o.right.y };
   const oNoStub = diamondExitStub(o, "top");
   const iYesStub = { x: inn.right.x + 8, y: inn.right.y };
   const iNoStub = diamondExitStub(inn, "bottom");
+  const oYesInside = diamondTipInside(o, "right");
+  const oNoInside = diamondTipInside(o, "top");
+  const iYesInside = diamondTipInside(inn, "right");
+  const iNoInside = diamondTipInside(inn, "bottom");
 
   const initL = leftOf(initId);
   const bodyL = leftOf(bodyId);
@@ -3233,15 +3259,15 @@ function alignNestedLoopsLR(svg) {
   const iIncL = leftOf(iIncId);
   const endB = botOf(endId);
 
-  // Keep enough vertical run into the tips for ARROWHEAD_INSET_PX (~10px)
-  // so insetEndpoint does not collapse the final segment onto the elbow.
+  // Keep enough vertical run into the tips for aimPast (inset+12) so
+  // insetEndpoint does not collapse the final segment onto the elbow.
   const aboveY = Math.min(
     Math.min(jT.y, RAIL_Y) - LOOP_PAD,
-    inn.top.y - (ARROWHEAD_INSET_PX + 14),
+    inn.top.y - (ARROWHEAD_INSET_PX + 20),
   );
   const belowY = Math.max(
     Math.max(iIncB.y, RAIL_Y) + LOOP_PAD,
-    o.bottom.y + (ARROWHEAD_INSET_PX + 14),
+    o.bottom.y + (ARROWHEAD_INSET_PX + 20),
   );
 
   /** @type {Map<string, string>} */
@@ -3257,6 +3283,7 @@ function alignNestedLoopsLR(svg) {
   edgeMap.set(
     `${oid}->${initId}`,
     mkEdge(oid, initId, "Yes", [
+      oYesInside,
       o.right,
       oYesStub,
       { x: initL.x, y: oYesStub.y },
@@ -3270,6 +3297,7 @@ function alignNestedLoopsLR(svg) {
   edgeMap.set(
     `${iid}->${bodyId}`,
     mkEdge(iid, bodyId, "Yes", [
+      iYesInside,
       inn.right,
       iYesStub,
       { x: bodyL.x, y: iYesStub.y },
@@ -3300,6 +3328,7 @@ function alignNestedLoopsLR(svg) {
   edgeMap.set(
     `${iid}->${iIncId}`,
     mkEdge(iid, iIncId, "No", [
+      iNoInside,
       inn.bottom,
       iNoStub,
       { x: iNoStub.x, y: iIncT.y },
@@ -3325,6 +3354,7 @@ function alignNestedLoopsLR(svg) {
   edgeMap.set(
     `${oid}->${endId}`,
     mkEdge(oid, endId, "No", [
+      oNoInside,
       o.top,
       oNoStub,
       { x: oNoStub.x, y: endB.y },
