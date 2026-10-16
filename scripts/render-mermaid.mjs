@@ -308,6 +308,21 @@ function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
 }
 
 /**
+ * Aim the last vertex past a port along the approach so {@link insetEndpoint}
+ * lands on the border (used only by S4 align* rewrites — does not change the
+ * global marker / default inset behaviour).
+ */
+function aimPastPort(from, port, past = ARROWHEAD_INSET_PX) {
+  const dx = port.x - from.x;
+  const dy = port.y - from.y;
+  const len = Math.hypot(dx, dy) || 1;
+  return {
+    x: port.x + (dx / len) * past,
+    y: port.y + (dy / len) * past,
+  };
+}
+
+/**
  * After rectangles become parallelograms, edge stubs still sit on the old
  * axis-aligned top/bottom centers. Snap vertical landings onto the visual mid
  * of each slanted face so Yes/No drops look centered on I/O nodes.
@@ -2901,14 +2916,16 @@ function alignForOutputIncrementTB(svg) {
 
     // Leave from the increment RIGHT mid so the straight OUTPUT→increment
     // drop owns the top face alone (no T-junction / false jog at arrival).
+    // Aim past the ports so insetEndpoint sits the marker tip on the border.
     const climbX = dFresh.verts.bottom.x;
+    const returnElbow = { x: climbX, y: retRight.y };
     const returnPts = [
       { ...retRight },
-      { x: climbX, y: retRight.y },
-      { ...dFresh.verts.bottom },
+      returnElbow,
+      aimPastPort(returnElbow, dFresh.verts.bottom),
     ];
 
-    const dropPts = [{ ...src }, { ...land }];
+    const dropPts = [{ ...src }, aimPastPort(src, land)];
 
     next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
       const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
@@ -3028,8 +3045,8 @@ function alignNestedLoopsLR(svg) {
   const railIds = [...spineLeft, oid, initId, iid, bodyId, jIncId];
   const GAP_X = 78;
   const RAIL_Y = 210;
-  const ABOVE = 88;
-  const BELOW = 100;
+  // Clear tip→face for No stubs + inset (same idea as GAP_BELOW_DIAMOND elsewhere).
+  const GAP_NO_EXIT = 42;
   const LOOP_PAD = 36;
 
   let next = svg;
@@ -3073,6 +3090,15 @@ function alignNestedLoopsLR(svg) {
     if (L && R) return (R.x - L.x) / 2;
     return 28;
   };
+  const halfH = (id) => {
+    const n = nodes.get(id);
+    if (!n) return 18;
+    if (n.verts) return (n.verts.bottom.y - n.verts.top.y) / 2;
+    const T = nodeFacePort(n.inner, n.shape, "top");
+    const B = nodeFacePort(n.inner, n.shape, "bottom");
+    if (T && B) return (B.y - T.y) / 2;
+    return 18;
+  };
 
   // Place linear rail left → right.
   let x = 40;
@@ -3085,8 +3111,9 @@ function alignNestedLoopsLR(svg) {
   refresh(iid);
   const o0 = nodes.get(oid).verts;
   const i0 = nodes.get(iid).verts;
-  moveCenterTo(endId, o0.cx, RAIL_Y - ABOVE);
-  moveCenterTo(iIncId, i0.cx, RAIL_Y + BELOW);
+  // Park END / i++ off the tips (not a fixed rail offset) so No arrows reach.
+  moveCenterTo(endId, o0.cx, o0.top.y - GAP_NO_EXIT - halfH(endId));
+  moveCenterTo(iIncId, i0.cx, i0.bottom.y + GAP_NO_EXIT + halfH(iIncId));
 
   for (const id of [...railIds, endId, iIncId]) refresh(id);
 
@@ -3116,13 +3143,14 @@ function alignNestedLoopsLR(svg) {
   const botOf = (id) =>
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "bottom");
 
-  /** Horizontal rail segment between two non-diamond faces (or into diamond left). */
+  /** Horizontal rail segment; aim past the arrival port for inset→border. */
   const railSeg = (fromId, toId) => {
     const a = nodes.get(fromId);
     const b = nodes.get(toId);
     const start = a.verts ? a.verts.right : rightOf(fromId);
     const end = b.verts ? b.verts.left : leftOf(toId);
-    return [start, { x: end.x, y: start.y }, end];
+    // Aim from `start` (not the corner mid) so a flat rail still has direction.
+    return [start, { x: end.x, y: start.y }, aimPastPort(start, end)];
   };
 
   // Yes on rail uses right tip (linear). No uses top (END) / bottom (i++).
@@ -3168,7 +3196,7 @@ function alignNestedLoopsLR(svg) {
       o.right,
       oYesStub,
       { x: initL.x, y: oYesStub.y },
-      initL,
+      aimPastPort(oYesStub, initL),
     ]),
   );
   edgeMap.set(
@@ -3181,7 +3209,7 @@ function alignNestedLoopsLR(svg) {
       inn.right,
       iYesStub,
       { x: bodyL.x, y: iYesStub.y },
-      bodyL,
+      aimPastPort(iYesStub, bodyL),
     ]),
   );
   edgeMap.set(
@@ -3191,15 +3219,18 @@ function alignNestedLoopsLR(svg) {
 
   // Inner return ABOVE the rail (over OUTPUT), into inner TOP tip
   // (left tip stays free for j = 1 → diamond entry on the rail).
-  edgeMap.set(
-    `${jIncId}->${iid}`,
-    mkEdge(jIncId, iid, "", [
-      jT,
-      { x: jT.x, y: aboveY },
-      { x: inn.top.x, y: aboveY },
-      inn.top,
-    ]),
-  );
+  {
+    const drop = { x: inn.top.x, y: aboveY };
+    edgeMap.set(
+      `${jIncId}->${iid}`,
+      mkEdge(jIncId, iid, "", [
+        jT,
+        { x: jT.x, y: aboveY },
+        drop,
+        aimPastPort(drop, inn.top),
+      ]),
+    );
+  }
 
   // Inner No ↓ to i++
   edgeMap.set(
@@ -3208,20 +3239,23 @@ function alignNestedLoopsLR(svg) {
       inn.bottom,
       iNoStub,
       { x: iNoStub.x, y: iIncT.y },
-      iIncT,
+      aimPastPort(iNoStub, iIncT),
     ]),
   );
 
   // Outer return BELOW the rail into outer bottom tip.
-  edgeMap.set(
-    `${iIncId}->${oid}`,
-    mkEdge(iIncId, oid, "", [
-      iIncB,
-      { x: iIncB.x, y: belowY },
-      { x: o.bottom.x, y: belowY },
-      o.bottom,
-    ]),
-  );
+  {
+    const climb = { x: o.bottom.x, y: belowY };
+    edgeMap.set(
+      `${iIncId}->${oid}`,
+      mkEdge(iIncId, oid, "", [
+        iIncB,
+        { x: iIncB.x, y: belowY },
+        climb,
+        aimPastPort(climb, o.bottom),
+      ]),
+    );
+  }
 
   // Outer No ↑ to END
   edgeMap.set(
@@ -3230,7 +3264,7 @@ function alignNestedLoopsLR(svg) {
       o.top,
       oNoStub,
       { x: oNoStub.x, y: endB.y },
-      endB,
+      aimPastPort(oNoStub, endB),
     ]),
   );
 
