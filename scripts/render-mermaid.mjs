@@ -285,17 +285,31 @@ function dedupePoints(points) {
 }
 
 /**
- * Pull the last vertex back along the final segment so a marker-end arrowhead
- * sits on the target border. Chromium paints markers above later siblings, so
- * an endpoint flush with a node face otherwise shows the arrow through the fill.
+ * Optional extra pull-back for marker-end arrowheads.
+ *
+ * beautiful-mermaid already shortens native edges by ~1px (8×5 head, refX=7,
+ * stroke-width 1 → tip overhang ~1px). An extra inset of 10 (post-571df5e
+ * mkEdge paths) stacked on that and left visible gaps at diamond tips / END.
+ * Keep at 0 so we do not double-trim; non-zero still used by marker-less
+ * linecap insets (alignIfThenMerge then/no).
  */
-const ARROWHEAD_INSET_PX = 10;
+const ARROWHEAD_INSET_PX = 0;
 
 function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
-  if (!points || points.length < 2) return points;
+  if (!points || points.length < 2 || !(dist > 0)) return points;
   const pts = points.map((p) => ({ ...p }));
-  const a = pts[pts.length - 2];
   const b = pts[pts.length - 1];
+  // Skip collapsed trailing duplicates (railSeg / stub+face when already
+  // collinear) so direction comes from the real final segment.
+  let i = pts.length - 2;
+  while (
+    i >= 0 &&
+    Math.hypot(pts[i].x - b.x, pts[i].y - b.y) <= 0.5
+  ) {
+    i -= 1;
+  }
+  if (i < 0) return dedupePoints(pts);
+  const a = pts[i];
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const len = Math.hypot(dx, dy) || 1;
@@ -305,6 +319,45 @@ function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
     y: b.y - (dy / len) * d,
   };
   return dedupePoints(pts);
+}
+
+/**
+ * Final pass: inset every marker-end edge once so arrow tips meet node borders.
+ * Align* helpers draw geometry flush to faces/tips; this owns the marker trim.
+ * Edges without marker-end (merge joins, stem landings) are left alone.
+ */
+function applyArrowheadInsets(svg) {
+  return svg.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+    const marker = /marker-end="([^"]*)"/.exec(attrs)?.[1];
+    if (!marker || marker === "none") return full;
+    const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
+    if (!pointsAttr) return full;
+    const pts = insetEndpoint(parsePoints(pointsAttr));
+    return `<polyline class="edge"${attrs.replace(
+      /points="[^"]+"/,
+      `points="${formatPoints(pts)}"`,
+    )}/>`;
+  });
+}
+
+/**
+ * beautiful-mermaid paints edges before nodes, so opaque fills cover the first
+ * pixels of tip exits (Yes/No stubs) and make arrowheads look floated off
+ * faces. Move edges + labels after node groups so contacts stay visible.
+ */
+function paintEdgesAboveNodes(svg) {
+  const edges = [...svg.matchAll(/<polyline class="edge"[^>]*\/>/g)].map(
+    (m) => m[0],
+  );
+  const labels = [...svg.matchAll(/<g class="edge-label"[\s\S]*?<\/g>/g)].map(
+    (m) => m[0],
+  );
+  if (edges.length === 0) return svg;
+  let next = svg;
+  for (const e of edges) next = next.replace(e, "");
+  for (const l of labels) next = next.replace(l, "");
+  const block = `${edges.join("\n")}${labels.length ? `\n${labels.join("\n")}` : ""}\n`;
+  return next.replace(/<\/svg>\s*$/, `${block}</svg>`);
 }
 
 /**
@@ -2665,14 +2718,13 @@ function alignIfThenMerge(svg) {
     const marker =
       /marker-end="([^"]*)"/.exec(yes.attrs)?.[1] || "url(#arrowhead)";
 
-    const yesPts = insetEndpoint(
-      dedupePoints([
-        { ...d.left },
-        { ...yesStub },
-        { x: colX, y: thenTop.y },
-        { ...thenTop },
-      ]),
-    );
+    // Flush to THEN top; applyArrowheadInsets trims for the Yes marker.
+    const yesPts = dedupePoints([
+      { ...d.left },
+      { ...yesStub },
+      { x: colX, y: thenTop.y },
+      { ...thenTop },
+    ]);
     // Stop just short of the face (no marker): round linecaps otherwise
     // bleed a few px into the opaque merge fill and read as a ghost stem.
     const thenPts = insetEndpoint(
@@ -2896,7 +2948,7 @@ function alignForOutputIncrementTB(svg) {
       /marker-end="([^"]*)"/.exec(yes.attrs)?.[1] || "url(#arrowhead)";
     const mkEdge = (from, to, label, pts) => {
       const lab = ` data-label="${escapeAttr(label ?? "")}"`;
-      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(insetEndpoint(pts)))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(pts))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
     };
 
     // Leave from the increment RIGHT mid so the straight OUTPUT→increment
@@ -3104,7 +3156,7 @@ function alignNestedLoopsLR(svg) {
     const labAttr = label
       ? ` data-label="${escapeAttr(label)}"`
       : ` data-label=""`;
-    return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(insetEndpoint(pts)))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${labAttr}/>`;
+    return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(pts))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${labAttr}/>`;
   };
 
   const leftOf = (id) =>
@@ -3141,15 +3193,16 @@ function alignNestedLoopsLR(svg) {
   const iIncL = leftOf(iIncId);
   const endB = botOf(endId);
 
-  // Keep enough vertical run into the tips for ARROWHEAD_INSET_PX (~10px)
-  // so insetEndpoint does not collapse the final segment onto the elbow.
+  // Keep enough vertical run into the tips so a short final segment remains
+  // after any marker trim (and elbows stay clear of the tip).
+  const tipRun = Math.max(ARROWHEAD_INSET_PX, 0) + 14;
   const aboveY = Math.min(
     Math.min(jT.y, RAIL_Y) - LOOP_PAD,
-    inn.top.y - (ARROWHEAD_INSET_PX + 14),
+    inn.top.y - tipRun,
   );
   const belowY = Math.max(
     Math.max(iIncB.y, RAIL_Y) + LOOP_PAD,
-    o.bottom.y + (ARROWHEAD_INSET_PX + 14),
+    o.bottom.y + tipRun,
   );
 
   /** @type {Map<string, string>} */
@@ -3258,18 +3311,22 @@ function renderDiagram(source) {
     accent: "#0075c9",
   });
   return fitSvgViewBox(
-    transparentizeEdgeLabels(
-      nudgeEdgeLabelsNearSource(
-        alignNestedLoopsLR(
-          alignForOutputIncrementTB(
-            alignIfThenMerge(
-              placeDiamondsBelowPredecessors(
-                alignRepeatInputDiamond(
-                  alignLoopBodyColumn(
-                    collapseJunctionNodes(
-                      rewireDiamondPorts(
-                        retargetParallelogramPorts(
-                          applyParallelograms(svg, lean),
+    paintEdgesAboveNodes(
+      applyArrowheadInsets(
+        transparentizeEdgeLabels(
+          nudgeEdgeLabelsNearSource(
+            alignNestedLoopsLR(
+              alignForOutputIncrementTB(
+                alignIfThenMerge(
+                  placeDiamondsBelowPredecessors(
+                    alignRepeatInputDiamond(
+                      alignLoopBodyColumn(
+                        collapseJunctionNodes(
+                          rewireDiamondPorts(
+                            retargetParallelogramPorts(
+                              applyParallelograms(svg, lean),
+                            ),
+                          ),
                         ),
                       ),
                     ),
