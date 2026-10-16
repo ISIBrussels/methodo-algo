@@ -308,11 +308,12 @@ function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
 }
 
 /**
- * Aim the last vertex past a port along the approach so {@link insetEndpoint}
- * lands on the border (used only by S4 align* rewrites — does not change the
- * global marker / default inset behaviour).
+ * Aim past a port along the approach so {@link insetEndpoint} leaves the
+ * vertex a few px under the fill — native markers sit ~1–2px short of the
+ * path end, so flush landings still look gapped on dark zooms. Used only by
+ * S4 align* rewrites (does not change global marker / default inset).
  */
-function aimPastPort(from, port, past = ARROWHEAD_INSET_PX) {
+function aimPastPort(from, port, past = ARROWHEAD_INSET_PX + 6) {
   const dx = port.x - from.x;
   const dy = port.y - from.y;
   const len = Math.hypot(dx, dy) || 1;
@@ -2891,19 +2892,63 @@ function alignForOutputIncrementTB(svg) {
     // Only when the increment sits below the OUTPUT (TB drop).
     if (incTop0.y < outBot.y + 8) continue;
 
+    const no = edges.find(
+      (e) => e.from === did && e.label.trim().toLowerCase() === "no",
+    );
+    const endId = no?.to;
+    const endNode0 = endId ? nodes.get(endId) : null;
+
     // Align rectangle top mid under parallelogram bottom mid → straight drop.
     shiftNode(incId, outBot.x - incTop0.x, 0);
+
+    // Pull OUTPUT / END / increment toward the diamond (same idea as
+    // GAP_BELOW_DIAMOND): shorten the empty band so Yes/No drops and the
+    // OUTPUT→i++ shaft match the tight S3 WHILE spacing.
+    refresh(did);
+    const d0 = nodes.get(did).verts;
+    const GAP_DROP = 52; // stub lane → target top (arrow body + inset)
+    const outTop0 = nodeFacePort(nodes.get(outId).inner, nodes.get(outId).shape, "top");
+    if (outTop0) {
+      shiftNode(outId, 0, d0.left.y + GAP_DROP - outTop0.y);
+    }
+    if (endNode0?.center && endId) {
+      refresh(endId);
+      const endTop0 = nodeFacePort(
+        nodes.get(endId).inner,
+        nodes.get(endId).shape,
+        "top",
+      );
+      if (endTop0) {
+        shiftNode(endId, 0, d0.right.y + GAP_DROP - endTop0.y);
+      }
+    }
+    refresh(outId);
+    refresh(incId);
+    const outBot1 = nodeFacePort(nodes.get(outId).inner, nodes.get(outId).shape, "bottom");
+    const incTop1 = nodeFacePort(nodes.get(incId).inner, nodes.get(incId).shape, "top");
+    if (outBot1 && incTop1) {
+      // Keep a short straight shaft under OUTPUT (S3-like ~48px).
+      const GAP_IO = 48;
+      shiftNode(incId, outBot1.x - incTop1.x, outBot1.y + GAP_IO - incTop1.y);
+    }
+
     refresh(outId);
     refresh(incId);
     refresh(did);
+    if (endId) refresh(endId);
 
     const outFresh = nodes.get(outId);
     const incFresh = nodes.get(incId);
     const dFresh = nodes.get(did);
+    const endFresh = endId ? nodes.get(endId) : null;
     const src = nodeFacePort(outFresh.inner, outFresh.shape, "bottom");
     const land = nodeFacePort(incFresh.inner, incFresh.shape, "top");
     const retRight = nodeFacePort(incFresh.inner, incFresh.shape, "right");
-    if (!src || !land || !retRight || !dFresh?.verts) continue;
+    const outTop = nodeFacePort(outFresh.inner, outFresh.shape, "top");
+    const endTop = endFresh
+      ? nodeFacePort(endFresh.inner, endFresh.shape, "top")
+      : null;
+    if (!src || !land || !retRight || !dFresh?.verts || !outTop) continue;
 
     const stroke = /stroke="([^"]+)"/.exec(yes.attrs)?.[1] ?? "#757575";
     const sw = /stroke-width="([^"]+)"/.exec(yes.attrs)?.[1] ?? "1.5";
@@ -2914,9 +2959,8 @@ function alignForOutputIncrementTB(svg) {
       return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(insetEndpoint(pts)))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
     };
 
-    // Leave from the increment RIGHT mid so the straight OUTPUT→increment
-    // drop owns the top face alone (no T-junction / false jog at arrival).
-    // Aim past the ports so insetEndpoint sits the marker tip on the border.
+    const yesStub = diamondExitStub(dFresh.verts, "left");
+    const noStub = diamondExitStub(dFresh.verts, "right");
     const climbX = dFresh.verts.bottom.x;
     const returnElbow = { x: climbX, y: retRight.y };
     const returnPts = [
@@ -2924,12 +2968,32 @@ function alignForOutputIncrementTB(svg) {
       returnElbow,
       aimPastPort(returnElbow, dFresh.verts.bottom),
     ];
-
     const dropPts = [{ ...src }, aimPastPort(src, land)];
+    const yesEdgePts = [
+      { ...dFresh.verts.left },
+      { ...yesStub },
+      { x: yesStub.x, y: outTop.y },
+      aimPastPort(yesStub, outTop),
+    ];
+    const noEdgePts =
+      endTop && no
+        ? [
+            { ...dFresh.verts.right },
+            { ...noStub },
+            { x: noStub.x, y: endTop.y },
+            aimPastPort(noStub, endTop),
+          ]
+        : null;
 
     next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
       const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
       const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+      if (from === did && to === outId) {
+        return mkEdge(did, outId, yes.label || "Yes", yesEdgePts);
+      }
+      if (noEdgePts && from === did && to === endId) {
+        return mkEdge(did, endId, no.label || "No", noEdgePts);
+      }
       if (from === outId && to === incId) {
         return mkEdge(outId, incId, "", dropPts);
       }
@@ -3045,8 +3109,8 @@ function alignNestedLoopsLR(svg) {
   const railIds = [...spineLeft, oid, initId, iid, bodyId, jIncId];
   const GAP_X = 78;
   const RAIL_Y = 210;
-  // Clear tip→face for No stubs + inset (same idea as GAP_BELOW_DIAMOND elsewhere).
-  const GAP_NO_EXIT = 42;
+  // Clear tip→face for No stubs + inset (park END / i++ off the tips).
+  const GAP_NO_EXIT = 56;
   const LOOP_PAD = 36;
 
   let next = svg;
@@ -3281,6 +3345,26 @@ function alignNestedLoopsLR(svg) {
 }
 
 
+/**
+ * Edges are painted before nodes by default, so opaque fills hide the first
+ * pixels of tip exits (Yes/No) and make stubs look detached. Move edges +
+ * labels after node groups — markers unchanged.
+ */
+function paintEdgesAboveNodes(svg) {
+  const edges = [...svg.matchAll(/<polyline class="edge"[^>]*\/>/g)].map(
+    (m) => m[0],
+  );
+  const labels = [...svg.matchAll(/<g class="edge-label"[\s\S]*?<\/g>/g)].map(
+    (m) => m[0],
+  );
+  if (edges.length === 0) return svg;
+  let next = svg;
+  for (const e of edges) next = next.replace(e, "");
+  for (const l of labels) next = next.replace(l, "");
+  const block = `${edges.join("\n")}${labels.length ? `\n${labels.join("\n")}` : ""}\n`;
+  return next.replace(/<\/svg>\s*$/, `${block}</svg>`);
+}
+
 function renderDiagram(source) {
   const { source: prepared, lean } = preprocessParallelograms(source);
   const svg = renderMermaidSVG(prepared, {
@@ -3292,18 +3376,20 @@ function renderDiagram(source) {
     accent: "#0075c9",
   });
   return fitSvgViewBox(
-    transparentizeEdgeLabels(
-      nudgeEdgeLabelsNearSource(
-        alignNestedLoopsLR(
-          alignForOutputIncrementTB(
-            alignIfThenMerge(
-              placeDiamondsBelowPredecessors(
-                alignRepeatInputDiamond(
-                  alignLoopBodyColumn(
-                    collapseJunctionNodes(
-                      rewireDiamondPorts(
-                        retargetParallelogramPorts(
-                          applyParallelograms(svg, lean),
+    paintEdgesAboveNodes(
+      transparentizeEdgeLabels(
+        nudgeEdgeLabelsNearSource(
+          alignNestedLoopsLR(
+            alignForOutputIncrementTB(
+              alignIfThenMerge(
+                placeDiamondsBelowPredecessors(
+                  alignRepeatInputDiamond(
+                    alignLoopBodyColumn(
+                      collapseJunctionNodes(
+                        rewireDiamondPorts(
+                          retargetParallelogramPorts(
+                            applyParallelograms(svg, lean),
+                          ),
                         ),
                       ),
                     ),
