@@ -285,35 +285,17 @@ function dedupePoints(points) {
 }
 
 /**
- * Marker-less linecap bleed (alignIfThenMerge then/no). Keep small.
+ * Pull the last vertex back along the final segment so a marker-end arrowhead
+ * sits on the target border. Chromium paints markers above later siblings, so
+ * an endpoint flush with a node face otherwise shows the arrow through the fill.
  */
-const ARROWHEAD_INSET_PX = 2;
-
-/** Drawn arrow triangle (user px) — not SVG markers (markers sit short of vertex). */
-const ARROW_TIP_LEN = 9;
-const ARROW_TIP_HALF = 3.5;
-/** Tip of the drawn triangle sits this far under the destination fill/stroke. */
-const ARROW_TIP_INTO_PX = 5;
-/** Pull Yes/No (and face) starts under the tip/face fill so the exit meets the border. */
-const DIAMOND_EXIT_INSET_PX = 4;
-/** Shaft behind the triangle base (path ends at the base). */
-const ARROW_MIN_RUN = ARROW_TIP_LEN + 6;
+const ARROWHEAD_INSET_PX = 10;
 
 function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
-  if (!points || points.length < 2 || !(dist > 0)) return points;
+  if (!points || points.length < 2) return points;
   const pts = points.map((p) => ({ ...p }));
+  const a = pts[pts.length - 2];
   const b = pts[pts.length - 1];
-  // Skip collapsed trailing duplicates (railSeg / stub+face when already
-  // collinear) so direction comes from the real final segment.
-  let i = pts.length - 2;
-  while (
-    i >= 0 &&
-    Math.hypot(pts[i].x - b.x, pts[i].y - b.y) <= 0.5
-  ) {
-    i -= 1;
-  }
-  if (i < 0) return dedupePoints(pts);
-  const a = pts[i];
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const len = Math.hypot(dx, dy) || 1;
@@ -323,287 +305,6 @@ function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
     y: b.y - (dy / len) * d,
   };
   return dedupePoints(pts);
-}
-
-/**
- * Approach side from a→b (direction of travel).
- * @returns {'top'|'bottom'|'left'|'right'}
- */
-function approachSide(a, b) {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  if (Math.abs(dy) >= Math.abs(dx)) return dy < 0 ? "bottom" : "top";
-  return dx < 0 ? "right" : "left";
-}
-
-/**
- * Keep enough shaft for the drawn triangle. On short tip→target drops, shrink
- * the diamond exit stub — never insert a backtracking elbow (floating No).
- */
-function ensureArrowShaft(pts, srcVerts) {
-  if (!pts || pts.length < 2) return pts;
-  let out = pts.map((p) => ({ ...p }));
-  const need = ARROW_MIN_RUN;
-  const land = out[out.length - 1];
-  let prev = out[out.length - 2];
-  let seg = Math.hypot(land.x - prev.x, land.y - prev.y);
-  if (seg >= need) return out;
-
-  if (srcVerts && out.length >= 3) {
-    const tips = [srcVerts.top, srcVerts.right, srcVerts.bottom, srcVerts.left];
-    let tip = tips[0];
-    let best = Infinity;
-    for (const t of tips) {
-      const d = Math.hypot(t.x - out[0].x, t.y - out[0].y);
-      if (d < best) {
-        best = d;
-        tip = t;
-      }
-    }
-    if (best <= 14) {
-      const clearance = Math.hypot(land.x - tip.x, land.y - tip.y);
-      const stubLen = Math.max(3, Math.min(DIAMOND_EXIT_STUB_PX, clearance - need));
-      const dx = tip.x - srcVerts.cx;
-      const dy = tip.y - srcVerts.cy;
-      const half = Math.hypot(dx, dy) || 1;
-      out[1] = {
-        x: tip.x + (dx / half) * stubLen,
-        y: tip.y + (dy / half) * stubLen,
-      };
-      out = dedupePoints([out[0], out[1], land]);
-      prev = out[out.length - 2];
-      seg = Math.hypot(land.x - prev.x, land.y - prev.y);
-    }
-  }
-
-  if (seg > 0.5 && seg < need && out.length >= 3) {
-    const ux = (prev.x - land.x) / seg;
-    const uy = (prev.y - land.y) / seg;
-    const extended = { x: land.x + ux * need, y: land.y + uy * need };
-    const start = out[0];
-    const along =
-      (extended.x - start.x) * ux + (extended.y - start.y) * uy;
-    const prevAlong = (prev.x - start.x) * ux + (prev.y - start.y) * uy;
-    if (along >= prevAlong - 0.5) {
-      out[out.length - 2] = extended;
-    }
-  }
-  return dedupePoints(out);
-}
-
-/**
- * Explicit arrow triangle in user space. Tip at `tip`; base faces `from`.
- */
-function arrowheadPolygon(from, tip) {
-  const dx = tip.x - from.x;
-  const dy = tip.y - from.y;
-  const len = Math.hypot(dx, dy) || 1;
-  const ux = dx / len;
-  const uy = dy / len;
-  const px = -uy;
-  const py = ux;
-  const bx = tip.x - ux * ARROW_TIP_LEN;
-  const by = tip.y - uy * ARROW_TIP_LEN;
-  const p1 = { x: tip.x, y: tip.y };
-  const p2 = { x: bx + px * ARROW_TIP_HALF, y: by + py * ARROW_TIP_HALF };
-  const p3 = { x: bx - px * ARROW_TIP_HALF, y: by - py * ARROW_TIP_HALF };
-  return `<polygon class="edge-arrow" points="${formatPoints([p1, p2, p3])}" fill="var(--_arrow)" stroke="none"/>`;
-}
-
-/**
- * Snap ports + replace marker-end with drawn triangles whose tip sits under
- * the destination fill (Chrome/rsvg markers consistently stop short of the
- * path vertex — gray stroke continued past the blue tip into the node).
- */
-function applyArrowheadContacts(svg) {
-  /** @type {Map<string, {shape:string, inner:string, verts:ReturnType<typeof diamondVertices>|null}>} */
-  const nodes = new Map();
-  for (const m of svg.matchAll(
-    /<g class="node" data-id="([^"]+)"[^>]*data-shape="([^"]+)"[^>]*>([\s\S]*?)<\/g>/g,
-  )) {
-    const poly = /<polygon points="([^"]+)"/.exec(m[3]);
-    nodes.set(m[1], {
-      shape: m[2],
-      inner: m[3],
-      verts: m[2] === "diamond" && poly ? diamondVertices(poly[1]) : null,
-    });
-  }
-
-  /** @type {string[]} */
-  const arrows = [];
-
-  let next = svg.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
-    const marker = /marker-end="([^"]*)"/.exec(attrs)?.[1];
-    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
-    const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
-    const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
-    if (!from || !to || !pointsAttr) return full;
-    let pts = parsePoints(pointsAttr);
-    if (pts.length < 2) return full;
-    let changed = false;
-    let newAttrs = attrs;
-
-    const src = nodes.get(from);
-    if (src?.verts) {
-      const tips = [src.verts.top, src.verts.right, src.verts.bottom, src.verts.left];
-      const start = pts[0];
-      let tip = tips[0];
-      let best = Infinity;
-      for (const t of tips) {
-        const dist = Math.hypot(t.x - start.x, t.y - start.y);
-        if (dist < best) {
-          best = dist;
-          tip = t;
-        }
-      }
-      if (best <= 12) {
-        const dx = tip.x - src.verts.cx;
-        const dy = tip.y - src.verts.cy;
-        const half = Math.hypot(dx, dy) || 1;
-        pts[0] = {
-          x: tip.x - (dx / half) * DIAMOND_EXIT_INSET_PX,
-          y: tip.y - (dy / half) * DIAMOND_EXIT_INSET_PX,
-        };
-        if (pts.length >= 2) {
-          const stub = pts[1];
-          const expect = {
-            x: tip.x + (dx / half) * DIAMOND_EXIT_STUB_PX,
-            y: tip.y + (dy / half) * DIAMOND_EXIT_STUB_PX,
-          };
-          if (Math.hypot(stub.x - expect.x, stub.y - expect.y) <= 14) {
-            pts[1] = expect;
-          }
-        }
-        changed = true;
-      }
-    } else if (src) {
-      const dx = pts[1].x - pts[0].x;
-      const dy = pts[1].y - pts[0].y;
-      const exitSide =
-        Math.abs(dy) >= Math.abs(dx)
-          ? dy < 0
-            ? "top"
-            : "bottom"
-          : dx < 0
-            ? "left"
-            : "right";
-      const port = nodeFacePort(src.inner, src.shape, exitSide);
-      if (
-        port &&
-        Math.hypot(port.x - pts[0].x, port.y - pts[0].y) <= 12
-      ) {
-        // Start a hair under the fill so the exit stroke meets the border.
-        const nx = pts[1].x - port.x;
-        const ny = pts[1].y - port.y;
-        const nlen = Math.hypot(nx, ny) || 1;
-        pts[0] = {
-          x: port.x - (nx / nlen) * DIAMOND_EXIT_INSET_PX,
-          y: port.y - (ny / nlen) * DIAMOND_EXIT_INSET_PX,
-        };
-        changed = true;
-      }
-    }
-
-    if (marker && marker !== "none") {
-      const dst = nodes.get(to);
-      if (dst) {
-        const end = pts[pts.length - 1];
-        const prev = pts[pts.length - 2];
-        let land = null;
-        if (dst.verts) {
-          const tips = [
-            ["top", dst.verts.top],
-            ["right", dst.verts.right],
-            ["bottom", dst.verts.bottom],
-            ["left", dst.verts.left],
-          ];
-          const axis = approachSide(prev, end);
-          land = dst.verts[axis];
-          for (const [name, t] of tips) {
-            if (Math.hypot(t.x - end.x, t.y - end.y) <= 8) {
-              land = t;
-              void name;
-              break;
-            }
-          }
-        } else {
-          land = nodeFacePort(dst.inner, dst.shape, approachSide(prev, end));
-        }
-        if (land) {
-          const last = pts.length - 1;
-          const p = pts[last - 1];
-          if (Math.abs(p.x - land.x) <= Math.abs(p.y - land.y)) {
-            pts[last - 1] = { x: land.x, y: p.y };
-          } else {
-            pts[last - 1] = { x: p.x, y: land.y };
-          }
-          pts[last] = { ...land };
-          pts = ensureArrowShaft(pts, src?.verts ?? null);
-
-          // Tip under the fill; path ends at the triangle base (no marker).
-          const a = pts[pts.length - 2];
-          const b = pts[pts.length - 1];
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const len = Math.hypot(dx, dy) || 1;
-          const ux = dx / len;
-          const uy = dy / len;
-          const tip = {
-            x: b.x + ux * ARROW_TIP_INTO_PX,
-            y: b.y + uy * ARROW_TIP_INTO_PX,
-          };
-          const base = {
-            x: tip.x - ux * ARROW_TIP_LEN,
-            y: tip.y - uy * ARROW_TIP_LEN,
-          };
-          pts[pts.length - 1] = base;
-          pts = dedupePoints(pts);
-          arrows.push(arrowheadPolygon(base, tip));
-          newAttrs = newAttrs
-            .replace(/\s*marker-end="[^"]*"/, "")
-            .replace(/\s*data-arrow-end="[^"]*"/, ' data-arrow-end="false"');
-          changed = true;
-        }
-      }
-    }
-
-    if (!changed) return full;
-    return `<polyline class="edge"${newAttrs.replace(
-      /points="[^"]+"/,
-      `points="${formatPoints(pts)}"`,
-    )}/>`;
-  });
-
-  if (arrows.length) {
-    next = next.replace(/<\/svg>\s*$/, `${arrows.join("\n")}\n</svg>`);
-  }
-  return next;
-}
-
-/**
- * beautiful-mermaid paints edges before nodes, so opaque fills cover the first
- * pixels of tip exits (Yes/No stubs) and make arrowheads look floated off
- * faces. Move edges + drawn arrowheads + labels after node groups.
- */
-function paintEdgesAboveNodes(svg) {
-  const edges = [...svg.matchAll(/<polyline class="edge"[^>]*\/>/g)].map(
-    (m) => m[0],
-  );
-  const arrowPolys = [
-    ...svg.matchAll(/<polygon class="edge-arrow"[^>]*\/>/g),
-  ].map((m) => m[0]);
-  const labels = [...svg.matchAll(/<g class="edge-label"[\s\S]*?<\/g>/g)].map(
-    (m) => m[0],
-  );
-  if (edges.length === 0) return svg;
-  let next = svg;
-  for (const e of edges) next = next.replace(e, "");
-  for (const a of arrowPolys) next = next.replace(a, "");
-  for (const l of labels) next = next.replace(l, "");
-  const block = `${edges.join("\n")}${
-    arrowPolys.length ? `\n${arrowPolys.join("\n")}` : ""
-  }${labels.length ? `\n${labels.join("\n")}` : ""}\n`;
-  return next.replace(/<\/svg>\s*$/, `${block}</svg>`);
 }
 
 /**
@@ -2964,13 +2665,14 @@ function alignIfThenMerge(svg) {
     const marker =
       /marker-end="([^"]*)"/.exec(yes.attrs)?.[1] || "url(#arrowhead)";
 
-    // Flush to THEN top; applyArrowheadInsets trims for the Yes marker.
-    const yesPts = dedupePoints([
-      { ...d.left },
-      { ...yesStub },
-      { x: colX, y: thenTop.y },
-      { ...thenTop },
-    ]);
+    const yesPts = insetEndpoint(
+      dedupePoints([
+        { ...d.left },
+        { ...yesStub },
+        { x: colX, y: thenTop.y },
+        { ...thenTop },
+      ]),
+    );
     // Stop just short of the face (no marker): round linecaps otherwise
     // bleed a few px into the opaque merge fill and read as a ghost stem.
     const thenPts = insetEndpoint(
@@ -3194,7 +2896,7 @@ function alignForOutputIncrementTB(svg) {
       /marker-end="([^"]*)"/.exec(yes.attrs)?.[1] || "url(#arrowhead)";
     const mkEdge = (from, to, label, pts) => {
       const lab = ` data-label="${escapeAttr(label ?? "")}"`;
-      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(pts))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
+      return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(insetEndpoint(pts)))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${lab}/>`;
     };
 
     // Leave from the increment RIGHT mid so the straight OUTPUT→increment
@@ -3326,9 +3028,8 @@ function alignNestedLoopsLR(svg) {
   const railIds = [...spineLeft, oid, initId, iid, bodyId, jIncId];
   const GAP_X = 78;
   const RAIL_Y = 210;
-  // Room for tip stub + arrow shaft on No↑END / No↓i++ (was ~21/32px → floating).
-  const ABOVE = 118;
-  const BELOW = 130;
+  const ABOVE = 88;
+  const BELOW = 100;
   const LOOP_PAD = 36;
 
   let next = svg;
@@ -3403,7 +3104,7 @@ function alignNestedLoopsLR(svg) {
     const labAttr = label
       ? ` data-label="${escapeAttr(label)}"`
       : ` data-label=""`;
-    return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(pts))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${labAttr}/>`;
+    return `<polyline class="edge" fill="none" stroke="${escapeAttr(stroke)}" stroke-width="${escapeAttr(sw)}" stroke-linecap="round" stroke-linejoin="round" points="${formatPoints(dedupePoints(insetEndpoint(pts)))}" marker-end="${escapeAttr(marker)}" data-from="${escapeAttr(from)}" data-to="${escapeAttr(to)}"${labAttr}/>`;
   };
 
   const leftOf = (id) =>
@@ -3440,15 +3141,15 @@ function alignNestedLoopsLR(svg) {
   const iIncL = leftOf(iIncId);
   const endB = botOf(endId);
 
-  // Keep enough vertical run into the tips for the arrow body + elbow clearance.
-  const tipRun = ARROW_TIP_LEN + 14;
+  // Keep enough vertical run into the tips for ARROWHEAD_INSET_PX (~10px)
+  // so insetEndpoint does not collapse the final segment onto the elbow.
   const aboveY = Math.min(
     Math.min(jT.y, RAIL_Y) - LOOP_PAD,
-    inn.top.y - tipRun,
+    inn.top.y - (ARROWHEAD_INSET_PX + 14),
   );
   const belowY = Math.max(
     Math.max(iIncB.y, RAIL_Y) + LOOP_PAD,
-    o.bottom.y + tipRun,
+    o.bottom.y + (ARROWHEAD_INSET_PX + 14),
   );
 
   /** @type {Map<string, string>} */
@@ -3557,22 +3258,18 @@ function renderDiagram(source) {
     accent: "#0075c9",
   });
   return fitSvgViewBox(
-    paintEdgesAboveNodes(
-      applyArrowheadContacts(
-        transparentizeEdgeLabels(
-          nudgeEdgeLabelsNearSource(
-            alignNestedLoopsLR(
-              alignForOutputIncrementTB(
-                alignIfThenMerge(
-                  placeDiamondsBelowPredecessors(
-                    alignRepeatInputDiamond(
-                      alignLoopBodyColumn(
-                        collapseJunctionNodes(
-                          rewireDiamondPorts(
-                            retargetParallelogramPorts(
-                              applyParallelograms(svg, lean),
-                            ),
-                          ),
+    transparentizeEdgeLabels(
+      nudgeEdgeLabelsNearSource(
+        alignNestedLoopsLR(
+          alignForOutputIncrementTB(
+            alignIfThenMerge(
+              placeDiamondsBelowPredecessors(
+                alignRepeatInputDiamond(
+                  alignLoopBodyColumn(
+                    collapseJunctionNodes(
+                      rewireDiamondPorts(
+                        retargetParallelogramPorts(
+                          applyParallelograms(svg, lean),
                         ),
                       ),
                     ),
