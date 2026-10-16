@@ -285,15 +285,22 @@ function dedupePoints(points) {
 }
 
 /**
- * Optional extra pull-back for marker-end arrowheads.
- *
- * beautiful-mermaid already shortens native edges by ~1px (8×5 head, refX=7,
- * stroke-width 1 → tip overhang ~1px). An extra inset of 10 (post-571df5e
- * mkEdge paths) stacked on that and left visible gaps at diamond tips / END.
- * Keep at 0 so we do not double-trim; non-zero still used by marker-less
- * linecap insets (alignIfThenMerge then/no).
+ * Marker-less linecap bleed (alignIfThenMerge then/no). Keep small.
+ * Arrivals with marker-end use {@link overshootEndpoint} instead — an inset
+ * of 10 stacked on beautiful-mermaid's native trim opened visible gaps.
  */
-const ARROWHEAD_INSET_PX = 0;
+const ARROWHEAD_INSET_PX = 2;
+
+/**
+ * Push the last vertex past the target border along the final segment so the
+ * marker tip reaches the stroked edge (diamond tips / stadium END). Flush
+ * geometry alone still leaves a hole: refX = w-1 puts the tip ~1px past the
+ * vertex, which is shorter than the node stroke miter at a sharp tip.
+ */
+const ARROWHEAD_OVERSHOOT_PX = 6;
+
+/** Pull Yes/No starts slightly into the tip so the exit stroke meets the border. */
+const DIAMOND_EXIT_INSET_PX = 2;
 
 function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
   if (!points || points.length < 2 || !(dist > 0)) return points;
@@ -321,23 +328,99 @@ function insetEndpoint(points, dist = ARROWHEAD_INSET_PX) {
   return dedupePoints(pts);
 }
 
+function overshootEndpoint(points, dist = ARROWHEAD_OVERSHOOT_PX) {
+  if (!points || points.length < 2 || !(dist > 0)) return points;
+  const pts = points.map((p) => ({ ...p }));
+  const b = pts[pts.length - 1];
+  let i = pts.length - 2;
+  while (
+    i >= 0 &&
+    Math.hypot(pts[i].x - b.x, pts[i].y - b.y) <= 0.5
+  ) {
+    i -= 1;
+  }
+  if (i < 0) return dedupePoints(pts);
+  const a = pts[i];
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const len = Math.hypot(dx, dy) || 1;
+  pts[pts.length - 1] = {
+    x: b.x + (dx / len) * dist,
+    y: b.y + (dy / len) * dist,
+  };
+  return dedupePoints(pts);
+}
+
 /**
- * Final pass: inset every marker-end edge once so arrow tips meet node borders.
- * Align* helpers draw geometry flush to faces/tips; this owns the marker trim.
- * Edges without marker-end (merge joins, stem landings) are left alone.
+ * Put the arrow tip on the polyline vertex (refX = markerWidth), then overshoot
+ * arrivals so the tip crosses the stroked border. Pull diamond Yes/No starts
+ * slightly inward so exits meet the tip. Skip marker-less joins.
  */
-function applyArrowheadInsets(svg) {
-  return svg.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+function applyArrowheadContacts(svg) {
+  /** @type {Map<string, ReturnType<typeof diamondVertices>>} */
+  const diamonds = new Map();
+  for (const m of svg.matchAll(
+    /<g class="node" data-id="([^"]+)"[^>]*data-shape="diamond"[^>]*>([\s\S]*?)<\/g>/g,
+  )) {
+    const poly = /<polygon points="([^"]+)"/.exec(m[2]);
+    if (!poly) continue;
+    const v = diamondVertices(poly[1]);
+    if (v) diamonds.set(m[1], v);
+  }
+
+  let next = svg.replace(
+    /<marker id="arrowhead"(\s[^>]*)?>/g,
+    (full) => {
+      const w = /markerWidth="([^"]+)"/.exec(full)?.[1];
+      if (!w) return full;
+      // Tip of the triangle is at x=w; place it on the vertex.
+      return full.replace(/\brefX="[^"]+"/, `refX="${w}"`);
+    },
+  );
+
+  next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
     const marker = /marker-end="([^"]*)"/.exec(attrs)?.[1];
-    if (!marker || marker === "none") return full;
+    const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
     const pointsAttr = /points="([^"]+)"/.exec(attrs)?.[1];
     if (!pointsAttr) return full;
-    const pts = insetEndpoint(parsePoints(pointsAttr));
+    let pts = parsePoints(pointsAttr);
+    if (pts.length < 2) return full;
+
+    // Diamond Yes/No (and other tip exits): start a couple px inside the tip.
+    if (from && diamonds.has(from)) {
+      const d = diamonds.get(from);
+      const tips = [d.top, d.right, d.bottom, d.left];
+      const start = pts[0];
+      let tip = null;
+      let best = Infinity;
+      for (const t of tips) {
+        const dist = Math.hypot(t.x - start.x, t.y - start.y);
+        if (dist < best) {
+          best = dist;
+          tip = t;
+        }
+      }
+      if (tip && best <= 1.25) {
+        const dx = tip.x - d.cx;
+        const dy = tip.y - d.cy;
+        const half = Math.hypot(dx, dy) || 1;
+        pts[0] = {
+          x: tip.x - (dx / half) * DIAMOND_EXIT_INSET_PX,
+          y: tip.y - (dy / half) * DIAMOND_EXIT_INSET_PX,
+        };
+      }
+    }
+
+    if (marker && marker !== "none") {
+      pts = overshootEndpoint(pts);
+    }
     return `<polyline class="edge"${attrs.replace(
       /points="[^"]+"/,
-      `points="${formatPoints(pts)}"`,
+      `points="${formatPoints(dedupePoints(pts))}"`,
     )}/>`;
   });
+
+  return next;
 }
 
 /**
@@ -3312,7 +3395,7 @@ function renderDiagram(source) {
   });
   return fitSvgViewBox(
     paintEdgesAboveNodes(
-      applyArrowheadInsets(
+      applyArrowheadContacts(
         transparentizeEdgeLabels(
           nudgeEdgeLabelsNearSource(
             alignNestedLoopsLR(
