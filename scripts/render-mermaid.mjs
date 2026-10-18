@@ -3086,6 +3086,7 @@ function alignNestedLoopsTB(svg) {
   const bodyTop = topOf(bodyId);
   const bodyBot = botOf(bodyId);
   const jTop = topOf(jIncId);
+  const jLeft = leftOf(jIncId);
   const jBot = botOf(jIncId);
   const iIncTop = topOf(iIncId);
   const iIncBot = botOf(iIncId);
@@ -3160,9 +3161,9 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // Shared left lane: strictly left of OUTPUT / j++ ink (parallelogram
-  // lean included) with a clear margin — used by both loop returns so no
-  // vertical shaft runs through those boxes.
+  // Both returns on leftLaneX. Never climb on inn.bottom.x / j++ centre:
+  // that spine is shared with D→E (j=1→tip) and reads as a ghost vertical
+  // through OUTPUT/j++ even when x is a few px past F.right.
   const MARGIN = 36;
   const stem = 16;
   const leftLaneX =
@@ -3174,16 +3175,14 @@ function alignNestedLoopsTB(svg) {
       minNodeX(jIncId),
     ) - MARGIN;
 
-  // j++ → inner bottom tip: drop below, climb in leftLaneX, enter tip
-  // (do NOT climb at inn.bottom.x — that spine grazes OUTPUT's right side).
-  if (jBot) {
-    const jFloor = jBot.y + CLEAR;
+  // j++ → inner tip: left face → leftLaneX → up → jog into bottom tip.
+  // No vertical at j++/OUTPUT centre and no shared spine with D→E.
+  if (jLeft) {
     edgeMap.set(
       `${jIncId}->${iid}`,
       mkEdge(jIncId, iid, "", [
-        { ...jBot },
-        { x: jBot.x, y: jFloor },
-        { x: leftLaneX, y: jFloor },
+        { ...jLeft },
+        { x: leftLaneX, y: jLeft.y },
         { x: leftLaneX, y: inn.bottom.y + stem },
         { x: inn.bottom.x, y: inn.bottom.y + stem },
         { ...inn.bottom },
@@ -3202,7 +3201,8 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // i++ → outer bottom tip: same leftLaneX (outside OUTPUT / j++).
+  // i++ → outer tip via leftLaneX. Floor MUST be below j++ (not between
+  // OUTPUT and j++ — a mid-band rail crossed F→G and read as a ghost spine).
   if (iIncBot) {
     const floorY =
       Math.max(iIncBot.y, jBot?.y ?? iIncBot.y) + CLEAR;
