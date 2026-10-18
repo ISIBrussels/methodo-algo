@@ -3060,8 +3060,6 @@ function alignNestedLoopsTB(svg) {
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "bottom");
   const leftOf = (id) =>
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "left");
-  const rightOf = (id) =>
-    nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "right");
   /** True leftmost ink of a node (parallelogram lean extends past top-mid). */
   const minNodeX = (id) => {
     const n = nodes.get(id);
