@@ -375,10 +375,10 @@ Avec `N = 4` :
 
 Deux niveaux = deux tests, deux retours. Sur papier, le *pseudocode* reste souvent plus lisible.
 
-<div class="max-mermaid-wide-lg">
+<div class="max-mermaid-lg">
 
 ```mermaid
-flowchart LR
+flowchart TB
   A([START]) --> B["i = 1"]
   B --> C{i <= N}
   C -->|Yes| D["j = 1"]

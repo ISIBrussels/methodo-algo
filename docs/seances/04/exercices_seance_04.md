@@ -110,7 +110,7 @@ Avec `N = 3`, on obtient 9 lignes : de `1 x 1 = 1` jusqu'à `3 x 3 = 9`.
 Nombre d'exécutions du corps interne : `N * N`.
 
 ```mermaid
-flowchart LR
+flowchart TB
   A([START]) --> B["i = one"]
   B --> C{i <= N}
   C -->|Yes| D["j = one"]
