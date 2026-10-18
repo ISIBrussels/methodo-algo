@@ -3161,29 +3161,31 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // Both returns on leftLaneX. Never climb on inn.bottom.x / j++ centre:
-  // that spine is shared with D→E (j=1→tip) and reads as a ghost vertical
-  // through OUTPUT/j++ even when x is a few px past F.right.
+  // Two distinct left lanes (never shared): inner return nearer the
+  // blocks, outer return further left. Never climb on inn.bottom.x /
+  // j++ centre — that spine is shared with D→E and reads as a ghost
+  // through OUTPUT/j++.
   const MARGIN = 36;
+  const LANE_GAP = 28; // ≥20–30px between the two return verticals
   const stem = 16;
-  const leftLaneX =
-    Math.min(
-      o.left.x,
-      inn.left.x,
-      minNodeX(initId),
-      minNodeX(bodyId),
-      minNodeX(jIncId),
-    ) - MARGIN;
+  const inkLeft = Math.min(
+    o.left.x,
+    inn.left.x,
+    minNodeX(initId),
+    minNodeX(bodyId),
+    minNodeX(jIncId),
+  );
+  const innerLaneX = inkLeft - MARGIN;
+  const outerLaneX = innerLaneX - LANE_GAP;
 
-  // j++ → inner tip: left face → leftLaneX → up → jog into bottom tip.
-  // No vertical at j++/OUTPUT centre and no shared spine with D→E.
+  // j++ → inner tip: left face → innerLaneX → up → jog into bottom tip.
   if (jLeft) {
     edgeMap.set(
       `${jIncId}->${iid}`,
       mkEdge(jIncId, iid, "", [
         { ...jLeft },
-        { x: leftLaneX, y: jLeft.y },
-        { x: leftLaneX, y: inn.bottom.y + stem },
+        { x: innerLaneX, y: jLeft.y },
+        { x: innerLaneX, y: inn.bottom.y + stem },
         { x: inn.bottom.x, y: inn.bottom.y + stem },
         { ...inn.bottom },
       ]),
@@ -3201,7 +3203,7 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // i++ → outer tip via leftLaneX. Floor MUST be below j++ (not between
+  // i++ → outer tip via outerLaneX. Floor MUST be below j++ (not between
   // OUTPUT and j++ — a mid-band rail crossed F→G and read as a ghost spine).
   if (iIncBot) {
     const floorY =
@@ -3211,8 +3213,8 @@ function alignNestedLoopsTB(svg) {
       mkEdge(iIncId, oid, "", [
         { ...iIncBot },
         { x: iIncBot.x, y: floorY },
-        { x: leftLaneX, y: floorY },
-        { x: leftLaneX, y: o.bottom.y + stem },
+        { x: outerLaneX, y: floorY },
+        { x: outerLaneX, y: o.bottom.y + stem },
         { x: o.bottom.x, y: o.bottom.y + stem },
         { ...o.bottom },
       ]),
