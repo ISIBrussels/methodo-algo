@@ -3058,8 +3058,25 @@ function alignNestedLoopsTB(svg) {
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "top");
   const botOf = (id) =>
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "bottom");
+  const leftOf = (id) =>
+    nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "left");
   const rightOf = (id) =>
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "right");
+  /** True leftmost ink of a node (parallelogram lean extends past top-mid). */
+  const minNodeX = (id) => {
+    const n = nodes.get(id);
+    if (!n) return Infinity;
+    if (n.verts) return n.verts.left.x;
+    const poly = /<polygon points="([^"]+)"/.exec(n.inner)?.[1];
+    if (poly) {
+      return Math.min(...parsePoints(poly).map((p) => p.x));
+    }
+    const rect =
+      /<rect\s+x="([^"]+)"/.exec(n.inner) ||
+      /<rect\b[^>]*\sx="([^"]+)"/.exec(n.inner);
+    if (rect) return Number(rect[1]);
+    return leftOf(id)?.x ?? Infinity;
+  };
 
   const oYesStub = diamondExitStub(o, "left");
   const oNoStub = diamondExitStub(o, "right");
@@ -3170,20 +3187,21 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // i++ overlaps the outer spine x — route under the box, climb in a
-  // free lane left of every node, then enter the bottom tip vertically
-  // (S3 WHILE arrival convention).
+  // i++ overlaps the outer spine x — climb in a lane left of the true
+  // ink of OUTPUT / j++ (not top-mid: parallelogram lean sticks out),
+  // then enter the bottom tip vertically (S3 WHILE arrival).
   if (iIncBot) {
     const floorY =
       Math.max(iIncBot.y, jBot?.y ?? iIncBot.y) + CLEAR;
+    const MARGIN = 28; // clear of OUTPUT / j++ left edges
     const laneX =
       Math.min(
         o.left.x,
         inn.left.x,
-        topOf(initId)?.x ?? o.left.x,
-        topOf(bodyId)?.x ?? o.left.x,
-        jRight?.x ?? o.left.x,
-      ) - CLEAR;
+        minNodeX(initId),
+        minNodeX(bodyId),
+        minNodeX(jIncId),
+      ) - MARGIN;
     const stem = 16;
     edgeMap.set(
       `${iIncId}->${oid}`,
