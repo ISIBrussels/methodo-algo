@@ -3088,7 +3088,6 @@ function alignNestedLoopsTB(svg) {
   const bodyTop = topOf(bodyId);
   const bodyBot = botOf(bodyId);
   const jTop = topOf(jIncId);
-  const jRight = rightOf(jIncId);
   const jBot = botOf(jIncId);
   const iIncTop = topOf(iIncId);
   const iIncBot = botOf(iIncId);
@@ -3163,14 +3162,32 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // j++ (Yes column, left of tip) → right face → climb into inner bottom
-  // (identical to S3 WHILE return from body under the Yes stub).
-  if (jRight) {
+  // Shared left lane: strictly left of OUTPUT / j++ ink (parallelogram
+  // lean included) with a clear margin — used by both loop returns so no
+  // vertical shaft runs through those boxes.
+  const MARGIN = 36;
+  const stem = 16;
+  const leftLaneX =
+    Math.min(
+      o.left.x,
+      inn.left.x,
+      minNodeX(initId),
+      minNodeX(bodyId),
+      minNodeX(jIncId),
+    ) - MARGIN;
+
+  // j++ → inner bottom tip: drop below, climb in leftLaneX, enter tip
+  // (do NOT climb at inn.bottom.x — that spine grazes OUTPUT's right side).
+  if (jBot) {
+    const jFloor = jBot.y + CLEAR;
     edgeMap.set(
       `${jIncId}->${iid}`,
       mkEdge(jIncId, iid, "", [
-        { ...jRight },
-        { x: inn.bottom.x, y: jRight.y },
+        { ...jBot },
+        { x: jBot.x, y: jFloor },
+        { x: leftLaneX, y: jFloor },
+        { x: leftLaneX, y: inn.bottom.y + stem },
+        { x: inn.bottom.x, y: inn.bottom.y + stem },
         { ...inn.bottom },
       ]),
     );
@@ -3187,29 +3204,17 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // i++ overlaps the outer spine x — climb in a lane left of the true
-  // ink of OUTPUT / j++ (not top-mid: parallelogram lean sticks out),
-  // then enter the bottom tip vertically (S3 WHILE arrival).
+  // i++ → outer bottom tip: same leftLaneX (outside OUTPUT / j++).
   if (iIncBot) {
     const floorY =
       Math.max(iIncBot.y, jBot?.y ?? iIncBot.y) + CLEAR;
-    const MARGIN = 28; // clear of OUTPUT / j++ left edges
-    const laneX =
-      Math.min(
-        o.left.x,
-        inn.left.x,
-        minNodeX(initId),
-        minNodeX(bodyId),
-        minNodeX(jIncId),
-      ) - MARGIN;
-    const stem = 16;
     edgeMap.set(
       `${iIncId}->${oid}`,
       mkEdge(iIncId, oid, "", [
         { ...iIncBot },
         { x: iIncBot.x, y: floorY },
-        { x: laneX, y: floorY },
-        { x: laneX, y: o.bottom.y + stem },
+        { x: leftLaneX, y: floorY },
+        { x: leftLaneX, y: o.bottom.y + stem },
         { x: o.bottom.x, y: o.bottom.y + stem },
         { ...o.bottom },
       ]),
