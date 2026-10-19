@@ -3192,26 +3192,16 @@ function alignNestedLoopsTB(svg) {
   );
   const outerLaneX = inkLeft - MARGIN;
 
-  // Right climb lane: clear of F/G ink, prefer corridor left of i++.
-  const stackRight = Math.max(maxNodeX(bodyId), maxNodeX(jIncId));
-  const iIncLeftX = leftOf(iIncId)?.x ?? Infinity;
-  let rightLaneX = stackRight + MARGIN;
-  if (rightLaneX > iIncLeftX - 16) {
-    // Corridor between OUTPUT stack and i++ is tight — use mid-gap.
-    rightLaneX = (stackRight + iIncLeftX) / 2;
-  }
-  // Still keep a clear margin past the stack (and past tip spine).
-  rightLaneX = Math.max(rightLaneX, stackRight + 16, inn.bottom.x + 16);
-
-  // j++ → inner tip: right face → rightLaneX → up → jog into bottom tip.
+  // j++ → inner tip: right face → tip column → straight up into bottom
+  // tip (same x as inn.bottom — no final Up→Left→Up zig-zag). Tip x
+  // sits right of OUTPUT/j++ ink, so the climb does not pierce them.
   if (jRight) {
+    const tipX = inn.bottom.x;
     edgeMap.set(
       `${jIncId}->${iid}`,
       mkEdge(jIncId, iid, "", [
         { ...jRight },
-        { x: rightLaneX, y: jRight.y },
-        { x: rightLaneX, y: inn.bottom.y + stem },
-        { x: inn.bottom.x, y: inn.bottom.y + stem },
+        { x: tipX, y: jRight.y },
         { ...inn.bottom },
       ]),
     );
