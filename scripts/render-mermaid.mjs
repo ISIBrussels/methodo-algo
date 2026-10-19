@@ -3060,6 +3060,8 @@ function alignNestedLoopsTB(svg) {
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "bottom");
   const leftOf = (id) =>
     nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "left");
+  const rightOf = (id) =>
+    nodeFacePort(nodes.get(id).inner, nodes.get(id).shape, "right");
   /** True leftmost ink of a node (parallelogram lean extends past top-mid). */
   const minNodeX = (id) => {
     const n = nodes.get(id);
@@ -3075,6 +3077,21 @@ function alignNestedLoopsTB(svg) {
     if (rect) return Number(rect[1]);
     return leftOf(id)?.x ?? Infinity;
   };
+  /** True rightmost ink of a node. */
+  const maxNodeX = (id) => {
+    const n = nodes.get(id);
+    if (!n) return -Infinity;
+    if (n.verts) return n.verts.right.x;
+    const poly = /<polygon points="([^"]+)"/.exec(n.inner)?.[1];
+    if (poly) {
+      return Math.max(...parsePoints(poly).map((p) => p.x));
+    }
+    const rect =
+      /<rect\s+x="([^"]+)"[^>]*width="([^"]+)"/.exec(n.inner) ||
+      /<rect\b[^>]*\sx="([^"]+)"[^>]*width="([^"]+)"/.exec(n.inner);
+    if (rect) return Number(rect[1]) + Number(rect[2]);
+    return rightOf(id)?.x ?? -Infinity;
+  };
 
   const oYesStub = diamondExitStub(o, "left");
   const oNoStub = diamondExitStub(o, "right");
@@ -3086,7 +3103,7 @@ function alignNestedLoopsTB(svg) {
   const bodyTop = topOf(bodyId);
   const bodyBot = botOf(bodyId);
   const jTop = topOf(jIncId);
-  const jLeft = leftOf(jIncId);
+  const jRight = rightOf(jIncId);
   const jBot = botOf(jIncId);
   const iIncTop = topOf(iIncId);
   const iIncBot = botOf(iIncId);
@@ -3161,12 +3178,10 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // Two distinct left lanes (never shared): inner return nearer the
-  // blocks, outer return further left. Never climb on inn.bottom.x /
-  // j++ centre — that spine is shared with D→E and reads as a ghost
-  // through OUTPUT/j++.
+  // Outer return stays on a left lane. Inner return (j++) exits the
+  // RIGHT face and climbs in a corridor right of OUTPUT/j++ (never
+  // through those boxes, never on the same shaft as i++).
   const MARGIN = 36;
-  const LANE_GAP = 28; // ≥20–30px between the two return verticals
   const stem = 16;
   const inkLeft = Math.min(
     o.left.x,
@@ -3175,17 +3190,27 @@ function alignNestedLoopsTB(svg) {
     minNodeX(bodyId),
     minNodeX(jIncId),
   );
-  const innerLaneX = inkLeft - MARGIN;
-  const outerLaneX = innerLaneX - LANE_GAP;
+  const outerLaneX = inkLeft - MARGIN;
 
-  // j++ → inner tip: left face → innerLaneX → up → jog into bottom tip.
-  if (jLeft) {
+  // Right climb lane: clear of F/G ink, prefer corridor left of i++.
+  const stackRight = Math.max(maxNodeX(bodyId), maxNodeX(jIncId));
+  const iIncLeftX = leftOf(iIncId)?.x ?? Infinity;
+  let rightLaneX = stackRight + MARGIN;
+  if (rightLaneX > iIncLeftX - 16) {
+    // Corridor between OUTPUT stack and i++ is tight — use mid-gap.
+    rightLaneX = (stackRight + iIncLeftX) / 2;
+  }
+  // Still keep a clear margin past the stack (and past tip spine).
+  rightLaneX = Math.max(rightLaneX, stackRight + 16, inn.bottom.x + 16);
+
+  // j++ → inner tip: right face → rightLaneX → up → jog into bottom tip.
+  if (jRight) {
     edgeMap.set(
       `${jIncId}->${iid}`,
       mkEdge(jIncId, iid, "", [
-        { ...jLeft },
-        { x: innerLaneX, y: jLeft.y },
-        { x: innerLaneX, y: inn.bottom.y + stem },
+        { ...jRight },
+        { x: rightLaneX, y: jRight.y },
+        { x: rightLaneX, y: inn.bottom.y + stem },
         { x: inn.bottom.x, y: inn.bottom.y + stem },
         { ...inn.bottom },
       ]),
@@ -3203,8 +3228,7 @@ function alignNestedLoopsTB(svg) {
       ]),
     );
   }
-  // i++ → outer tip via outerLaneX. Floor MUST be below j++ (not between
-  // OUTPUT and j++ — a mid-band rail crossed F→G and read as a ghost spine).
+  // i++ → outer tip via outerLaneX (left). Floor below j++.
   if (iIncBot) {
     const floorY =
       Math.max(iIncBot.y, jBot?.y ?? iIncBot.y) + CLEAR;
