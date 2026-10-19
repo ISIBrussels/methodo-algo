@@ -12,8 +12,13 @@
         --color-text: #212121;
         --color-border: #e0e0e0;
         --color-row-alt: #f5f5f5;
+        --color-error: #f23646;
       }
-      * { box-sizing: border-box; }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         max-width: 920px;
         margin: 0 auto;
@@ -23,6 +28,7 @@
         color: var(--color-text);
         background: var(--color-bg);
       }
+
       h1 {
         margin: 0 0 1.25rem;
         font-size: 1.85rem;
@@ -31,19 +37,31 @@
         padding-bottom: 0.6rem;
         border-bottom: 2px solid var(--color-primary);
       }
+
       h2 {
-        margin: 2rem 0 0.75rem;
-        font-size: 1.15rem;
+        margin: 0 0 0.75rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--color-secondary);
       }
-      p { margin: 0 0 1rem; color: var(--color-secondary); }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
       .page-nav {
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
-        margin: 1.25rem 0 1.75rem;
+        margin: 0 0 1.25rem;
       }
+
       .page-nav a {
         display: inline-block;
         padding: 0.3rem 0.7rem;
@@ -51,18 +69,143 @@
         font-weight: 600;
         color: var(--color-primary);
         text-decoration: none;
+        background: transparent;
         border: 1px solid var(--color-primary);
       }
+
       .page-nav a:hover {
         background: var(--color-primary);
         color: #ffffff;
+        text-decoration: none;
       }
-      .placeholder {
-        background: var(--color-row-alt);
+
+      .progress {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        color: var(--color-secondary);
+      }
+
+      .question {
         border: 1px solid var(--color-border);
-        padding: 1.25rem 1.5rem;
-        margin: 1.5rem 0;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: var(--color-bg);
       }
+
+      .answers {
+        display: grid;
+        gap: 0;
+        margin: 1rem 0 0;
+        border: 1px solid var(--color-border);
+      }
+
+      .answers label {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+        cursor: pointer;
+      }
+
+      .answers label:last-child {
+        border-bottom: none;
+      }
+
+      .answers label:nth-child(even) {
+        background: var(--color-row-alt);
+      }
+
+      .answers label.correct {
+        background: var(--color-row-alt);
+        color: var(--color-primary);
+      }
+
+      .answers label.wrong {
+        color: var(--color-error);
+        text-decoration: line-through;
+      }
+
+      .answers label.checked-mode {
+        cursor: default;
+      }
+
+      .option-tag {
+        display: inline-block;
+        margin-left: 0.35rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-secondary);
+      }
+
+      button {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid var(--color-primary);
+        background: transparent;
+        color: var(--color-primary);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        background: var(--color-primary);
+        color: #ffffff;
+      }
+
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1.25rem;
+      }
+
+      #reset-btn {
+        margin-left: auto;
+      }
+
+      .result {
+        font-weight: 600;
+        margin-top: 1rem;
+      }
+
+      .ok {
+        color: var(--color-primary);
+      }
+
+      .ko {
+        color: var(--color-error);
+      }
+
+      .muted {
+        color: var(--color-secondary);
+      }
+
+      .question-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .status {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.88em;
+        background: var(--color-row-alt);
+        color: var(--color-secondary);
+        padding: 0.1em 0.35em;
+      }
+
+      em {
+        font-style: italic;
+      }
+
       .site-footer {
         margin-top: 2.5rem;
         padding-top: 1rem;
@@ -71,11 +214,16 @@
         font-size: 0.9rem;
         color: var(--color-secondary);
       }
+
       .site-footer a {
         color: var(--color-secondary);
         text-decoration: underline;
+        font-weight: 400;
       }
-      .site-footer a:hover { color: var(--color-primary); }
+
+      .site-footer a:hover {
+        color: var(--color-primary);
+      }
     </style>
   </head>
   <body>
@@ -86,11 +234,349 @@
       <a href="exercices_seance_05.html">Exercices →</a>
       <a href="../../index.html">Accueil</a>
     </nav>
-    <div class="placeholder">
-      Coming soon...
+    <p class="muted">10 questions sur le cours de la séance 5.</p>
+    <p class="progress" id="progress"></p>
+    <div id="quiz"></div>
+
+    <div class="actions">
+      <button id="check-btn" type="button">Valider les réponses</button>
+      <button id="reset-btn" type="button">Réinitialiser</button>
     </div>
-    <footer class="site-footer">
-      <a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a>
-    </footer>
+    <p class="status" id="status" aria-live="polite"></p>
+    <div id="summary" class="result" aria-live="polite"></div>
+
+    <script>
+      const storageKey = "quiz_seance_05_answers_v1";
+      const checkedKey = "quiz_seance_05_checked_v1";
+
+      const questions = [
+        {
+          id: "q1",
+          text: "Avec la convention du cours <code>ARRAY values[1..N]</code>, le dernier indice valide est…",
+          options: [
+            { value: "A", label: "<code>0</code>" },
+            { value: "B", label: "<code>N</code>" },
+            { value: "C", label: "<code>N - 1</code>" },
+            { value: "D", label: "<code>N + 1</code>" },
+          ],
+          correct: "B",
+          feedback: "Les indices vont de <code>1</code> à <code>N</code> inclus. Le dernier élément est <code>values[N]</code>.",
+        },
+        {
+          id: "q2",
+          text: "Pour le tableau <code>[12, 7, 15, 9, 11]</code> (indices 1..5), que vaut <code>values[3]</code> ?",
+          options: [
+            { value: "A", label: "3" },
+            { value: "B", label: "7" },
+            { value: "C", label: "15" },
+            { value: "D", label: "11" },
+          ],
+          correct: "C",
+          feedback: "L'indice 3 désigne la troisième case : contenu <code>15</code>. Ne pas confondre indice et valeur.",
+        },
+        {
+          id: "q3",
+          text: "Pour parcourir toutes les cases d'un tableau de taille <code>N</code>, on écrit typiquement…",
+          options: [
+            { value: "A", label: "<code>FOR i = 0 TO N</code>" },
+            { value: "B", label: "<code>FOR i = 1 TO N</code>" },
+            { value: "C", label: "<code>FOR i = 1 TO N - 1</code>" },
+            { value: "D", label: "<code>FOR i = 1 TO N + 1</code>" },
+          ],
+          correct: "B",
+          feedback: "Convention du cours : indices <code>1..N</code> inclus. <code>TO N + 1</code> risque un <em>index out of bounds</em>.",
+        },
+        {
+          id: "q4",
+          text: "Dans le calcul d'une somme sur tableau, l'accumulateur <code>sum</code> doit être…",
+          options: [
+            { value: "A", label: "initialisé à <code>0</code> avant la boucle" },
+            { value: "B", label: "initialisé à <code>values[1]</code> uniquement, sans boucle" },
+            { value: "C", label: "réinitialisé à <code>0</code> à chaque itération" },
+            { value: "D", label: "égal à <code>N</code> avant de commencer" },
+          ],
+          correct: "A",
+          feedback: "Comme en S3 : <code>sum = 0</code> une fois avant le <code>FOR</code>, puis <code>sum = sum + values[i]</code> à chaque tour.",
+        },
+        {
+          id: "q5",
+          text: "Pour trouver le minimum dans <code>values[1..N]</code>, une bonne initialisation est…",
+          options: [
+            { value: "A", label: "<code>min = 0</code>, puis boucle de <code>1</code> à <code>N</code>" },
+            { value: "B", label: "<code>min = values[1]</code>, puis boucle de <code>2</code> à <code>N</code>" },
+            { value: "C", label: "<code>min = N</code>" },
+            { value: "D", label: "<code>min = values[N + 1]</code>" },
+          ],
+          correct: "B",
+          feedback: "On part de la première case, puis on compare les suivantes. <code>min = 0</code> échoue si toutes les valeurs sont positives (ou toutes négatives selon le cas).",
+        },
+        {
+          id: "q6",
+          text: "Dans « index of max », la variable <code>maxIndex</code> stocke…",
+          options: [
+            { value: "A", label: "la valeur maximale uniquement" },
+            { value: "B", label: "la taille <code>N</code>" },
+            { value: "C", label: "l'indice (la position) du maximum" },
+            { value: "D", label: "le nombre de maxima distincts" },
+          ],
+          correct: "C",
+          feedback: "On compare <code>values[i]</code> à <code>values[maxIndex]</code> et on met à jour l'indice. La valeur max se lit ensuite via <code>values[maxIndex]</code>.",
+        },
+        {
+          id: "q7",
+          text: "Avec <code>values = [4, 9, 2, 9, 5]</code> et un test strict <code>&gt;</code> (garder le premier max), <code>maxIndex</code> final vaut…",
+          options: [
+            { value: "A", label: "1" },
+            { value: "B", label: "2" },
+            { value: "C", label: "4" },
+            { value: "D", label: "5" },
+          ],
+          correct: "B",
+          feedback: "Le premier 9 est à l'indice 2. Le second 9 (indice 4) n'est pas strictement plus grand, donc <code>maxIndex</code> reste 2.",
+        },
+        {
+          id: "q8",
+          text: "Pour compter combien d'éléments sont strictement au-dessus d'une limite, on utilise…",
+          options: [
+            { value: "A", label: "uniquement un <code>IF</code> sans boucle" },
+            { value: "B", label: "un compteur initialisé à <code>0</code>, un <code>FOR</code>, et un <code>IF</code> sur le critère" },
+            { value: "C", label: "un <code>STEP -1</code> obligatoire" },
+            { value: "D", label: "un décalage (*shift*) vers la gauche" },
+          ],
+          correct: "B",
+          feedback: "Pattern classique : <code>count = 0</code>, parcours <code>1..N</code>, incrément si <code>values[i] &gt; limit</code>.",
+        },
+        {
+          id: "q9",
+          text: "Pour inverser <code>values[1..N]</code> <em>in-place</em>, la boucle s'arrête typiquement à…",
+          options: [
+            { value: "A", label: "<code>N</code> (sinon le tableau n'est pas inversé)" },
+            { value: "B", label: "<code>N DIV 2</code> (sinon on ré-inverse en continuant)" },
+            { value: "C", label: "<code>N + 1</code>" },
+            { value: "D", label: "<code>0</code>" },
+          ],
+          correct: "B",
+          feedback: "On échange <code>i</code> avec <code>N - i + 1</code> pour <code>i = 1 .. N DIV 2</code>. Aller jusqu'à <code>N</code> annulerait l'inversion.",
+        },
+        {
+          id: "q10",
+          text: "Quel parcours provoque typiquement un <em>index out of bounds</em> pour <code>values[1..N]</code> ?",
+          options: [
+            { value: "A", label: "<code>FOR i = 1 TO N</code>" },
+            { value: "B", label: "<code>FOR i = 2 TO N</code> après init sur <code>values[1]</code>" },
+            { value: "C", label: "<code>FOR i = 1 TO N + 1</code>" },
+            { value: "D", label: "<code>FOR i = 1 TO N DIV 2</code> pour un reverse" },
+          ],
+          correct: "C",
+          feedback: "Quand <code>i = N + 1</code>, <code>values[i]</code> n'existe pas. C'est l'<em>off-by-one</em> le plus fréquent sur les tableaux.",
+        },
+      ];
+
+      const quizEl = document.getElementById("quiz");
+      const progressEl = document.getElementById("progress");
+      const statusEl = document.getElementById("status");
+      const summaryEl = document.getElementById("summary");
+      const checkBtn = document.getElementById("check-btn");
+      const resetBtn = document.getElementById("reset-btn");
+
+      let checked = false;
+      const answers = {};
+
+      /** Display order of options (stable ids A–D); reshuffled each load / reset. */
+      const optionOrder = {};
+
+      function shuffleInPlace(arr) {
+        for (let i = arr.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+        }
+        return arr;
+      }
+
+      function orderedOptions(question) {
+        if (!optionOrder[question.id]) {
+          optionOrder[question.id] = shuffleInPlace(
+            question.options.map((option) => option.value)
+          );
+        }
+        return optionOrder[question.id].map((value, i) => {
+          const option = question.options.find((entry) => entry.value === value);
+          return {
+            ...option,
+            letter: String.fromCharCode(65 + i),
+          };
+        });
+      }
+
+      function reshuffleOptions() {
+        for (const key of Object.keys(optionOrder)) {
+          delete optionOrder[key];
+        }
+      }
+
+      function loadState() {
+        const rawAnswers = localStorage.getItem(storageKey);
+        const rawChecked = localStorage.getItem(checkedKey);
+
+        if (rawAnswers) {
+          try {
+            Object.assign(answers, JSON.parse(rawAnswers));
+          } catch {
+            localStorage.removeItem(storageKey);
+          }
+        }
+
+        checked = rawChecked === "1";
+      }
+
+      function saveState() {
+        localStorage.setItem(storageKey, JSON.stringify(answers));
+        localStorage.setItem(checkedKey, checked ? "1" : "0");
+      }
+
+      function answeredCount() {
+        return questions.filter((question) => answers[question.id]).length;
+      }
+
+      function updateProgress() {
+        progressEl.textContent = `${answeredCount()} / ${questions.length} réponse(s) cochée(s)`;
+      }
+
+      function renderQuiz() {
+        quizEl.innerHTML = questions
+          .map((question, index) => {
+            const selected = answers[question.id] || null;
+            let feedbackHtml = "";
+
+            if (checked) {
+              const isCorrect = selected === question.correct;
+              const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
+              const verdictText = !selected
+                ? "Non répondue."
+                : isCorrect
+                  ? `Correct. ${question.feedback}`
+                  : `Incorrect. ${question.feedback}`;
+              feedbackHtml = `<p class="question-feedback ${verdictClass}">${verdictText}</p>`;
+            }
+
+            const optionsHtml = orderedOptions(question)
+              .map((option) => {
+                const isCorrect = option.value === question.correct;
+                const isChosen = option.value === selected;
+                const classes = [];
+                if (checked) classes.push("checked-mode");
+                if (checked && isCorrect) classes.push("correct");
+                if (checked && isChosen && !isCorrect) classes.push("wrong");
+
+                let tag = "";
+                if (checked && isCorrect) tag = '<span class="option-tag">bonne réponse</span>';
+                else if (checked && isChosen) tag = '<span class="option-tag">réponse sélectionnée</span>';
+
+                return `
+                  <label class="${classes.join(" ")}">
+                    <input
+                      type="radio"
+                      name="${question.id}"
+                      value="${option.value}"
+                      ${selected === option.value ? "checked" : ""}
+                      ${checked ? "disabled" : ""}
+                    />
+                    ${option.letter}. ${option.label}${tag}
+                  </label>
+                `;
+              })
+              .join("");
+
+            return `
+              <section class="question" data-question-id="${question.id}">
+                <h2>Question ${index + 1}</h2>
+                <p><strong>${question.text}</strong></p>
+                <div class="answers">${optionsHtml}</div>
+                ${feedbackHtml}
+              </section>
+            `;
+          })
+          .join("");
+
+        if (!checked) {
+          quizEl.querySelectorAll('input[type="radio"]').forEach((input) => {
+            input.addEventListener("change", () => {
+              answers[input.name] = input.value;
+              statusEl.textContent = "";
+              statusEl.className = "status";
+              summaryEl.innerHTML = "";
+              summaryEl.className = "result";
+              saveState();
+              updateProgress();
+            });
+          });
+        }
+
+        checkBtn.hidden = checked;
+        updateProgress();
+
+        if (checked) {
+          renderSummary();
+        } else {
+          summaryEl.innerHTML = "";
+          summaryEl.className = "result";
+        }
+      }
+
+      function renderSummary() {
+        let score = 0;
+        questions.forEach((question) => {
+          if (answers[question.id] === question.correct) score += 1;
+        });
+
+        summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;
+        summaryEl.className = "result";
+      }
+
+      function checkAll() {
+        const unanswered = questions.filter((question) => !answers[question.id]);
+        if (unanswered.length > 0) {
+          statusEl.textContent = `Il reste ${unanswered.length} question(s) sans réponse.`;
+          statusEl.className = "status ko";
+          const firstMissing = quizEl.querySelector(
+            `[data-question-id="${unanswered[0].id}"]`
+          );
+          if (firstMissing) firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        checked = true;
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        saveState();
+        renderQuiz();
+        summaryEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function resetQuiz() {
+        for (const key of Object.keys(answers)) {
+          delete answers[key];
+        }
+        reshuffleOptions();
+        checked = false;
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(checkedKey);
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        summaryEl.innerHTML = "";
+        summaryEl.className = "result";
+        renderQuiz();
+      }
+
+      checkBtn.addEventListener("click", checkAll);
+      resetBtn.addEventListener("click", resetQuiz);
+
+      loadState();
+      renderQuiz();
+    </script>
+
+    <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>
   </body>
 </html>
