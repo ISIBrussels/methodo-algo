@@ -6,7 +6,7 @@
 
 ## Échauffement (5–10 min)
 
-1. Tableau donné : que vaut `values[3]` ? Taille ? Dernier index ?
+1. Tableau donné : que vaut `values[2]` ? Taille ? Dernier index ?
 2. Relier un `FOR` S4 au parcours d'un tableau.
 
 ## Exercices principaux
@@ -14,7 +14,7 @@
 1. **Produire** sum + average + countAbove(limit).
 2. **Produire** + **tracer** index of max (N=5).
 3. **Compléter** / **corriger** un reverse in-place ; edge case N=1.
-4. Diagnostiquer index out of bounds (`FOR i ← 1 TO N+1`).
+4. Diagnostiquer index out of bounds (`FOR i = 0 TO N`).
 
 ## Clôture
 

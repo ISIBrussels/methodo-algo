@@ -39,12 +39,23 @@ function escapeAttr(s) {
     .replace(/</g, "&lt;");
 }
 
+/** Fullwidth brackets — beautiful-mermaid truncates ASCII `]` inside labels. */
+const FW_OPEN = "\uFF3B"; // ［
+const FW_CLOSE = "\uFF3D"; // ］
+
 /** Quote a node label when Mermaid rectangle syntax needs it. */
 function formatRectLabel(label) {
-  if (/["\[\]]/.test(label) || /[←→]/.test(label)) {
-    return `["${label.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"]`;
+  // Keep [] out of the Mermaid source; restore to ASCII after SVG render.
+  const safe = label.replace(/\[/g, FW_OPEN).replace(/\]/g, FW_CLOSE);
+  if (/["\[\]]/.test(safe) || /[←→]/.test(safe)) {
+    return `["${safe.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"]`;
   }
-  return `[${label}]`;
+  return `[${safe}]`;
+}
+
+/** Put ASCII brackets back into SVG text / data-label after render. */
+function restoreLabelBrackets(svg) {
+  return svg.replaceAll(FW_OPEN, "[").replaceAll(FW_CLOSE, "]");
 }
 
 /**
@@ -56,15 +67,17 @@ function formatRectLabel(label) {
 function preprocessParallelograms(source) {
   const lean = new Map();
 
+  // Labels may contain `]` (e.g. OUTPUT values[i]). Match until the
+  // delimiter `/]` or `\]`, not the first bare `]`.
   let out = source.replace(
-    /\b([\w-]+)\[\/((?:\\.|[^\]\\])*?)\/\]/g,
+    /\b([\w-]+)\[\/([\s\S]*?)\/\]/g,
     (_, id, label) => {
       lean.set(id, "forward");
       return `${id}${formatRectLabel(label)}`;
     },
   );
 
-  out = out.replace(/\b([\w-]+)\[\\((?:\\.|[^\]\\])*?)\\\]/g, (_, id, label) => {
+  out = out.replace(/\b([\w-]+)\[\\([\s\S]*?)\\\]/g, (_, id, label) => {
     lean.set(id, "backward");
     return `${id}${formatRectLabel(label)}`;
   });
@@ -109,11 +122,15 @@ function applyParallelograms(svg, lean) {
     next = next.replace(
       groupRe,
       (_, pre, mid, x, y, w, h, fill, stroke, sw) => {
+        // Expand by the lean skew so labels (e.g. OUTPUT values[i]) are not
+        // clipped by the slanted faces.
+        const hh = Number(h);
+        const skew = hh * 0.25;
         const points = parallelogramPoints(
-          Number(x),
+          Number(x) - skew,
           Number(y),
-          Number(w),
-          Number(h),
+          Number(w) + 2 * skew,
+          hh,
           direction,
         );
         return (
@@ -2125,10 +2142,11 @@ function alignLoopBodyColumn(svg) {
     if (!loopChild) continue;
     const childId = loopChild.to;
     const child = nodes.get(childId);
-    // Sentinel pattern only: trailing INPUT in the Yes body (skip WHILE counter…).
-    if (!child?.center || child.verts || child.shape !== "parallelogram") {
-      continue;
-    }
+    // Sentinel: trailing INPUT (parallelogram). FOR/WHILE: increment rectangle.
+    if (!child?.center || child.verts) continue;
+    const isSentinelReturn = child.shape === "parallelogram";
+    const isIncrementReturn = child.shape === "rectangle";
+    if (!isSentinelReturn && !isIncrementReturn) continue;
 
     const noEdge = edges.find(
       (e) => e.from === did && e.label.trim().toLowerCase() === "no",
@@ -2152,6 +2170,8 @@ function alignLoopBodyColumn(svg) {
       yesPts.length >= 2 &&
       Math.abs(yesPts[1].y - yesPts[0].y) >=
         Math.abs(yesPts[1].x - yesPts[0].x);
+    // Sentinel LR layout only; FOR/WHILE increment uses TB stack below.
+    if (isLR && !isSentinelReturn) continue;
 
     const d = dNode.verts;
     const stroke = /stroke="([^"]+)"/.exec(loopChild.attrs)?.[1] ?? "#757575";
@@ -2354,7 +2374,7 @@ function alignLoopBodyColumn(svg) {
       continue;
     }
 
-    // --- TB (existing) ---
+    // --- TB ---
     const stubYesX = yesPts.length >= 2 ? yesPts[1].x : body.center.x;
     const stubNoX =
       noPts.length >= 2 ? noPts[1].x : noBody?.center.x ?? stubYesX + 120;
@@ -2369,6 +2389,150 @@ function alignLoopBodyColumn(svg) {
     const GAP_BELOW_DIAMOND = 40;
     const dy = d.bottom.y + GAP_BELOW_DIAMOND - bodyTop0.y;
 
+    // FOR/WHILE: Yes → body (OUTPUT…) → increment rectangle → diamond tip.
+    // Align increment under the body bottom mid so OUTPUT→i++ is a straight drop
+    // (parallelogram lean makes top mid ≠ bottom mid; cascade alone zigzags).
+    if (isIncrementReturn) {
+      const yesSide = stubYesX <= d.cx ? "left" : "right";
+      const yesStub = diamondExitStub(d, yesSide);
+      const noSide = yesSide === "left" ? "right" : "left";
+      const noStub = diamondExitStub(d, noSide);
+
+      // Park the Yes column on the body BOTTOM mid (parallelogram lean:
+      // top mid ≠ bottom mid). Straight OUTPUT→increment, boxes look stacked.
+      const bodyBot0 =
+        nodeFacePort(body.inner, body.shape, "bottom") || bodyTop0;
+      if ((incoming.get(bodyId) || []).length === 1) {
+        shiftNode(bodyId, yesStub.x - bodyBot0.x, dy);
+      } else {
+        shiftNode(bodyId, 0, dy);
+      }
+      {
+        const bodyNow = nodes.get(bodyId);
+        const bodyBot = nodeFacePort(bodyNow.inner, bodyNow.shape, "bottom");
+        const childTop0 = nodeFacePort(child.inner, child.shape, "top");
+        if (!bodyBot || !childTop0) continue;
+        const GAP_BODY = 28;
+        shiftNode(
+          childId,
+          bodyBot.x - childTop0.x,
+          bodyBot.y + GAP_BODY - childTop0.y,
+        );
+      }
+      if (noBodyId && noBody?.center) {
+        const noTop0 = nodeFacePort(noBody.inner, noBody.shape, "top");
+        const anchorX = noTop0?.x ?? noBody.center.x;
+        shiftNode(noBodyId, noStub.x - anchorX, dy);
+      }
+      if (endId) {
+        const endBefore = nodes.get(endId);
+        const endTop0 = nodeFacePort(
+          endBefore.inner,
+          endBefore.shape,
+          "top",
+        );
+        if (endTop0) {
+          const noNow = noBodyId ? nodes.get(noBodyId) : null;
+          const noBot0 = noNow
+            ? nodeFacePort(noNow.inner, noNow.shape, "bottom")
+            : null;
+          const anchorX = noBot0?.x ?? noStub.x;
+          shiftNode(endId, anchorX - endTop0.x, dy);
+        }
+      }
+
+      const bodyFresh = nodes.get(bodyId);
+      const childFresh = nodes.get(childId);
+      const noFresh = noBodyId ? nodes.get(noBodyId) : null;
+      const bodyTop2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "top");
+      const bodyBot2 = nodeFacePort(bodyFresh.inner, bodyFresh.shape, "bottom");
+      const childTop2 = nodeFacePort(childFresh.inner, childFresh.shape, "top");
+      const childBot2 = nodeFacePort(
+        childFresh.inner,
+        childFresh.shape,
+        "bottom",
+      );
+      if (!bodyTop2 || !bodyBot2 || !childTop2 || !childBot2) continue;
+
+      const noTop = noFresh
+        ? nodeFacePort(noFresh.inner, noFresh.shape, "top")
+        : null;
+      const noBot = noFresh
+        ? nodeFacePort(noFresh.inner, noFresh.shape, "bottom")
+        : null;
+      if (endId && noBot) {
+        const endParked = nodes.get(endId);
+        const endTop0 = endParked
+          ? nodeFacePort(endParked.inner, endParked.shape, "top")
+          : null;
+        if (endTop0) shiftNode(endId, noBot.x - endTop0.x, 0);
+      }
+      const endFresh = endId ? nodes.get(endId) : null;
+      const endTop = endFresh
+        ? nodeFacePort(endFresh.inner, endFresh.shape, "top")
+        : null;
+
+      const dropPts = dedupePoints([
+        { x: bodyBot2.x, y: bodyBot2.y },
+        { x: bodyBot2.x, y: childTop2.y },
+      ]);
+      // Return: bottom of increment → floor → under tip → straight up.
+      const CLEAR = 20;
+      const floorY = childBot2.y + CLEAR;
+      const returnPts = dedupePoints([
+        { ...childBot2 },
+        { x: childBot2.x, y: floorY },
+        { x: d.bottom.x, y: floorY },
+        { ...d.bottom },
+      ]);
+      const yesEdgePts = dedupePoints([
+        { ...d[yesSide] },
+        { ...yesStub },
+        { x: yesStub.x, y: bodyTop2.y },
+        { ...bodyTop2 },
+      ]);
+      const noEdgePts =
+        noTop != null
+          ? dedupePoints([
+              { ...d[noSide] },
+              { ...noStub },
+              { x: noStub.x, y: noTop.y },
+              { ...noTop },
+            ])
+          : null;
+      const endDropPts =
+        noBot && endTop
+          ? dedupePoints([
+              { ...noBot },
+              { x: noBot.x, y: endTop.y },
+              { ...endTop },
+            ])
+          : null;
+
+      next = next.replace(/<polyline class="edge"([^>]*)\/>/g, (full, attrs) => {
+        const from = /data-from="([^"]*)"/.exec(attrs)?.[1];
+        const to = /data-to="([^"]*)"/.exec(attrs)?.[1];
+        if (from === bodyId && to === childId) {
+          return mkEdge(bodyId, childId, "", dropPts);
+        }
+        if (from === childId && to === did) {
+          return mkEdge(childId, did, "", returnPts);
+        }
+        if (from === did && to === bodyId) {
+          return mkEdge(did, bodyId, yes.label, yesEdgePts);
+        }
+        if (noBodyId && from === did && to === noBodyId && noEdgePts) {
+          return mkEdge(did, noBodyId, noEdge?.label ?? "No", noEdgePts);
+        }
+        if (endId && noBodyId && from === noBodyId && to === endId && endDropPts) {
+          return mkEdge(noBodyId, endId, "", endDropPts);
+        }
+        return full;
+      });
+      continue;
+    }
+
+    // Sentinel TB: Yes → body → trailing INPUT → diamond tip.
     // Move Yes column (sum + trailing INPUT) left + up.
     if ((incoming.get(bodyId) || []).length === 1) {
       shiftNode(bodyId, yesColX - body.center.x, dy);
@@ -3289,19 +3453,21 @@ function renderDiagram(source) {
   });
   // S4 FOR = same path as S3 WHILE (rewireDiamondPorts). Nested TB uses
   // the same stubs/gaps via alignNestedLoopsTB — not a parallel LR geometry.
-  return fitSvgViewBox(
-    paintEdgesAboveNodes(
-      transparentizeEdgeLabels(
-        nudgeEdgeLabelsNearSource(
-          alignNestedLoopsTB(
-            alignIfThenMerge(
-              placeDiamondsBelowPredecessors(
-                alignRepeatInputDiamond(
-                  alignLoopBodyColumn(
-                    collapseJunctionNodes(
-                      rewireDiamondPorts(
-                        retargetParallelogramPorts(
-                          applyParallelograms(svg, lean),
+  return restoreLabelBrackets(
+    fitSvgViewBox(
+      paintEdgesAboveNodes(
+        transparentizeEdgeLabels(
+          nudgeEdgeLabelsNearSource(
+            alignNestedLoopsTB(
+              alignIfThenMerge(
+                placeDiamondsBelowPredecessors(
+                  alignRepeatInputDiamond(
+                    alignLoopBodyColumn(
+                      collapseJunctionNodes(
+                        rewireDiamondPorts(
+                          retargetParallelogramPorts(
+                            applyParallelograms(svg, lean),
+                          ),
                         ),
                       ),
                     ),

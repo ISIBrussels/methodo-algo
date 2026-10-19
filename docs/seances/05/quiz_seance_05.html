@@ -246,52 +246,52 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_05_answers_v1";
-      const checkedKey = "quiz_seance_05_checked_v1";
+      const storageKey = "quiz_seance_05_answers_v2";
+      const checkedKey = "quiz_seance_05_checked_v2";
 
       const questions = [
         {
           id: "q1",
-          text: "Avec la convention du cours <code>ARRAY values[1..N]</code>, le dernier indice valide est…",
+          text: "Pour <code>ARRAY values[0..N-1]</code>, le dernier indice valide est…",
           options: [
             { value: "A", label: "<code>0</code>" },
             { value: "B", label: "<code>N</code>" },
             { value: "C", label: "<code>N - 1</code>" },
             { value: "D", label: "<code>N + 1</code>" },
           ],
-          correct: "B",
-          feedback: "Les indices vont de <code>1</code> à <code>N</code> inclus. Le dernier élément est <code>values[N]</code>.",
+          correct: "C",
+          feedback: "Les indices vont de <code>0</code> à <code>N - 1</code> inclus. Le dernier élément est <code>values[N - 1]</code>.",
         },
         {
           id: "q2",
-          text: "Pour le tableau <code>[12, 7, 15, 9, 11]</code> (indices 1..5), que vaut <code>values[3]</code> ?",
+          text: "Pour le tableau <code>[12, 7, 15, 9, 11]</code> (indices 0..4), que vaut <code>values[2]</code> ?",
           options: [
-            { value: "A", label: "3" },
+            { value: "A", label: "2" },
             { value: "B", label: "7" },
             { value: "C", label: "15" },
             { value: "D", label: "11" },
           ],
           correct: "C",
-          feedback: "L'indice 3 désigne la troisième case : contenu <code>15</code>. Ne pas confondre indice et valeur.",
+          feedback: "L'indice 2 désigne la troisième case : contenu <code>15</code>. Ne pas confondre indice et valeur.",
         },
         {
           id: "q3",
           text: "Pour parcourir toutes les cases d'un tableau de taille <code>N</code>, on écrit typiquement…",
           options: [
             { value: "A", label: "<code>FOR i = 0 TO N</code>" },
-            { value: "B", label: "<code>FOR i = 1 TO N</code>" },
-            { value: "C", label: "<code>FOR i = 1 TO N - 1</code>" },
-            { value: "D", label: "<code>FOR i = 1 TO N + 1</code>" },
+            { value: "B", label: "<code>FOR i = 0 TO N - 1</code>" },
+            { value: "C", label: "<code>FOR i = 1 TO N</code>" },
+            { value: "D", label: "<code>FOR i = 1 TO N - 1</code>" },
           ],
           correct: "B",
-          feedback: "Convention du cours : indices <code>1..N</code> inclus. <code>TO N + 1</code> risque un <em>index out of bounds</em>.",
+          feedback: "Indices <code>0..N-1</code> inclus. <code>TO N</code> tente <code>values[N]</code> et provoque un <em>index out of bounds</em>.",
         },
         {
           id: "q4",
           text: "Dans le calcul d'une somme sur tableau, l'accumulateur <code>sum</code> doit être…",
           options: [
             { value: "A", label: "initialisé à <code>0</code> avant la boucle" },
-            { value: "B", label: "initialisé à <code>values[1]</code> uniquement, sans boucle" },
+            { value: "B", label: "initialisé à <code>values[0]</code> uniquement, sans boucle" },
             { value: "C", label: "réinitialisé à <code>0</code> à chaque itération" },
             { value: "D", label: "égal à <code>N</code> avant de commencer" },
           ],
@@ -300,12 +300,12 @@
         },
         {
           id: "q5",
-          text: "Pour trouver le minimum dans <code>values[1..N]</code>, une bonne initialisation est…",
+          text: "Pour trouver le minimum dans <code>values[0..N-1]</code>, une bonne initialisation est…",
           options: [
-            { value: "A", label: "<code>min = 0</code>, puis boucle de <code>1</code> à <code>N</code>" },
-            { value: "B", label: "<code>min = values[1]</code>, puis boucle de <code>2</code> à <code>N</code>" },
+            { value: "A", label: "<code>min = 0</code>, puis boucle de <code>0</code> à <code>N - 1</code>" },
+            { value: "B", label: "<code>min = values[0]</code>, puis boucle de <code>1</code> à <code>N - 1</code>" },
             { value: "C", label: "<code>min = N</code>" },
-            { value: "D", label: "<code>min = values[N + 1]</code>" },
+            { value: "D", label: "<code>min = values[N]</code>" },
           ],
           correct: "B",
           feedback: "On part de la première case, puis on compare les suivantes. <code>min = 0</code> échoue si toutes les valeurs sont positives (ou toutes négatives selon le cas).",
@@ -326,13 +326,13 @@
           id: "q7",
           text: "Avec <code>values = [4, 9, 2, 9, 5]</code> et un test strict <code>&gt;</code> (garder le premier max), <code>maxIndex</code> final vaut…",
           options: [
-            { value: "A", label: "1" },
-            { value: "B", label: "2" },
-            { value: "C", label: "4" },
-            { value: "D", label: "5" },
+            { value: "A", label: "0" },
+            { value: "B", label: "1" },
+            { value: "C", label: "3" },
+            { value: "D", label: "4" },
           ],
           correct: "B",
-          feedback: "Le premier 9 est à l'indice 2. Le second 9 (indice 4) n'est pas strictement plus grand, donc <code>maxIndex</code> reste 2.",
+          feedback: "Le premier 9 est à l'indice 1. Le second 9 (indice 3) n'est pas strictement plus grand, donc <code>maxIndex</code> reste 1.",
         },
         {
           id: "q8",
@@ -344,31 +344,31 @@
             { value: "D", label: "un décalage (*shift*) vers la gauche" },
           ],
           correct: "B",
-          feedback: "Pattern classique : <code>count = 0</code>, parcours <code>1..N</code>, incrément si <code>values[i] &gt; limit</code>.",
+          feedback: "Pattern classique : <code>count = 0</code>, parcours <code>0..N-1</code>, incrément si <code>values[i] &gt; limit</code>.",
         },
         {
           id: "q9",
-          text: "Pour inverser <code>values[1..N]</code> <em>in-place</em>, la boucle s'arrête typiquement à…",
+          text: "Pour inverser <code>values[0..N-1]</code> <em>in-place</em>, la boucle s'arrête typiquement à…",
           options: [
             { value: "A", label: "<code>N</code> (sinon le tableau n'est pas inversé)" },
-            { value: "B", label: "<code>N DIV 2</code> (sinon on ré-inverse en continuant)" },
+            { value: "B", label: "<code>N DIV 2 - 1</code> (sinon on ré-inverse en continuant)" },
             { value: "C", label: "<code>N + 1</code>" },
-            { value: "D", label: "<code>0</code>" },
+            { value: "D", label: "<code>N - 1</code>" },
           ],
           correct: "B",
-          feedback: "On échange <code>i</code> avec <code>N - i + 1</code> pour <code>i = 1 .. N DIV 2</code>. Aller jusqu'à <code>N</code> annulerait l'inversion.",
+          feedback: "On échange <code>i</code> avec <code>N - 1 - i</code> pour <code>i = 0 .. N DIV 2 - 1</code>. Aller jusqu'à <code>N - 1</code> annulerait l'inversion.",
         },
         {
           id: "q10",
-          text: "Quel parcours provoque typiquement un <em>index out of bounds</em> pour <code>values[1..N]</code> ?",
+          text: "Quel parcours provoque typiquement un <em>index out of bounds</em> pour <code>values[0..N-1]</code> ?",
           options: [
-            { value: "A", label: "<code>FOR i = 1 TO N</code>" },
-            { value: "B", label: "<code>FOR i = 2 TO N</code> après init sur <code>values[1]</code>" },
-            { value: "C", label: "<code>FOR i = 1 TO N + 1</code>" },
-            { value: "D", label: "<code>FOR i = 1 TO N DIV 2</code> pour un reverse" },
+            { value: "A", label: "<code>FOR i = 0 TO N - 1</code>" },
+            { value: "B", label: "<code>FOR i = 1 TO N - 1</code> après init sur <code>values[0]</code>" },
+            { value: "C", label: "<code>FOR i = 0 TO N</code>" },
+            { value: "D", label: "<code>FOR i = 0 TO N DIV 2 - 1</code> pour un reverse" },
           ],
           correct: "C",
-          feedback: "Quand <code>i = N + 1</code>, <code>values[i]</code> n'existe pas. C'est l'<em>off-by-one</em> le plus fréquent sur les tableaux.",
+          feedback: "Quand <code>i = N</code>, <code>values[i]</code> n'existe pas. C'est l'<em>off-by-one</em> le plus fréquent sur les tableaux.",
         },
       ];
 
