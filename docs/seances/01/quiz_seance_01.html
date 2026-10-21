@@ -128,6 +128,10 @@
         cursor: default;
       }
 
+
+      .option-letter {
+        font-weight: 600;
+      }
       .option-tag {
         display: inline-block;
         margin-left: 0.35rem;
@@ -246,8 +250,8 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_01_answers_v3";
-      const checkedKey = "quiz_seance_01_checked_v3";
+      const storageKey = "quiz_seance_01_answers_v4";
+      const checkedKey = "quiz_seance_01_checked_v4";
 
 
       const questions = [
@@ -255,120 +259,120 @@
           id: "q1",
           text: "Un <em>algorithm</em> (algorithme), c'est surtout…",
           options: [
-            { value: "A", label: "un programme déjà écrit en Python ou en C++" },
-            { value: "B", label: "une suite finie d'étapes précises pour résoudre un problème" },
-            { value: "C", label: "un langage de programmation" },
-            { value: "D", label: "un fichier exécutable sur une machine" },
+            "un programme déjà écrit en Python ou en C++",
+            "une suite finie d'étapes précises pour résoudre un problème",
+            "un langage de programmation",
+            "un fichier exécutable sur une machine",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "L'algorithme décrit la méthode (les étapes) ; il précède le programme et reste indépendant du langage.",
         },
         {
           id: "q2",
           text: "Quelle distinction est correcte ?",
           options: [
-            { value: "A", label: "un <em>program</em> est la méthode ; un <em>algorithm</em> est le code exécutable" },
-            { value: "B", label: "un <em>algorithm</em> est la démarche ; un <em>program</em> est cette démarche écrite dans un langage" },
-            { value: "C", label: "<em>algorithm</em> et <em>program</em> désignent exactement la même chose" },
-            { value: "D", label: "un <em>programming language</em> est une suite d'étapes sur papier" },
+            "un <em>program</em> est la méthode ; un <em>algorithm</em> est le code exécutable",
+            "un <em>algorithm</em> est la démarche ; un <em>program</em> est cette démarche écrite dans un langage",
+            "<em>algorithm</em> et <em>program</em> désignent exactement la même chose",
+            "un <em>programming language</em> est une suite d'étapes sur papier",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "L'algorithme précède le programme. Le langage (<em>programming language</em>) sert à écrire le programme.",
         },
         {
           id: "q3",
           text: "Dans la démarche entrée → traitement → sortie, l'<em>input</em> désigne…",
           options: [
-            { value: "A", label: "le résultat affiché à la fin" },
-            { value: "B", label: "les calculs et transformations" },
-            { value: "C", label: "les données d'entrée du traitement" },
-            { value: "D", label: "uniquement le symbole <code>START</code>" },
+            "le résultat affiché à la fin",
+            "les calculs et transformations",
+            "les données d'entrée du traitement",
+            "uniquement le symbole <code>START</code>",
           ],
-          correct: "C",
+          correct: 2,
           feedback: "Entrée (<em>input</em>) = données fournies ; traitement (<em>process</em>) = ce qu'on en fait ; sortie (<em>output</em>) = le résultat.",
         },
         {
           id: "q4",
           text: "Dans un <em>flowchart</em> de séquence, quel symbole représente une entrée ou une sortie (<code>INPUT</code> / <code>OUTPUT</code>) ?",
           options: [
-            { value: "A", label: "un rectangle" },
-            { value: "B", label: "un losange" },
-            { value: "C", label: "un ovale (<code>START</code> / <code>END</code>)" },
-            { value: "D", label: "un parallélogramme" },
+            "un rectangle",
+            "un losange",
+            "un ovale (<code>START</code> / <code>END</code>)",
+            "un parallélogramme",
           ],
-          correct: "D",
+          correct: 3,
           feedback: "Ovale = début/fin ; rectangle = traitement ; parallélogramme = entrée/sortie. Le losange (Yes/No) vient en séance 2.",
         },
         {
           id: "q5",
           text: "Un <em>flowchart</em> purement séquentiel…",
           options: [
-            { value: "A", label: "comporte plusieurs chemins selon des conditions Yes/No" },
-            { value: "B", label: "suit un seul chemin, de haut en bas, sans branche" },
-            { value: "C", label: "n'a jamais de symbole <code>OUTPUT</code>" },
-            { value: "D", label: "commence toujours par un rectangle de traitement" },
+            "comporte plusieurs chemins selon des conditions Yes/No",
+            "suit un seul chemin, de haut en bas, sans branche",
+            "n'a jamais de symbole <code>OUTPUT</code>",
+            "commence toujours par un rectangle de traitement",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "En séquence : un seul chemin (<code>START</code> → … → <code>END</code>), sans décision.",
         },
         {
           id: "q6",
           text: "Quelle valeur a typiquement le type <code>REAL</code> ?",
           options: [
-            { value: "A", label: "<code>42</code>" },
-            { value: "B", label: "<code>TRUE</code>" },
-            { value: "C", label: "<code>3.14</code>" },
-            { value: "D", label: "<code>\"hello\"</code>" },
+            "<code>42</code>",
+            "<code>TRUE</code>",
+            "<code>3.14</code>",
+            "<code>\"hello\"</code>",
           ],
-          correct: "C",
+          correct: 2,
           feedback: "<code>REAL</code> = nombre réel (virgule). <code>42</code> est un <code>INTEGER</code> ; <code>TRUE</code> un <code>BOOLEAN</code> ; <code>\"hello\"</code> un <code>STRING</code>.",
         },
         {
           id: "q7",
           text: "Dans <code>total = a + b</code>, le symbole <code>=</code> signifie…",
           options: [
-            { value: "A", label: "une égalité mathématique à vérifier" },
-            { value: "B", label: "une affectation : on calcule <code>a + b</code> et on place le résultat dans <code>total</code>" },
-            { value: "C", label: "une comparaison entre <code>total</code> et <code>a + b</code>" },
-            { value: "D", label: "une entrée clavier dans <code>total</code>" },
+            "une égalité mathématique à vérifier",
+            "une affectation : on calcule <code>a + b</code> et on place le résultat dans <code>total</code>",
+            "une comparaison entre <code>total</code> et <code>a + b</code>",
+            "une entrée clavier dans <code>total</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "À gauche : la variable qui reçoit ; à droite : l'expression calculée. Ce <code>=</code> n'est <strong>pas</strong> l'égalité mathématique.",
         },
         {
           id: "q8",
           text: "Que vaut <code>17 DIV 5</code> ?",
           options: [
-            { value: "A", label: "<code>3.4</code>" },
-            { value: "B", label: "<code>2</code>" },
-            { value: "C", label: "<code>3</code>" },
-            { value: "D", label: "<code>5</code>" },
+            "<code>3.4</code>",
+            "<code>2</code>",
+            "<code>3</code>",
+            "<code>5</code>",
           ],
-          correct: "C",
+          correct: 2,
           feedback: "<code>DIV</code> donne le quotient entier : 17 = 3×5 + 2, donc <code>17 DIV 5</code> = <code>3</code>.",
         },
         {
           id: "q9",
           text: "Que vaut <code>17 MOD 5</code> ?",
           options: [
-            { value: "A", label: "<code>3</code>" },
-            { value: "B", label: "<code>2</code>" },
-            { value: "C", label: "<code>0</code>" },
-            { value: "D", label: "<code>17</code>" },
+            "<code>3</code>",
+            "<code>2</code>",
+            "<code>0</code>",
+            "<code>17</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "<code>MOD</code> donne le reste de la division entière : 17 = 3×5 + 2, donc <code>17 MOD 5</code> = <code>2</code>.",
         },
         {
           id: "q10",
           text: "Une <em>trace table</em> sert surtout à…",
           options: [
-            { value: "A", label: "dessiner les symboles d'un <em>flowchart</em>" },
-            { value: "B", label: "simuler l'exécution ligne par ligne et suivre les variables (<em>dry run</em>)" },
-            { value: "C", label: "choisir un langage de programmation" },
-            { value: "D", label: "remplacer complètement le symbole <code>OUTPUT</code>" },
+            "dessiner les symboles d'un <em>flowchart</em>",
+            "simuler l'exécution ligne par ligne et suivre les variables (<em>dry run</em>)",
+            "choisir un langage de programmation",
+            "remplacer complètement le symbole <code>OUTPUT</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "On remplit une colonne par variable, une ligne par étape, en ne mettant à jour que ce qui change : sans machine.",
         },
       ];
@@ -383,7 +387,7 @@
       let checked = false;
       const answers = {};
 
-      /** Display order of options (stable ids A–D); reshuffled each load / reset. */
+      /** Display order = shuffled source indices; letters A–D stay positional. */
       const optionOrder = {};
 
       function shuffleInPlace(arr) {
@@ -396,19 +400,28 @@
         return arr;
       }
 
+      /** Shuffle source indices; display letters A–D are always positional. */
       function orderedOptions(question) {
         if (!optionOrder[question.id]) {
           optionOrder[question.id] = shuffleInPlace(
-            question.options.map((option) => option.value)
+            question.options.map((_, index) => index)
           );
         }
-        return optionOrder[question.id].map((value, i) => {
-          const option = question.options.find((entry) => entry.value === value);
+        return optionOrder[question.id].map((sourceIndex, i) => {
+          const letter = String.fromCharCode(65 + i);
           return {
-            ...option,
-            letter: String.fromCharCode(65 + i),
+            letter,
+            value: letter,
+            label: question.options[sourceIndex],
+            isCorrect: sourceIndex === question.correct,
           };
         });
+      }
+
+      function correctLetter(question) {
+        const shown = orderedOptions(question);
+        const hit = shown.find((option) => option.isCorrect);
+        return hit ? hit.value : null;
       }
 
       function reshuffleOptions() {
@@ -453,7 +466,7 @@
             let feedbackHtml = "";
 
             if (checked) {
-              const isCorrect = selected === question.correct;
+              const isCorrect = selected === correctLetter(question);
               const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
               const verdictText = !selected
                 ? "Non répondue."
@@ -465,7 +478,7 @@
 
             const optionsHtml = orderedOptions(question)
               .map((option) => {
-                const isCorrect = option.value === question.correct;
+                const isCorrect = option.isCorrect;
                 const isChosen = option.value === selected;
                 const classes = [];
                 if (checked) classes.push("checked-mode");
@@ -482,10 +495,11 @@
                       type="radio"
                       name="${question.id}"
                       value="${option.value}"
+                      data-correct="${option.isCorrect ? "1" : "0"}"
                       ${selected === option.value ? "checked" : ""}
                       ${checked ? "disabled" : ""}
                     />
-                    ${option.letter}. ${option.label}${tag}
+                    <span class="option-letter">${option.letter}.</span> ${option.label}${tag}
                   </label>
                 `;
               })
@@ -530,7 +544,7 @@
       function renderSummary() {
         let score = 0;
         questions.forEach((question) => {
-          if (answers[question.id] === question.correct) score += 1;
+          if (answers[question.id] === correctLetter(question)) score += 1;
         });
 
         summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;

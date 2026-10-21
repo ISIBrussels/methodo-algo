@@ -128,6 +128,10 @@
         cursor: default;
       }
 
+
+      .option-letter {
+        font-weight: 600;
+      }
       .option-tag {
         display: inline-block;
         margin-left: 0.35rem;
@@ -246,128 +250,128 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_05_answers_v2";
-      const checkedKey = "quiz_seance_05_checked_v2";
+      const storageKey = "quiz_seance_05_answers_v3";
+      const checkedKey = "quiz_seance_05_checked_v3";
 
       const questions = [
         {
           id: "q1",
           text: "Pour <code>ARRAY values[0..N-1]</code>, le dernier indice valide est…",
           options: [
-            { value: "A", label: "<code>0</code>" },
-            { value: "B", label: "<code>N</code>" },
-            { value: "C", label: "<code>N - 1</code>" },
-            { value: "D", label: "<code>N + 1</code>" },
+            "<code>0</code>",
+            "<code>N</code>",
+            "<code>N - 1</code>",
+            "<code>N + 1</code>",
           ],
-          correct: "C",
+          correct: 2,
           feedback: "Les indices vont de <code>0</code> à <code>N - 1</code> inclus. Le dernier élément est <code>values[N - 1]</code>.",
         },
         {
           id: "q2",
           text: "Pour le tableau <code>[12, 7, 15, 9, 11]</code> (indices 0..4), que vaut <code>values[2]</code> ?",
           options: [
-            { value: "A", label: "2" },
-            { value: "B", label: "7" },
-            { value: "C", label: "15" },
-            { value: "D", label: "11" },
+            "2",
+            "7",
+            "15",
+            "11",
           ],
-          correct: "C",
+          correct: 2,
           feedback: "L'indice 2 désigne la troisième case : contenu <code>15</code>. Ne pas confondre indice et valeur.",
         },
         {
           id: "q3",
           text: "Pour parcourir toutes les cases d'un tableau de taille <code>N</code>, on écrit typiquement…",
           options: [
-            { value: "A", label: "<code>FOR i = 0 TO N</code>" },
-            { value: "B", label: "<code>FOR i = 0 TO N - 1</code>" },
-            { value: "C", label: "<code>FOR i = 1 TO N</code>" },
-            { value: "D", label: "<code>FOR i = 1 TO N - 1</code>" },
+            "<code>FOR i = 0 TO N</code>",
+            "<code>FOR i = 0 TO N - 1</code>",
+            "<code>FOR i = 1 TO N</code>",
+            "<code>FOR i = 1 TO N - 1</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Indices <code>0..N-1</code> inclus. <code>TO N</code> tente <code>values[N]</code> et provoque un <em>index out of bounds</em>.",
         },
         {
           id: "q4",
           text: "Dans le calcul d'une somme sur tableau, l'accumulateur <code>sum</code> doit être…",
           options: [
-            { value: "A", label: "initialisé à <code>0</code> avant la boucle" },
-            { value: "B", label: "initialisé à <code>values[0]</code> uniquement, sans boucle" },
-            { value: "C", label: "réinitialisé à <code>0</code> à chaque itération" },
-            { value: "D", label: "égal à <code>N</code> avant de commencer" },
+            "initialisé à <code>0</code> avant la boucle",
+            "initialisé à <code>values[0]</code> uniquement, sans boucle",
+            "réinitialisé à <code>0</code> à chaque itération",
+            "égal à <code>N</code> avant de commencer",
           ],
-          correct: "A",
+          correct: 0,
           feedback: "Comme en S3 : <code>sum = 0</code> une fois avant le <code>FOR</code>, puis <code>sum = sum + values[i]</code> à chaque tour.",
         },
         {
           id: "q5",
           text: "Pour trouver le minimum dans <code>values[0..N-1]</code>, une bonne initialisation est…",
           options: [
-            { value: "A", label: "<code>min = 0</code>, puis boucle de <code>0</code> à <code>N - 1</code>" },
-            { value: "B", label: "<code>min = values[0]</code>, puis boucle de <code>1</code> à <code>N - 1</code>" },
-            { value: "C", label: "<code>min = N</code>" },
-            { value: "D", label: "<code>min = values[N]</code>" },
+            "<code>min = 0</code>, puis boucle de <code>0</code> à <code>N - 1</code>",
+            "<code>min = values[0]</code>, puis boucle de <code>1</code> à <code>N - 1</code>",
+            "<code>min = N</code>",
+            "<code>min = values[N]</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "On part de la première case, puis on compare les suivantes. <code>min = 0</code> échoue si toutes les valeurs sont positives (ou toutes négatives selon le cas).",
         },
         {
           id: "q6",
           text: "Dans « index of max », la variable <code>maxIndex</code> stocke…",
           options: [
-            { value: "A", label: "la valeur maximale uniquement" },
-            { value: "B", label: "la taille <code>N</code>" },
-            { value: "C", label: "l'indice (la position) du maximum" },
-            { value: "D", label: "le nombre de maxima distincts" },
+            "la valeur maximale uniquement",
+            "la taille <code>N</code>",
+            "l'indice (la position) du maximum",
+            "le nombre de maxima distincts",
           ],
-          correct: "C",
+          correct: 2,
           feedback: "On compare <code>values[i]</code> à <code>values[maxIndex]</code> et on met à jour l'indice. La valeur max se lit ensuite via <code>values[maxIndex]</code>.",
         },
         {
           id: "q7",
           text: "Avec <code>values = [4, 9, 2, 9, 5]</code> et un test strict <code>&gt;</code> (garder le premier max), <code>maxIndex</code> final vaut…",
           options: [
-            { value: "A", label: "0" },
-            { value: "B", label: "1" },
-            { value: "C", label: "3" },
-            { value: "D", label: "4" },
+            "0",
+            "1",
+            "3",
+            "4",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Le premier 9 est à l'indice 1. Le second 9 (indice 3) n'est pas strictement plus grand, donc <code>maxIndex</code> reste 1.",
         },
         {
           id: "q8",
           text: "Pour compter combien d'éléments sont strictement au-dessus d'une limite, on utilise…",
           options: [
-            { value: "A", label: "uniquement un <code>IF</code> sans boucle" },
-            { value: "B", label: "un compteur initialisé à <code>0</code>, un <code>FOR</code>, et un <code>IF</code> sur le critère" },
-            { value: "C", label: "un <code>STEP -1</code> obligatoire" },
-            { value: "D", label: "un décalage (*shift*) vers la gauche" },
+            "uniquement un <code>IF</code> sans boucle",
+            "un compteur initialisé à <code>0</code>, un <code>FOR</code>, et un <code>IF</code> sur le critère",
+            "un <code>STEP -1</code> obligatoire",
+            "un décalage (*shift*) vers la gauche",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Pattern classique : <code>count = 0</code>, parcours <code>0..N-1</code>, incrément si <code>values[i] &gt; limit</code>.",
         },
         {
           id: "q9",
           text: "Pour inverser <code>values[0..N-1]</code> <em>in-place</em>, la boucle s'arrête typiquement à…",
           options: [
-            { value: "A", label: "<code>N</code> (sinon le tableau n'est pas inversé)" },
-            { value: "B", label: "<code>N DIV 2 - 1</code> (sinon on ré-inverse en continuant)" },
-            { value: "C", label: "<code>N + 1</code>" },
-            { value: "D", label: "<code>N - 1</code>" },
+            "<code>N</code> (sinon le tableau n'est pas inversé)",
+            "<code>N DIV 2 - 1</code> (sinon on ré-inverse en continuant)",
+            "<code>N + 1</code>",
+            "<code>N - 1</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "On échange <code>i</code> avec <code>N - 1 - i</code> pour <code>i = 0 .. N DIV 2 - 1</code>. Aller jusqu'à <code>N - 1</code> annulerait l'inversion.",
         },
         {
           id: "q10",
           text: "Quel parcours provoque typiquement un <em>index out of bounds</em> pour <code>values[0..N-1]</code> ?",
           options: [
-            { value: "A", label: "<code>FOR i = 0 TO N - 1</code>" },
-            { value: "B", label: "<code>FOR i = 1 TO N - 1</code> après init sur <code>values[0]</code>" },
-            { value: "C", label: "<code>FOR i = 0 TO N</code>" },
-            { value: "D", label: "<code>FOR i = 0 TO N DIV 2 - 1</code> pour un reverse" },
+            "<code>FOR i = 0 TO N - 1</code>",
+            "<code>FOR i = 1 TO N - 1</code> après init sur <code>values[0]</code>",
+            "<code>FOR i = 0 TO N</code>",
+            "<code>FOR i = 0 TO N DIV 2 - 1</code> pour un reverse",
           ],
-          correct: "C",
+          correct: 2,
           feedback: "Quand <code>i = N</code>, <code>values[i]</code> n'existe pas. C'est l'<em>off-by-one</em> le plus fréquent sur les tableaux.",
         },
       ];
@@ -382,7 +386,7 @@
       let checked = false;
       const answers = {};
 
-      /** Display order of options (stable ids A–D); reshuffled each load / reset. */
+      /** Display order = shuffled source indices; letters A–D stay positional. */
       const optionOrder = {};
 
       function shuffleInPlace(arr) {
@@ -395,19 +399,28 @@
         return arr;
       }
 
+      /** Shuffle source indices; display letters A–D are always positional. */
       function orderedOptions(question) {
         if (!optionOrder[question.id]) {
           optionOrder[question.id] = shuffleInPlace(
-            question.options.map((option) => option.value)
+            question.options.map((_, index) => index)
           );
         }
-        return optionOrder[question.id].map((value, i) => {
-          const option = question.options.find((entry) => entry.value === value);
+        return optionOrder[question.id].map((sourceIndex, i) => {
+          const letter = String.fromCharCode(65 + i);
           return {
-            ...option,
-            letter: String.fromCharCode(65 + i),
+            letter,
+            value: letter,
+            label: question.options[sourceIndex],
+            isCorrect: sourceIndex === question.correct,
           };
         });
+      }
+
+      function correctLetter(question) {
+        const shown = orderedOptions(question);
+        const hit = shown.find((option) => option.isCorrect);
+        return hit ? hit.value : null;
       }
 
       function reshuffleOptions() {
@@ -451,7 +464,7 @@
             let feedbackHtml = "";
 
             if (checked) {
-              const isCorrect = selected === question.correct;
+              const isCorrect = selected === correctLetter(question);
               const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
               const verdictText = !selected
                 ? "Non répondue."
@@ -463,7 +476,7 @@
 
             const optionsHtml = orderedOptions(question)
               .map((option) => {
-                const isCorrect = option.value === question.correct;
+                const isCorrect = option.isCorrect;
                 const isChosen = option.value === selected;
                 const classes = [];
                 if (checked) classes.push("checked-mode");
@@ -480,10 +493,11 @@
                       type="radio"
                       name="${question.id}"
                       value="${option.value}"
+                      data-correct="${option.isCorrect ? "1" : "0"}"
                       ${selected === option.value ? "checked" : ""}
                       ${checked ? "disabled" : ""}
                     />
-                    ${option.letter}. ${option.label}${tag}
+                    <span class="option-letter">${option.letter}.</span> ${option.label}${tag}
                   </label>
                 `;
               })
@@ -528,7 +542,7 @@
       function renderSummary() {
         let score = 0;
         questions.forEach((question) => {
-          if (answers[question.id] === question.correct) score += 1;
+          if (answers[question.id] === correctLetter(question)) score += 1;
         });
 
         summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;

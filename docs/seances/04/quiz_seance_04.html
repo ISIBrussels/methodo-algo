@@ -128,6 +128,10 @@
         cursor: default;
       }
 
+
+      .option-letter {
+        font-weight: 600;
+      }
       .option-tag {
         display: inline-block;
         margin-left: 0.35rem;
@@ -246,128 +250,128 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_04_answers_v1";
-      const checkedKey = "quiz_seance_04_checked_v1";
+      const storageKey = "quiz_seance_04_answers_v2";
+      const checkedKey = "quiz_seance_04_checked_v2";
 
       const questions = [
         {
           id: "q1",
           text: "Un <code>FOR</code> convient surtout quand…",
           options: [
-            { value: "A", label: "le nombre d'itérations (ou la plage) est connu à l'avance" },
-            { value: "B", label: "on attend une sentinelle dont on ignore la position" },
-            { value: "C", label: "il faut toujours au moins une itération, sans borne claire" },
-            { value: "D", label: "on refuse toute variable de contrôle" },
+            "le nombre d'itérations (ou la plage) est connu à l'avance",
+            "on attend une sentinelle dont on ignore la position",
+            "il faut toujours au moins une itération, sans borne claire",
+            "on refuse toute variable de contrôle",
           ],
-          correct: "A",
+          correct: 0,
           feedback: "Plage ou compteur connu → <code>FOR</code>. Condition ouverte (sentinelle, validation) → plutôt <code>WHILE</code> ou <code>REPEAT</code>.",
         },
         {
           id: "q2",
           text: "Avec <code>FOR i = 1 TO N</code> (pas par défaut), les bornes sont…",
           options: [
-            { value: "A", label: "exclusives : on s'arrête avant <code>N</code>" },
-            { value: "B", label: "inclusives : <code>i</code> prend aussi la valeur <code>N</code>" },
-            { value: "C", label: "aléatoires selon le <code>STEP</code> implicite" },
-            { value: "D", label: "limitées à deux itérations seulement" },
+            "exclusives : on s'arrête avant <code>N</code>",
+            "inclusives : <code>i</code> prend aussi la valeur <code>N</code>",
+            "aléatoires selon le <code>STEP</code> implicite",
+            "limitées à deux itérations seulement",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "<code>TO</code> est inclusif. Pour <code>N = 3</code>, on obtient <code>1</code>, <code>2</code>, <code>3</code>.",
         },
         {
           id: "q3",
           text: "Sans <code>STEP</code> explicite, le pas d'un <code>FOR</code> vaut…",
           options: [
-            { value: "A", label: "0" },
-            { value: "B", label: "+1" },
-            { value: "C", label: "-1" },
-            { value: "D", label: "2" },
+            "0",
+            "+1",
+            "-1",
+            "2",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Par défaut, après chaque itération, la variable de contrôle passe à <code>i + 1</code>.",
         },
         {
           id: "q4",
           text: "Que produit <code>FOR i = 2 TO 10 STEP 2</code> ?",
           options: [
-            { value: "A", label: "1, 2, 3, 4, 5, 6, 7, 8, 9, 10" },
-            { value: "B", label: "2, 4, 6, 8, 10" },
-            { value: "C", label: "2, 3, 4, 5, 6, 7, 8, 9, 10" },
-            { value: "D", label: "10, 8, 6, 4, 2" },
+            "1, 2, 3, 4, 5, 6, 7, 8, 9, 10",
+            "2, 4, 6, 8, 10",
+            "2, 3, 4, 5, 6, 7, 8, 9, 10",
+            "10, 8, 6, 4, 2",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Départ 2, arrivée 10 inclusive, pas +2 : les pairs de 2 à 10.",
         },
         {
           id: "q5",
           text: "Pour afficher un compte à rebours de <code>N</code> à 1, on écrit typiquement…",
           options: [
-            { value: "A", label: "<code>FOR i = 1 TO N STEP -1</code>" },
-            { value: "B", label: "<code>FOR i = N TO 1 STEP -1</code>" },
-            { value: "C", label: "<code>FOR i = N TO 1</code> (sans <code>STEP</code>)" },
-            { value: "D", label: "<code>REPEAT i = N UNTIL 1</code>" },
+            "<code>FOR i = 1 TO N STEP -1</code>",
+            "<code>FOR i = N TO 1 STEP -1</code>",
+            "<code>FOR i = N TO 1</code> (sans <code>STEP</code>)",
+            "<code>REPEAT i = N UNTIL 1</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Départ à <code>N</code>, arrivée à 1, <code>STEP -1</code>. Sans <code>STEP</code> négatif, le pas +1 ne parcourt pas cette plage.",
         },
         {
           id: "q6",
           text: "Une erreur <em>off-by-one</em>, c'est…",
           options: [
-            { value: "A", label: "utiliser un losange Yes/No" },
-            { value: "B", label: "se tromper d'une unité sur les bornes (trop peu ou trop d'itérations)" },
-            { value: "C", label: "oublier le mot-clé <code>END FOR</code> uniquement" },
-            { value: "D", label: "choisir un <code>WHILE</code> au lieu d'un <code>REPEAT</code>" },
+            "utiliser un losange Yes/No",
+            "se tromper d'une unité sur les bornes (trop peu ou trop d'itérations)",
+            "oublier le mot-clé <code>END FOR</code> uniquement",
+            "choisir un <code>WHILE</code> au lieu d'un <code>REPEAT</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Exemple : viser 1..N inclus mais écrire <code>TO N - 1</code> (manque la dernière valeur). Une petite <em>trace table</em> le révèle.",
         },
         {
           id: "q7",
           text: "« Sommer des valeurs jusqu'à la sentinelle <code>-1</code> » : quelle boucle est la plus adaptée ?",
           options: [
-            { value: "A", label: "<code>FOR</code> avec <code>STEP 1</code>" },
-            { value: "B", label: "<code>WHILE</code> (condition avant, sentinelle non ajoutée)" },
-            { value: "C", label: "uniquement des <code>IF</code> sans boucle" },
-            { value: "D", label: "<code>FOR i = -1 TO -1</code>" },
+            "<code>FOR</code> avec <code>STEP 1</code>",
+            "<code>WHILE</code> (condition avant, sentinelle non ajoutée)",
+            "uniquement des <code>IF</code> sans boucle",
+            "<code>FOR i = -1 TO -1</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "La fin dépend d'une condition ouverte (valeur sentinelle). Un <code>WHILE</code> (ou parfois un <code>REPEAT</code>) reste plus lisible qu'un <code>FOR</code>.",
         },
         {
           id: "q8",
           text: "Dans des boucles imbriquées (<em>nested loops</em>) <code>FOR i = 1 TO N</code> puis <code>FOR j = 1 TO M</code>, le corps interne s'exécute…",
           options: [
-            { value: "A", label: "<code>N + M</code> fois" },
-            { value: "B", label: "<code>N * M</code> fois" },
-            { value: "C", label: "exactement <code>N</code> fois" },
-            { value: "D", label: "exactement <code>M</code> fois, quel que soit <code>N</code>" },
+            "<code>N + M</code> fois",
+            "<code>N * M</code> fois",
+            "exactement <code>N</code> fois",
+            "exactement <code>M</code> fois, quel que soit <code>N</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Pour chaque valeur de <code>i</code>, on parcourt toutes les valeurs de <code>j</code> : produit <code>N * M</code>.",
         },
         {
           id: "q9",
           text: "Avec <code>N = 2</code> et <code>M = 2</code>, l'ordre d'affichage des paires <code>(i, j)</code> est…",
           options: [
-            { value: "A", label: "(1,1), (2,1), (1,2), (2,2)" },
-            { value: "B", label: "(1,1), (1,2), (2,1), (2,2)" },
-            { value: "C", label: "(2,2), (2,1), (1,2), (1,1)" },
-            { value: "D", label: "(1,2), (1,1), (2,2), (2,1)" },
+            "(1,1), (2,1), (1,2), (2,2)",
+            "(1,1), (1,2), (2,1), (2,2)",
+            "(2,2), (2,1), (1,2), (1,1)",
+            "(1,2), (1,1), (2,2), (2,1)",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "On termine la boucle interne (<code>j</code>) avant d'incrémenter <code>i</code>.",
         },
         {
           id: "q10",
           text: "Objectif : afficher les entiers de <code>first</code> à <code>last</code> inclus. Quelle forme est correcte ?",
           options: [
-            { value: "A", label: "<code>FOR i = first TO last - 1</code>" },
-            { value: "B", label: "<code>FOR i = first TO last</code>" },
-            { value: "C", label: "<code>FOR i = first + 1 TO last</code>" },
-            { value: "D", label: "<code>FOR i = first TO last + 1</code>" },
+            "<code>FOR i = first TO last - 1</code>",
+            "<code>FOR i = first TO last</code>",
+            "<code>FOR i = first + 1 TO last</code>",
+            "<code>FOR i = first TO last + 1</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "<code>TO</code> est inclusif. <code>TO last - 1</code> est un <em>off-by-one</em> classique (manque <code>last</code>).",
         },
       ];
@@ -382,7 +386,7 @@
       let checked = false;
       const answers = {};
 
-      /** Display order of options (stable ids A–D); reshuffled each load / reset. */
+      /** Display order = shuffled source indices; letters A–D stay positional. */
       const optionOrder = {};
 
       function shuffleInPlace(arr) {
@@ -395,19 +399,28 @@
         return arr;
       }
 
+      /** Shuffle source indices; display letters A–D are always positional. */
       function orderedOptions(question) {
         if (!optionOrder[question.id]) {
           optionOrder[question.id] = shuffleInPlace(
-            question.options.map((option) => option.value)
+            question.options.map((_, index) => index)
           );
         }
-        return optionOrder[question.id].map((value, i) => {
-          const option = question.options.find((entry) => entry.value === value);
+        return optionOrder[question.id].map((sourceIndex, i) => {
+          const letter = String.fromCharCode(65 + i);
           return {
-            ...option,
-            letter: String.fromCharCode(65 + i),
+            letter,
+            value: letter,
+            label: question.options[sourceIndex],
+            isCorrect: sourceIndex === question.correct,
           };
         });
+      }
+
+      function correctLetter(question) {
+        const shown = orderedOptions(question);
+        const hit = shown.find((option) => option.isCorrect);
+        return hit ? hit.value : null;
       }
 
       function reshuffleOptions() {
@@ -451,7 +464,7 @@
             let feedbackHtml = "";
 
             if (checked) {
-              const isCorrect = selected === question.correct;
+              const isCorrect = selected === correctLetter(question);
               const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
               const verdictText = !selected
                 ? "Non répondue."
@@ -463,7 +476,7 @@
 
             const optionsHtml = orderedOptions(question)
               .map((option) => {
-                const isCorrect = option.value === question.correct;
+                const isCorrect = option.isCorrect;
                 const isChosen = option.value === selected;
                 const classes = [];
                 if (checked) classes.push("checked-mode");
@@ -480,10 +493,11 @@
                       type="radio"
                       name="${question.id}"
                       value="${option.value}"
+                      data-correct="${option.isCorrect ? "1" : "0"}"
                       ${selected === option.value ? "checked" : ""}
                       ${checked ? "disabled" : ""}
                     />
-                    ${option.letter}. ${option.label}${tag}
+                    <span class="option-letter">${option.letter}.</span> ${option.label}${tag}
                   </label>
                 `;
               })
@@ -528,7 +542,7 @@
       function renderSummary() {
         let score = 0;
         questions.forEach((question) => {
-          if (answers[question.id] === question.correct) score += 1;
+          if (answers[question.id] === correctLetter(question)) score += 1;
         });
 
         summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;

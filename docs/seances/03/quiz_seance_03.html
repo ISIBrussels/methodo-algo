@@ -128,6 +128,10 @@
         cursor: default;
       }
 
+
+      .option-letter {
+        font-weight: 600;
+      }
       .option-tag {
         display: inline-block;
         margin-left: 0.35rem;
@@ -246,128 +250,128 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_03_answers_v2";
-      const checkedKey = "quiz_seance_03_checked_v2";
+      const storageKey = "quiz_seance_03_answers_v3";
+      const checkedKey = "quiz_seance_03_checked_v3";
 
       const questions = [
         {
           id: "q1",
           text: "Une itération (<em>iteration</em>), c'est…",
           options: [
-            { value: "A", label: "la fin définitive du programme" },
-            { value: "B", label: "un tour d'exécution du corps de la boucle" },
-            { value: "C", label: "uniquement le symbole <code>START</code>" },
-            { value: "D", label: "une affectation sans condition" },
+            "la fin définitive du programme",
+            "un tour d'exécution du corps de la boucle",
+            "uniquement le symbole <code>START</code>",
+            "une affectation sans condition",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Chaque passage dans le corps compte pour une itération. La boucle enchaîne des itérations jusqu'à la condition d'arrêt.",
         },
         {
           id: "q2",
           text: "Dans un <code>WHILE … DO … END WHILE</code>, la condition est testée…",
           options: [
-            { value: "A", label: "avant chaque exécution du corps" },
-            { value: "B", label: "uniquement après le dernier tour" },
-            { value: "C", label: "jamais : le corps tourne toujours" },
-            { value: "D", label: "seulement au moment du <code>START</code>" },
+            "avant chaque exécution du corps",
+            "uniquement après le dernier tour",
+            "jamais : le corps tourne toujours",
+            "seulement au moment du <code>START</code>",
           ],
-          correct: "A",
+          correct: 0,
           feedback: "Le <code>WHILE</code> teste avant : si la condition est déjà fausse, le corps peut ne jamais s'exécuter (zéro itération).",
         },
         {
           id: "q3",
           text: "Avec <code>REPEAT … UNTIL</code>, le nombre minimal d'exécutions du corps est…",
           options: [
-            { value: "A", label: "zéro" },
-            { value: "B", label: "un (au moins une fois)" },
-            { value: "C", label: "toujours exactement deux" },
-            { value: "D", label: "infini" },
+            "zéro",
+            "un (au moins une fois)",
+            "toujours exactement deux",
+            "infini",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Le corps s'exécute d'abord. Le test <code>UNTIL</code> vient après. D'où au moins une itération.",
         },
         {
           id: "q4",
           text: "On sort d'un <code>REPEAT … UNTIL condition</code> quand…",
           options: [
-            { value: "A", label: "la condition est <code>FALSE</code>" },
-            { value: "B", label: "la condition est <code>TRUE</code>" },
-            { value: "C", label: "on atteint forcément <code>N</code> tours" },
-            { value: "D", label: "le losange n'a plus de sortie No" },
+            "la condition est <code>FALSE</code>",
+            "la condition est <code>TRUE</code>",
+            "on atteint forcément <code>N</code> tours",
+            "le losange n'a plus de sortie No",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "<code>UNTIL</code> = « jusqu'à ce que ce soit vrai » : sortie lorsque la condition devient vraie (flèche Yes du losange).",
         },
         {
           id: "q5",
           text: "Une boucle infinie (<em>infinite loop</em>) survient souvent si…",
           options: [
-            { value: "A", label: "on initialise correctement le compteur" },
-            { value: "B", label: "on oublie de modifier la variable testée dans le corps" },
-            { value: "C", label: "on utilise un losange Yes/No" },
-            { value: "D", label: "on écrit <code>END WHILE</code>" },
+            "on initialise correctement le compteur",
+            "on oublie de modifier la variable testée dans le corps",
+            "on utilise un losange Yes/No",
+            "on écrit <code>END WHILE</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Sans mise à jour de la variable de contrôle, la condition ne change jamais → boucle infinie. Une <em>trace table</em> aide à le détecter.",
         },
         {
           id: "q6",
           text: "Un compteur (<em>counter</em>) sert surtout à…",
           options: [
-            { value: "A", label: "stocker le résultat d'une somme progressive" },
-            { value: "B", label: "compter combien de fois quelque chose s'est produit" },
-            { value: "C", label: "marquer la fin des données avec une valeur spéciale" },
-            { value: "D", label: "remplacer le symbole <code>OUTPUT</code>" },
+            "stocker le résultat d'une somme progressive",
+            "compter combien de fois quelque chose s'est produit",
+            "marquer la fin des données avec une valeur spéciale",
+            "remplacer le symbole <code>OUTPUT</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Pattern compteur : initialiser, tester, incrémenter dans le corps. L'accumulateur (<em>accumulator</em>) sert à la somme / produit.",
         },
         {
           id: "q7",
           text: "Un accumulateur (<em>accumulator</em>), typiquement…",
           options: [
-            { value: "A", label: "compte seulement le nombre de tours" },
-            { value: "B", label: "construit un résultat progressif (ex. <code>sum = sum + value</code>)" },
-            { value: "C", label: "est forcément une sentinelle" },
-            { value: "D", label: "interdit toute boucle <code>WHILE</code>" },
+            "compte seulement le nombre de tours",
+            "construit un résultat progressif (ex. <code>sum = sum + value</code>)",
+            "est forcément une sentinelle",
+            "interdit toute boucle <code>WHILE</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "On initialise l'accumulateur avant la boucle (souvent à 0), puis on le met à jour à chaque tour utile.",
         },
         {
           id: "q8",
           text: "Une valeur sentinelle (<em>sentinel</em>)…",
           options: [
-            { value: "A", label: "est toujours ajoutée à la somme" },
-            { value: "B", label: "signale la fin des données et n'est en général pas traitée comme une donnée" },
-            { value: "C", label: "remplace le mot-clé <code>WHILE</code>" },
-            { value: "D", label: "est obligatoire dans tout <code>IF</code>" },
+            "est toujours ajoutée à la somme",
+            "signale la fin des données et n'est en général pas traitée comme une donnée",
+            "remplace le mot-clé <code>WHILE</code>",
+            "est obligatoire dans tout <code>IF</code>",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "Exemple classique : lire des nombres jusqu'à <code>-1</code>. La sentinelle arrête la boucle. Elle n'entre pas dans l'accumulateur.",
         },
         {
           id: "q9",
           text: "Pour une validation de saisie (<em>input validation</em>), on…",
           options: [
-            { value: "A", label: "accepte la première saisie quoi qu'il arrive" },
-            { value: "B", label: "redemande tant que la valeur est hors domaine" },
-            { value: "C", label: "interdit tout <code>REPEAT</code>" },
-            { value: "D", label: "utilise uniquement un <code>IF</code> sans boucle" },
+            "accepte la première saisie quoi qu'il arrive",
+            "redemande tant que la valeur est hors domaine",
+            "interdit tout <code>REPEAT</code>",
+            "utilise uniquement un <code>IF</code> sans boucle",
           ],
-          correct: "B",
+          correct: 1,
           feedback: "<code>REPEAT … UNTIL</code> (ou <code>WHILE</code> après une première saisie) jusqu'à ce que la valeur soit valide : ex. note entre 0 et 20.",
         },
         {
           id: "q10",
           text: "Pour trouver le minimum parmi N saisies successives, une bonne stratégie est…",
           options: [
-            { value: "A", label: "d'initialiser <code>minimum</code> avec la première valeur, puis de comparer les suivantes" },
-            { value: "B", label: "d'ignorer la première saisie" },
-            { value: "C", label: "de n'utiliser que des <code>IF</code> sans boucle, même si N est grand" },
-            { value: "D", label: "de mettre la sentinelle dans le minimum" },
+            "d'initialiser <code>minimum</code> avec la première valeur, puis de comparer les suivantes",
+            "d'ignorer la première saisie",
+            "de n'utiliser que des <code>IF</code> sans boucle, même si N est grand",
+            "de mettre la sentinelle dans le minimum",
           ],
-          correct: "A",
+          correct: 0,
           feedback: "Init avec la première valeur (ou avec une sentinelle de données), puis à chaque nouvelle valeur : si plus petite → mettre à jour <code>minimum</code>.",
         },
       ];
@@ -382,7 +386,7 @@
       let checked = false;
       const answers = {};
 
-      /** Display order of options (stable ids A–D); reshuffled each load / reset. */
+      /** Display order = shuffled source indices; letters A–D stay positional. */
       const optionOrder = {};
 
       function shuffleInPlace(arr) {
@@ -395,19 +399,28 @@
         return arr;
       }
 
+      /** Shuffle source indices; display letters A–D are always positional. */
       function orderedOptions(question) {
         if (!optionOrder[question.id]) {
           optionOrder[question.id] = shuffleInPlace(
-            question.options.map((option) => option.value)
+            question.options.map((_, index) => index)
           );
         }
-        return optionOrder[question.id].map((value, i) => {
-          const option = question.options.find((entry) => entry.value === value);
+        return optionOrder[question.id].map((sourceIndex, i) => {
+          const letter = String.fromCharCode(65 + i);
           return {
-            ...option,
-            letter: String.fromCharCode(65 + i),
+            letter,
+            value: letter,
+            label: question.options[sourceIndex],
+            isCorrect: sourceIndex === question.correct,
           };
         });
+      }
+
+      function correctLetter(question) {
+        const shown = orderedOptions(question);
+        const hit = shown.find((option) => option.isCorrect);
+        return hit ? hit.value : null;
       }
 
       function reshuffleOptions() {
@@ -452,7 +465,7 @@
             let feedbackHtml = "";
 
             if (checked) {
-              const isCorrect = selected === question.correct;
+              const isCorrect = selected === correctLetter(question);
               const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
               const verdictText = !selected
                 ? "Non répondue."
@@ -464,7 +477,7 @@
 
             const optionsHtml = orderedOptions(question)
               .map((option) => {
-                const isCorrect = option.value === question.correct;
+                const isCorrect = option.isCorrect;
                 const isChosen = option.value === selected;
                 const classes = [];
                 if (checked) classes.push("checked-mode");
@@ -481,10 +494,11 @@
                       type="radio"
                       name="${question.id}"
                       value="${option.value}"
+                      data-correct="${option.isCorrect ? "1" : "0"}"
                       ${selected === option.value ? "checked" : ""}
                       ${checked ? "disabled" : ""}
                     />
-                    ${option.letter}. ${option.label}${tag}
+                    <span class="option-letter">${option.letter}.</span> ${option.label}${tag}
                   </label>
                 `;
               })
@@ -529,7 +543,7 @@
       function renderSummary() {
         let score = 0;
         questions.forEach((question) => {
-          if (answers[question.id] === question.correct) score += 1;
+          if (answers[question.id] === correctLetter(question)) score += 1;
         });
 
         summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;
