@@ -4,9 +4,9 @@ Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage M�
 
 Vous y trouverez :
 
-- les slides de cours
-- des quiz de vérification
-- des énoncés d'exercices
+- les slides de **cours**
+- des **quiz** de vérification
+- des énoncés d'**exercices**
 
 Ce cours vise à apprendre à penser un traitement avant de coder :
 
