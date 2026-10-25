@@ -1,6 +1,6 @@
 # Méthodologie algorithmique
 
-Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage **Méthodologie algorithmique** du **1e bachelier** à l'**ISIB** (HE2B).
+Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage Méthodologie algorithmique du 1e bachelier à l'ISIB (HE2B).
 
 Vous y trouverez :
 
@@ -19,8 +19,8 @@ Thèmes, consignes et explications en français ; *flowcharts* et *pseudocode* e
 <div class="home-list-sep" aria-hidden="true"></div>
 
 <ul class="format-eval">
-<li>Format : 7 séances de 1 heure et demi</li>
-<li>Evaluation : examen écrit d'une heure, à cahier fermé</li>
+<li><strong>Format</strong> : 7 séances de 1 heure et demi</li>
+<li><strong>Evaluation</strong> : examen écrit d'une heure, à cahier fermé</li>
 </ul>
 
 ## Tableau des séances
