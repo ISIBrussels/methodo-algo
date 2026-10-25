@@ -16,6 +16,9 @@ Ce cours vise à apprendre à **penser** un traitement avant de coder :
 
 Thèmes, consignes et explications en **français** ; *flowcharts* et *pseudocode* en **anglais**.
 
+- Format : 7 séances de 1 heure et demi
+- Evaluation : examen écrit d'une heure, à cahier fermé
+
 ## Tableau des séances
 
 | Séance | Thème | Cours | Quiz | Exercices |
