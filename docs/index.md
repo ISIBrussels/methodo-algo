@@ -4,17 +4,17 @@ Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage **
 
 Vous y trouverez :
 
-- les **slides de cours**
-- des **quiz** de vérification
-- des **énoncés d'exercices**
+- les slides de cours
+- des quiz de vérification
+- des énoncés d'exercices
 
-Ce cours vise à apprendre à **penser** un traitement avant de coder :
+Ce cours vise à apprendre à penser un traitement avant de coder :
 
-- cours **indépendant du langage** : sans se rattacher à un langage de programmation particulier (ni Python, ni C++)
+- cours indépendant du langage : sans se rattacher à un langage de programmation particulier (ni Python, ni C++)
 - support : *flowcharts*, puis *pseudocode* progressivement
-- travail sur **papier** : lire, tracer, produire
+- travail sur papier : lire, tracer, produire
 
-Thèmes, consignes et explications en **français** ; *flowcharts* et *pseudocode* en **anglais**.
+Thèmes, consignes et explications en français ; *flowcharts* et *pseudocode* en anglais.
 
 <div class="home-list-sep" aria-hidden="true"></div>
 
