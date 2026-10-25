@@ -357,6 +357,15 @@ jobs:
                   margin-top: 0.35rem;
                 }
 
+                .home-list-sep {
+                  height: 0.85rem;
+                }
+
+                ul.format-eval {
+                  margin-top: 0.25rem;
+                  margin-bottom: 1.75rem;
+                }
+
                 table {
                   width: 100%;
                   border-collapse: collapse;
