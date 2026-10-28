@@ -20,7 +20,7 @@ Thèmes, consignes et explications en français ; *flowcharts* et *pseudocode* e
 
 <ul class="format-eval">
 <li><strong>Format</strong> : 7 séances de 1 heure et demi</li>
-<li><strong>Evaluation</strong> : examen écrit d'une heure, à cahier fermé</li>
+<li><strong>Évaluation</strong> : examen écrit d'une heure, à cahier fermé</li>
 </ul>
 
 ## Tableau des séances
