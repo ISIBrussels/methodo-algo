@@ -26,7 +26,7 @@ Besoin fréquent : **garder plusieurs valeurs** du même type :
 - une série de mesures,
 - une liste de prix.
 
-Sans tableau : `v1`, `v2`, `v3`… rapidement **ingérable**.  
+Si beaucoup de valeurs (`v1`, `v2`, `v3`…), ça devient vite **ingérable**.  
 On regroupe ces valeurs dans un **tableau** (*array*).
 
 ---
@@ -66,12 +66,12 @@ Autres types possibles : `REAL`, `BOOLEAN`, `STRING`.
 
 <div>
 
-| Élément | Sens |
+| Partie | Rôle |
 | --- | --- |
-| `ARRAY` | mot-clé tableau |
-| `values` | nom |
-| `[0..N-1]` | indices de 0 à N - 1 **inclus** |
-| `OF INTEGER` | type de chaque case |
+| `ARRAY` | démarre la déclaration |
+| `values` | nom du tableau |
+| `[0..N-1]` | indices **0-based** : `0`, `1`, …, `N - 1` |
+| `OF INTEGER` | type de **chaque** case |
 
 </div>
 
@@ -384,8 +384,6 @@ Avant de valider un parcours :
 | Comptage | compteur + `IF` critère |
 | Décalage / inversion | attention à l'ordre des écritures |
 | Sécurité | jamais hors de `[0..N-1]` |
-
-Teaser S6 : encapsuler ces parcours dans des **fonctions** (`average`, `countAbove`…).
 
 ---
 

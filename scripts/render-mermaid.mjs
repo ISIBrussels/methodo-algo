@@ -2419,10 +2419,33 @@ function alignLoopBodyColumn(svg) {
           bodyBot.y + GAP_BODY - childTop0.y,
         );
       }
+      const directNoEnd = Boolean(
+        noBodyId && !endId && noBody?.shape === "stadium",
+      );
       if (noBodyId && noBody?.center) {
         const noTop0 = nodeFacePort(noBody.inner, noBody.shape, "top");
         const anchorX = noTop0?.x ?? noBody.center.x;
-        shiftNode(noBodyId, noStub.x - anchorX, dy);
+        // Direct No→END: park END to the right of the No stub at diamond
+        // mid-height (classic FOR). Yes-body `dy` used to drop END beside
+        // OUTPUT, where the parallelogram lean overlapped it.
+        if (directNoEnd) {
+          const endRect =
+            /<rect\s+x="([^"]+)"\s+y="([^"]+)"\s+width="([^"]+)"\s+height="([^"]+)"/.exec(
+              noBody.inner,
+            );
+          const endH = endRect ? Number(endRect[4]) : 37;
+          const GAP_NO = 36;
+          const endLeft0 = nodeFacePort(noBody.inner, noBody.shape, "left");
+          const leftX = endLeft0?.x ?? anchorX - 34;
+          const targetTopY = noStub.y - endH / 2;
+          shiftNode(
+            noBodyId,
+            noStub.x + GAP_NO - leftX,
+            targetTopY - (noTop0?.y ?? noBody.center.y - endH / 2),
+          );
+        } else {
+          shiftNode(noBodyId, noStub.x - anchorX, dy);
+        }
       }
       if (endId) {
         const endBefore = nodes.get(endId);
@@ -2460,6 +2483,9 @@ function alignLoopBodyColumn(svg) {
       const noBot = noFresh
         ? nodeFacePort(noFresh.inner, noFresh.shape, "bottom")
         : null;
+      const noLeft = noFresh
+        ? nodeFacePort(noFresh.inner, noFresh.shape, "left")
+        : null;
       if (endId && noBot) {
         const endParked = nodes.get(endId);
         const endTop0 = endParked
@@ -2491,8 +2517,16 @@ function alignLoopBodyColumn(svg) {
         { x: yesStub.x, y: bodyTop2.y },
         { ...bodyTop2 },
       ]);
-      const noEdgePts =
-        noTop != null
+      // Direct No→END at stub height: tip → stub → END left mid.
+      // Otherwise (No→OUTPUT…): tip → stub → drop onto No body top.
+      const noEdgePts = directNoEnd && noLeft != null
+        ? dedupePoints([
+            { ...d[noSide] },
+            { ...noStub },
+            { x: noStub.x, y: noLeft.y },
+            { ...noLeft },
+          ])
+        : noTop != null
           ? dedupePoints([
               { ...d[noSide] },
               { ...noStub },
