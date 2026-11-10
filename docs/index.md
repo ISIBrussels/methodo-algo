@@ -1,27 +1,16 @@
 # Méthodologie algorithmique
 
-Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage Méthodologie algorithmique du 1e bachelier à l'ISIB (HE2B).
+Bienvenue. Ce site est destiné aux étudiants de l'activité d'apprentissage **Méthodologie algorithmique** du 1e bachelier à l'ISIB (HE2B).
 
-Vous y trouverez :
+Vous y trouverez l'ensemble des ressources du cours :
 
-- le **cours** sous forme de slides et de syllabus (même contenu, deux formes différentes)
-- des **quiz** de vérification
-- des énoncés d'**exercices**
+- le cours sous deux formes : slides et syllabus (même contenu), et des quiz
+- les énoncés d'exercices
 
-Ce cours vise à apprendre à penser un traitement avant de coder :
+<!-- sépare les deux listes (sinon Markdown les fusionne) -->
 
-- cours indépendant du langage : sans se rattacher à un langage de programmation particulier (ni Python, ni C++)
-- support : *flowcharts*, puis *pseudocode* progressivement
-- travail sur papier : lire, tracer, produire
-
-Thèmes, consignes et explications en français. *Flowcharts* et *pseudocode* en anglais.
-
-<div class="home-list-sep" aria-hidden="true"></div>
-
-<ul class="format-eval">
-<li><strong>Format</strong> : 7 séances de 1 heure et demi</li>
-<li><strong>Évaluation</strong> : examen écrit d'une heure, à cahier fermé</li>
-</ul>
+- **Format** : 7 séances de 1 heure et demi
+- **Évaluation** : examen écrit d'une heure, à cahier fermé
 
 ## Tableau des séances
 
