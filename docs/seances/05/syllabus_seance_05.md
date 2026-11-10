@@ -1,4 +1,4 @@
-# Séance 5 — Syllabus
+# Séance 5 — Tableaux (arrays)
 
 <nav class="page-nav">
   <a href="../../index.html">← Retour à l'accueil</a>
@@ -6,18 +6,6 @@
   <a href="quiz_seance_05.html">Quiz</a>
   <a href="exercices_seance_05.html">Exercices</a>
 </nav>
-
-Version texte (markdown) des slides : même contenu que les slides, forme scrollable pour chercher une information.
-
-**Thème :** Tableaux (arrays)
-
-## Séance 5
-
-Tableaux (arrays)
-
-[→ Quiz](quiz_seance_05.html)
-[→ Syllabus](syllabus_seance_05.html)
-[→ Exercices](exercices_seance_05.html)
 
 ## Pourquoi un tableau ?
 

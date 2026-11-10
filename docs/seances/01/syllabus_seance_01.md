@@ -1,4 +1,4 @@
-# Séance 1 — Syllabus
+# Séance 1 — Algorithmes et traitement séquentiel
 
 <nav class="page-nav">
   <a href="../../index.html">← Retour à l'accueil</a>
@@ -6,18 +6,6 @@
   <a href="quiz_seance_01.html">Quiz</a>
   <a href="exercices_seance_01.html">Exercices</a>
 </nav>
-
-Version texte (markdown) des slides : même contenu que les slides, forme scrollable pour chercher une information.
-
-**Thème :** Algorithmes et traitement séquentiel
-
-## Séance 1
-
-Algorithmes et traitement séquentiel
-
-[→ Quiz](quiz_seance_01.html)
-[→ Syllabus](syllabus_seance_01.html)
-[→ Exercices](exercices_seance_01.html)
 
 ## Qu'est-ce qu'un algorithme (*algorithm*) ?
 

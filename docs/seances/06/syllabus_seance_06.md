@@ -1,4 +1,4 @@
-# Séance 6 — Syllabus
+# Séance 6 — Fonctions et procédures
 
 <nav class="page-nav">
   <a href="../../index.html">← Retour à l'accueil</a>
@@ -6,18 +6,6 @@
   <a href="quiz_seance_06.html">Quiz</a>
   <a href="exercices_seance_06.html">Exercices</a>
 </nav>
-
-Version texte (markdown) des slides : même contenu que les slides, forme scrollable pour chercher une information.
-
-**Thème :** Fonctions et procédures
-
-## Séance 6
-
-Fonctions et procédures
-
-[→ Quiz](quiz_seance_06.html)
-[→ Syllabus](syllabus_seance_06.html)
-[→ Exercices](exercices_seance_06.html)
 
 ## Contenu à venir
 

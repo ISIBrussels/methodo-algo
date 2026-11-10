@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Génère docs/seances/NN/syllabus_seance_NN.md à partir des slides Marp.
- * Même contenu que les slides, forme markdown scrollable (pattern labo-info-pass).
+ * Aligné sur tech-info-1 : H1 « Séance N — thème », sans slide d'intro (boutons).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -61,20 +61,17 @@ function buildSyllabus({ num, theme, body }) {
   <a href="${exoHref}">Exercices</a>
 </nav>`;
 
-  // Corps slides : séparateurs Marp `---` → rupture de section légère
-  const slidesBody = body
+  // Corps slides : séparateurs Marp `---` ; drop la 1ʳᵉ slide (titre + boutons)
+  const slides = body
     .split(/\n---\n/)
     .map((block) => block.trim())
-    .filter(Boolean)
-    .join("\n\n");
+    .filter(Boolean);
+  const slidesWithoutIntro = slides.length > 1 ? slides.slice(1) : slides;
+  const slidesBody = slidesWithoutIntro.join("\n\n");
 
-  return `# Séance ${n} — Syllabus
+  return `# Séance ${n} — ${theme}
 
 ${nav}
-
-Version texte (markdown) des slides : même contenu que les slides, forme scrollable pour chercher une information.
-
-**Thème :** ${theme}
 
 ${slidesBody}
 
