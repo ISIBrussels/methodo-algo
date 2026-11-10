@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: methodo-algo
+theme: isib
 title: "Séance 7 — Recherche, tri et efficacité"
 paginate: true
 header: "Méthodo Algo — Séance 7 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"

@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: methodo-algo
+theme: isib
 title: "Séance 1 — Algorithmes et traitement séquentiel"
 paginate: true
 header: "Méthodo Algo — Séance 1 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"

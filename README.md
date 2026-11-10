@@ -41,7 +41,7 @@ Alignée sur les dépôts `tech-info-1`, `labo-tech-info-*` et `labo-info-pass` 
 
 - `docs/index.md` — page d'accueil du site GitHub Pages
 - `docs/seances/NN/` — contenu de chaque séance (`cours_seance_NN.md` Marp, `syllabus_seance_NN.md`, quiz HTML, exercices)
-- `docs/themes/` — thème Marp
+- `docs/themes/` — thème Marp canonique (`isib.css`) + `pages.css` (landing / pages plates) ; alias `methodo-algo.css`
 - `scripts/generate-syllabus.mjs` — régénère les syllabus à partir des slides
 - `.github/workflows/deploy.yml` — build Marp + déploiement Pages
 - `private-notes/` — notes personnelles (ignorées par git)

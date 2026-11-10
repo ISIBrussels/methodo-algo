@@ -1,4 +1,5 @@
 themeSet:
-  - docs/themes
-theme: methodo-algo
+  - docs/themes/isib.css
+  - docs/themes/methodo-algo.css
+theme: isib
 html: true

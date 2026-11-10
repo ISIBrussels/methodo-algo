@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: methodo-algo
+theme: isib
 title: "Séance 3 — Boucles (1) : WHILE / REPEAT … UNTIL"
 paginate: true
 header: "Méthodo Algo — Séance 3 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
