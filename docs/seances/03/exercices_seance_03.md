@@ -8,6 +8,7 @@ Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes ap
 
 <nav class="page-nav">
   <a href="cours_seance_03.html">← Cours</a>
+  <a href="syllabus_seance_03.html">Syllabus</a>
   <a href="quiz_seance_03.html">Quiz →</a>
   <a href="../../index.html">Accueil</a>
 </nav>

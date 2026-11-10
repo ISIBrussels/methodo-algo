@@ -12,6 +12,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 Boucles (2) : FOR et boucles imbriquées
 
 [→ Quiz](quiz_seance_04.html)
+[→ Syllabus](syllabus_seance_04.html)
 [→ Exercices](exercices_seance_04.html)
 
 ---

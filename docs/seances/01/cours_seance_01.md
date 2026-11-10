@@ -12,6 +12,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 Algorithmes et traitement séquentiel
 
 [→ Quiz](quiz_seance_01.html)
+[→ Syllabus](syllabus_seance_01.html)
 [→ Exercices](exercices_seance_01.html)
 
 ---

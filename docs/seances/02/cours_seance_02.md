@@ -12,6 +12,7 @@ footer: "[← Retour à l'accueil](../../index.html)"
 Instructions conditionnelles
 
 [→ Quiz](quiz_seance_02.html)
+[→ Syllabus](syllabus_seance_02.html)
 [→ Exercices](exercices_seance_02.html)
 
 ---

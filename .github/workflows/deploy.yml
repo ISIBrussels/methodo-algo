@@ -45,20 +45,23 @@ jobs:
             fi
           done
 
-      - name: Build exercise pages (Markdown to static HTML)
+      - name: Build flat Markdown pages (exercices + syllabus)
         run: |
-          for file in docs/seances/*/exercices_seance_*.md; do
-            if [ -f "$file" ]; then
-              out="dist/${file#docs/}"
-              out="${out%.md}.html"
-              mkdir -p "$(dirname "$out")"
+          for kind_spec in "exercices:Exercices" "syllabus:Syllabus"; do
+            kind="${kind_spec%%:*}"
+            title_suffix="${kind_spec##*:}"
+            for file in docs/seances/*/${kind}_seance_*.md; do
+              if [ -f "$file" ]; then
+                out="dist/${file#docs/}"
+                out="${out%.md}.html"
+                mkdir -p "$(dirname "$out")"
 
-              body="$(marked --gfm "$file")"
-              session_num="${file##*_seance_}"
-              session_num="${session_num%.md}"
-              session_num=$((10#$session_num))
-              page_title="Séance ${session_num} — Exercices"
-              cat > "$out" <<EOF
+                body="$(marked --gfm "$file")"
+                session_num="${file##*_seance_}"
+                session_num="${session_num%.md}"
+                session_num=$((10#$session_num))
+                page_title="Séance ${session_num} — ${title_suffix}"
+                cat > "$out" <<EOF
           <!doctype html>
           <html lang="fr">
             <head>
@@ -280,7 +283,8 @@ jobs:
             </body>
           </html>
           EOF
-            fi
+              fi
+            done
           done
 
       - name: Render Mermaid diagrams to SVG
@@ -290,6 +294,7 @@ jobs:
         run: |
           sed -E \
             -e 's#(seances/[0-9]{2}/cours_seance_[0-9]{2})\.md#\1.html#g' \
+            -e 's#(seances/[0-9]{2}/syllabus_seance_[0-9]{2})\.md#\1.html#g' \
             -e 's#(seances/[0-9]{2}/exercices_seance_[0-9]{2})\.md#\1.html#g' \
             docs/index.md > /tmp/pages-index.md
 
@@ -411,7 +416,11 @@ jobs:
 
                 tbody td:nth-child(n+3) {
                   text-align: center;
-                  width: 7rem;
+                  width: 6.25rem;
+                }
+
+                thead th[colspan] {
+                  text-align: center;
                 }
 
                 table a {

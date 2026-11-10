@@ -11,7 +11,7 @@ Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) 
 
 - Landing page GitHub Pages : [https://isibrussels.github.io/methodo-algo/](https://isibrussels.github.io/methodo-algo/)  
   *(dépôt : [`ISIBrussels/methodo-algo`](https://github.com/ISIBrussels/methodo-algo))*
-- Slides de cours et quiz : liens ci-dessous
+- Slides, syllabus, quiz et exercices : liens ci-dessous
 
 ## Plan des séances
 
@@ -27,20 +27,21 @@ Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) 
 
 ## Séances
 
-- **Séance 1 — Algorithmes et traitement séquentiel** : [Cours](docs/seances/01/cours_seance_01.md) · [Quiz](docs/seances/01/quiz_seance_01.html) · [Exercices](docs/seances/01/exercices_seance_01.md)
-- **Séance 2 — Instructions conditionnelles** : [Cours](docs/seances/02/cours_seance_02.md) · [Quiz](docs/seances/02/quiz_seance_02.html) · [Exercices](docs/seances/02/exercices_seance_02.md)
-- **Séance 3 — Boucles (1) : WHILE / REPEAT … UNTIL** : [Cours](docs/seances/03/cours_seance_03.md) · [Quiz](docs/seances/03/quiz_seance_03.html) · [Exercices](docs/seances/03/exercices_seance_03.md)
-- **Séance 4 — Boucles (2) : FOR et boucles imbriquées** : [Cours](docs/seances/04/cours_seance_04.md) · [Quiz](docs/seances/04/quiz_seance_04.html) · [Exercices](docs/seances/04/exercices_seance_04.md)
-- **Séance 5 — Tableaux (arrays)** : [Cours](docs/seances/05/cours_seance_05.md) · [Quiz](docs/seances/05/quiz_seance_05.html) · [Exercices](docs/seances/05/exercices_seance_05.md)
-- **Séance 6 — Fonctions et procédures** : [Cours](docs/seances/06/cours_seance_06.md) · [Quiz](docs/seances/06/quiz_seance_06.html) · [Exercices](docs/seances/06/exercices_seance_06.md)
-- **Séance 7 — Recherche, tri et efficacité** : [Cours](docs/seances/07/cours_seance_07.md) · [Quiz](docs/seances/07/quiz_seance_07.html) · [Exercices](docs/seances/07/exercices_seance_07.md)
+- **Séance 1 — Algorithmes et traitement séquentiel** : [Slides](docs/seances/01/cours_seance_01.md) · [Syllabus](docs/seances/01/syllabus_seance_01.md) · [Quiz](docs/seances/01/quiz_seance_01.html) · [Exercices](docs/seances/01/exercices_seance_01.md)
+- **Séance 2 — Instructions conditionnelles** : [Slides](docs/seances/02/cours_seance_02.md) · [Syllabus](docs/seances/02/syllabus_seance_02.md) · [Quiz](docs/seances/02/quiz_seance_02.html) · [Exercices](docs/seances/02/exercices_seance_02.md)
+- **Séance 3 — Boucles (1) : WHILE / REPEAT … UNTIL** : [Slides](docs/seances/03/cours_seance_03.md) · [Syllabus](docs/seances/03/syllabus_seance_03.md) · [Quiz](docs/seances/03/quiz_seance_03.html) · [Exercices](docs/seances/03/exercices_seance_03.md)
+- **Séance 4 — Boucles (2) : FOR et boucles imbriquées** : [Slides](docs/seances/04/cours_seance_04.md) · [Syllabus](docs/seances/04/syllabus_seance_04.md) · [Quiz](docs/seances/04/quiz_seance_04.html) · [Exercices](docs/seances/04/exercices_seance_04.md)
+- **Séance 5 — Tableaux (arrays)** : [Slides](docs/seances/05/cours_seance_05.md) · [Syllabus](docs/seances/05/syllabus_seance_05.md) · [Quiz](docs/seances/05/quiz_seance_05.html) · [Exercices](docs/seances/05/exercices_seance_05.md)
+- **Séance 6 — Fonctions et procédures** : [Slides](docs/seances/06/cours_seance_06.md) · [Syllabus](docs/seances/06/syllabus_seance_06.md) · [Quiz](docs/seances/06/quiz_seance_06.html) · [Exercices](docs/seances/06/exercices_seance_06.md)
+- **Séance 7 — Recherche, tri et efficacité** : [Slides](docs/seances/07/cours_seance_07.md) · [Syllabus](docs/seances/07/syllabus_seance_07.md) · [Quiz](docs/seances/07/quiz_seance_07.html) · [Exercices](docs/seances/07/exercices_seance_07.md)
 
 ## Structure du dépôt
 
-Alignée sur les dépôts `tech-info-1` et `labo-tech-info-*` :
+Alignée sur les dépôts `tech-info-1`, `labo-tech-info-*` et `labo-info-pass` :
 
 - `docs/index.md` — page d'accueil du site GitHub Pages
-- `docs/seances/NN/` — contenu de chaque séance (`cours_seance_NN.md` Marp, quiz HTML, exercices)
+- `docs/seances/NN/` — contenu de chaque séance (`cours_seance_NN.md` Marp, `syllabus_seance_NN.md`, quiz HTML, exercices)
 - `docs/themes/` — thème Marp
+- `scripts/generate-syllabus.mjs` — régénère les syllabus à partir des slides
 - `.github/workflows/deploy.yml` — build Marp + déploiement Pages
 - `private-notes/` — notes personnelles (ignorées par git)

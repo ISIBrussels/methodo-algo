@@ -23,6 +23,7 @@
 
 <nav class="page-nav">
   <a href="cours_seance_06.html">← Cours</a>
+  <a href="syllabus_seance_06.html">Syllabus</a>
   <a href="quiz_seance_06.html">Quiz →</a>
   <a href="../../index.html">Accueil</a>
 </nav>
