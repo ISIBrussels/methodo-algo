@@ -1,4 +1,4 @@
-# Séance 4 — Syllabus
+# Séance 4 — Boucles (2) : FOR et boucles imbriquées
 
 <nav class="page-nav">
   <a href="../../index.html">← Retour à l'accueil</a>
@@ -6,18 +6,6 @@
   <a href="quiz_seance_04.html">Quiz</a>
   <a href="exercices_seance_04.html">Exercices</a>
 </nav>
-
-Version texte (markdown) des slides : même contenu que les slides, forme scrollable pour chercher une information.
-
-**Thème :** Boucles (2) : FOR et boucles imbriquées
-
-## Séance 4
-
-Boucles (2) : FOR et boucles imbriquées
-
-[→ Quiz](quiz_seance_04.html)
-[→ Syllabus](syllabus_seance_04.html)
-[→ Exercices](exercices_seance_04.html)
 
 ## Pourquoi un `FOR` ?
 

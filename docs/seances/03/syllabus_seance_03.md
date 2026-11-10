@@ -1,4 +1,4 @@
-# Séance 3 — Syllabus
+# Séance 3 — Boucles (1) : WHILE / REPEAT … UNTIL
 
 <nav class="page-nav">
   <a href="../../index.html">← Retour à l'accueil</a>
@@ -6,18 +6,6 @@
   <a href="quiz_seance_03.html">Quiz</a>
   <a href="exercices_seance_03.html">Exercices</a>
 </nav>
-
-Version texte (markdown) des slides : même contenu que les slides, forme scrollable pour chercher une information.
-
-**Thème :** Boucles (1) : WHILE / REPEAT … UNTIL
-
-## Séance 3
-
-Boucles (1) : WHILE / REPEAT … UNTIL
-
-[→ Quiz](quiz_seance_03.html)
-[→ Syllabus](syllabus_seance_03.html)
-[→ Exercices](exercices_seance_03.html)
 
 ## Pourquoi des boucles ?
 

@@ -1,4 +1,4 @@
-# Séance 2 — Syllabus
+# Séance 2 — Instructions conditionnelles
 
 <nav class="page-nav">
   <a href="../../index.html">← Retour à l'accueil</a>
@@ -6,18 +6,6 @@
   <a href="quiz_seance_02.html">Quiz</a>
   <a href="exercices_seance_02.html">Exercices</a>
 </nav>
-
-Version texte (markdown) des slides : même contenu que les slides, forme scrollable pour chercher une information.
-
-**Thème :** Instructions conditionnelles
-
-## Séance 2
-
-Instructions conditionnelles
-
-[→ Quiz](quiz_seance_02.html)
-[→ Syllabus](syllabus_seance_02.html)
-[→ Exercices](exercices_seance_02.html)
 
 ## Pourquoi des décisions ?
 
