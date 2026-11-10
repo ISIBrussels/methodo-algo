@@ -1,0 +1,338 @@
+/*
+ * ISIB pages.css — landing + pages plates (exercices / syllabus).
+ * Tokens canoniques partagés entre les dépôts GitHub Pages ISIB.
+ */
+
+:root {
+  --color-primary: #0075c9;
+  --color-secondary: #757575;
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-text: #212121;
+  --color-border: #e0e0e0;
+  --color-row-alt: #f5f5f5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 3rem;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  line-height: 1.65;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+h1 {
+  margin: 0 0 1.25rem;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid var(--color-primary);
+}
+
+h2 {
+  margin: 2.25rem 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+}
+
+h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+ul,
+ol {
+  margin: 0 0 1.5rem;
+  padding-left: 1.4rem;
+}
+
+.page-home ul {
+  color: var(--color-secondary);
+}
+
+li + li {
+  margin-top: 0.35rem;
+}
+
+/* Helpers listes homepage (methodo / outils) */
+.home-list-sep {
+  height: 0.85rem;
+}
+
+ul.format-eval {
+  margin-top: 0.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.page-nav {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1.25rem 0 1.75rem;
+}
+
+.page-nav a {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid var(--color-primary);
+}
+
+.page-nav a:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.site-footer {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--color-secondary);
+}
+
+.site-footer a {
+  color: var(--color-secondary);
+  text-decoration: underline;
+  font-weight: 400;
+}
+
+.site-footer a:hover {
+  color: var(--color-primary);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88em;
+  background: var(--color-row-alt);
+  color: var(--color-secondary);
+  padding: 0.1em 0.35em;
+}
+
+pre {
+  background: var(--color-row-alt);
+  padding: 0.75rem;
+  overflow-x: auto;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Landing — tableau séances (schéma 5 cols, cluster 7rem)                    */
+/* -------------------------------------------------------------------------- */
+
+.page-home table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.page-home thead th {
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  padding: 0.75rem 1rem;
+  border: none;
+}
+
+.page-home tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.page-home tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.page-home tbody tr:nth-child(even) {
+  background: var(--color-row-alt);
+}
+
+.page-home tbody td:first-child {
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: center;
+  width: 4.5rem;
+}
+
+.page-home tbody td:nth-child(2) {
+  font-size: 0.95rem;
+}
+
+.page-home tbody td:nth-child(n + 3) {
+  text-align: center;
+  width: 7rem;
+}
+
+.page-home table a {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid var(--color-primary);
+}
+
+.page-home table a:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/*
+ * Variante 4 colonnes (outils-info-ia) : Séance | Thème | Cours | Tâches.
+ * Appliquer `class="home-table--tasks"` sur le <table> (HTML) ou envelopper.
+ */
+.page-home table.home-table--tasks thead th:nth-child(3),
+.page-home table.home-table--tasks thead th:nth-child(4),
+.page-home table.home-table--tasks tbody td:nth-child(3),
+.page-home table.home-table--tasks tbody td:nth-child(4) {
+  text-align: center;
+  white-space: nowrap;
+  width: auto;
+}
+
+.page-home table.home-table--tasks tbody td:nth-child(3) {
+  width: 6.5rem;
+}
+
+.page-home table.home-table--tasks tbody td:nth-child(4) {
+  width: 12rem;
+}
+
+.page-home table.home-table--tasks a {
+  white-space: nowrap;
+}
+
+/* Mobile : scroll horizontal (outils-info-ia) */
+@media (max-width: 640px) {
+  .page-home table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Pages plates (exercices / syllabus)                                        */
+/* -------------------------------------------------------------------------- */
+
+.page-flat table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0 1.5rem;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+
+/* Corrigé: keep trace table and flowchart close (no big air gap). */
+.page-flat details.corrige table {
+  margin: 0.75rem 0 0.35rem;
+}
+
+.page-flat thead th {
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--color-primary);
+}
+
+.page-flat tbody td {
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--color-border);
+  vertical-align: middle;
+  min-width: 3.5rem;
+  min-height: 1.75rem;
+}
+
+.page-flat tbody tr:nth-child(even) {
+  background: var(--color-row-alt);
+}
+
+.page-flat tbody td:first-child {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88em;
+  white-space: nowrap;
+}
+
+.page-flat .mermaid-diagram {
+  display: flex;
+  justify-content: center;
+  margin: 1.25rem 0;
+}
+
+.page-flat details.corrige .mermaid-diagram {
+  margin: 0.35rem 0 0.5rem;
+}
+
+.page-flat .mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+  /* Opaque node faces so edges/markers never read as ghost strokes. */
+  --surface: #ffffff;
+  --_node-fill: #ffffff;
+}
+
+.page-flat .mermaid-diagram .edge-label > rect {
+  fill: none;
+  stroke: none;
+}
+
+.page-flat .mermaid-diagram .edge-label text {
+  fill: currentColor;
+  font-weight: 700;
+}
+
+.page-flat details.corrige {
+  margin: 1rem 0 1.5rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-row-alt);
+}
+
+.page-flat details.corrige > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-primary);
+  list-style-position: outside;
+}
+
+.page-flat details.corrige[open] > summary {
+  margin-bottom: 0.75rem;
+}
+
+.page-flat details.corrige > *:last-child {
+  margin-bottom: 0;
+}

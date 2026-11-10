@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: methodo-algo
+theme: isib
 title: "Séance 6 — Fonctions et procédures"
 paginate: true
 header: "Méthodo Algo — Séance 6 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"

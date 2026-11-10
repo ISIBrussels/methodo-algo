@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: methodo-algo
+theme: isib
 title: "Séance 2 — Instructions conditionnelles"
 paginate: true
 header: "Méthodo Algo — Séance 2 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
