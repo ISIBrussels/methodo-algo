@@ -7,10 +7,10 @@ Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.
 Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes apparaissent **uniquement** dans la *trace table*).
 
 <nav class="page-nav">
-  <a href="cours_seance_02.html">← Cours</a>
-  <a href="syllabus_seance_02.html">Syllabus</a>
-  <a href="quiz_seance_02.html">Quiz →</a>
   <a href="../../index.html">Accueil</a>
+  <a href="cours_seance_02.html">Slides</a>
+  <a href="syllabus_seance_02.html">Syllabus</a>
+  <a href="quiz_seance_02.html">Quiz</a>
 </nav>
 
 ## 2.A : Quantité hors bornes (`OR` + validation)

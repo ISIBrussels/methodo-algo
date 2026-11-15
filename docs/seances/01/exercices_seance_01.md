@@ -6,10 +6,10 @@
 Pour **chaque** exercice : produire une *trace table* **et** un *flowchart*.
 
 <nav class="page-nav">
-  <a href="cours_seance_01.html">← Cours</a>
-  <a href="syllabus_seance_01.html">Syllabus</a>
-  <a href="quiz_seance_01.html">Quiz →</a>
   <a href="../../index.html">Accueil</a>
+  <a href="cours_seance_01.html">Slides</a>
+  <a href="syllabus_seance_01.html">Syllabus</a>
+  <a href="quiz_seance_01.html">Quiz</a>
 </nav>
 
 ## 1.A : `DIV` et `MOD`

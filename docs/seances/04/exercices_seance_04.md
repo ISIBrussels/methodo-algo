@@ -6,10 +6,10 @@
 Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes apparaissent **uniquement** dans la *trace table*).
 
 <nav class="page-nav">
-  <a href="cours_seance_04.html">← Cours</a>
-  <a href="syllabus_seance_04.html">Syllabus</a>
-  <a href="quiz_seance_04.html">Quiz →</a>
   <a href="../../index.html">Accueil</a>
+  <a href="cours_seance_04.html">Slides</a>
+  <a href="syllabus_seance_04.html">Syllabus</a>
+  <a href="quiz_seance_04.html">Quiz</a>
 </nav>
 
 ## 4.A : `FOR` avec `STEP -1`
