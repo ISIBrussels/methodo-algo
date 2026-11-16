@@ -1,7 +1,7 @@
 # Séance 3 — Boucles (1) : WHILE / REPEAT … UNTIL
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_03.html">Slides</a>
   <a href="quiz_seance_03.html">Quiz</a>
   <a href="exercices_seance_03.html">Exercices</a>
@@ -360,7 +360,7 @@ Une ***trace table*** sur un petit jeu de données révèle vite le bug.
 
 10 questions pour tester sa compréhension du contenu de la séance.
 
-[→ Quiz](quiz_seance_03.html)
+[Quiz](quiz_seance_03.html)
 
 ## Exercice 3.A : Compteur `WHILE`
 
@@ -375,7 +375,7 @@ END WHILE
 1. Compléter la *trace table* pour `N = 3`.
 2. Dessiner le *flowchart*.
 
-→ [Exercices](exercices_seance_03.html) § 3.A
+[Exercices](exercices_seance_03.html) § 3.A
 
 ## Exercice 3.B : Mot de passe (`REPEAT … UNTIL`)
 
@@ -389,7 +389,7 @@ OUTPUT "OK"
 1. Compléter la *trace table* pour les saisies `wrong`, puis `secret`.
 2. Dessiner le *flowchart*.
 
-→ [Exercices](exercices_seance_03.html) § 3.B
+[Exercices](exercices_seance_03.html) § 3.B
 
 ## Exercice 3.C : Validation de note (*input validation*)
 
@@ -403,7 +403,7 @@ OUTPUT mark
 1. Compléter la *trace table* pour les saisies `25`, puis `14` (`minMark = 0`, `maxMark = 20`).
 2. Dessiner le *flowchart* (bornes nommées).
 
-→ [Exercices](exercices_seance_03.html) § 3.C
+[Exercices](exercices_seance_03.html) § 3.C
 
 ## Exercice 3.D : Somme jusqu'à sentinelle
 
@@ -421,7 +421,7 @@ OUTPUT sum
 1. Compléter la *trace table* pour les saisies `4`, `6`, `-1` (`SENTINEL = -1`).
 2. Dessiner le *flowchart*.
 
-→ [Exercices](exercices_seance_03.html) § 3.D
+[Exercices](exercices_seance_03.html) § 3.D
 
 ## Exercice 3.E : Minimum de N saisies
 
@@ -442,10 +442,10 @@ OUTPUT minimum
 1. Compléter la *trace table* pour `N = 3` et les saisies `8`, `3`, `5`.
 2. Dessiner le *flowchart*.
 
-→ [Exercices](exercices_seance_03.html) § 3.E
+[Exercices](exercices_seance_03.html) § 3.E
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_03.html">Slides</a>
   <a href="quiz_seance_03.html">Quiz</a>
   <a href="exercices_seance_03.html">Exercices</a>

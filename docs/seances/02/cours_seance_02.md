@@ -4,16 +4,16 @@ theme: isib
 title: "Séance 2 — Instructions conditionnelles"
 paginate: true
 header: "Méthodo Algo — Séance 2 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
-footer: "[← Retour à l'accueil](../../index.html)"
+footer: "[Accueil](../../index.html)"
 ---
 
 ## Séance 2
 
 Instructions conditionnelles
 
-[→ Quiz](quiz_seance_02.html)
+[Quiz](quiz_seance_02.html)
 [→ Syllabus](syllabus_seance_02.html)
-[→ Exercices](exercices_seance_02.html)
+[Exercices](exercices_seance_02.html)
 
 ---
 
@@ -372,7 +372,7 @@ END IF
 
 10 questions pour tester sa compréhension du contenu de la séance.
 
-[→ Quiz](quiz_seance_02.html)
+[Quiz](quiz_seance_02.html)
 
 ---
 
@@ -391,7 +391,7 @@ OUTPUT verdict
 1. *Trace table* : `quantity = 150`, `minQty = 1`, `maxQty = 100`.
 2. Dessiner le *flowchart* (condition `OR` ; bornes nommées).
 
-→ [Exercices](exercices_seance_02.html) § 2.A
+[Exercices](exercices_seance_02.html) § 2.A
 
 ---
 
@@ -424,7 +424,7 @@ OUTPUT band
 1. *Trace table* : `a = 3`, `b = 8`, `threshold = 5`.
 2. Dessiner le *flowchart* (deux losanges **en séquence**, pas imbriqués).
 
-→ [Exercices](exercices_seance_02.html) § 2.B
+[Exercices](exercices_seance_02.html) § 2.B
 
 </div>
 
@@ -451,7 +451,7 @@ OUTPUT entry
 1. *Trace table* : `hasTicket = TRUE`, `age = 16`, `adultAge = 18`.
 2. Dessiner le *flowchart* (deux losanges imbriqués).
 
-→ [Exercices](exercices_seance_02.html) § 2.C
+[Exercices](exercices_seance_02.html) § 2.C
 
 ---
 
@@ -472,7 +472,7 @@ OUTPUT comfort
 1. *Trace table* : `temperature = 5`, `hotLimit = 28`, `coldLimit = 16`.
 2. Dessiner le *flowchart* (cascade courte ; bornes nommées).
 
-→ [Exercices](exercices_seance_02.html) § 2.D
+[Exercices](exercices_seance_02.html) § 2.D
 
 ---
 
@@ -495,4 +495,4 @@ OUTPUT grade
 1. *Trace table* : `mark = 14`, `gradeA = 16`, `gradeB = 14`, `gradeC = 10`.
 2. Dessiner le *flowchart* (cascade ; bornes nommées).
 
-→ [Exercices](exercices_seance_02.html) § 2.E
+[Exercices](exercices_seance_02.html) § 2.E

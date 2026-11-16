@@ -1,7 +1,7 @@
 # Séance 1 — Algorithmes et traitement séquentiel
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_01.html">Slides</a>
   <a href="quiz_seance_01.html">Quiz</a>
   <a href="exercices_seance_01.html">Exercices</a>
@@ -236,7 +236,7 @@ OUTPUT q, r
 
 10 questions pour tester sa compréhension du contenu de la séance.
 
-[→ Quiz](quiz_seance_01.html)
+[Quiz](quiz_seance_01.html)
 
 ## Exercice 1.A : `DIV` et `MOD`
 
@@ -250,7 +250,7 @@ OUTPUT result
 1. Compléter la *trace table* (step, `a`, `b`, `result`, OUTPUT).
 2. Dessiner le *flowchart*.
 
-→ [Exercices](exercices_seance_01.html) § 1.A
+[Exercices](exercices_seance_01.html) § 1.A
 
 ## Exercice 1.B : Prix TTC
 
@@ -264,7 +264,7 @@ Formule : `priceTTC = priceHT * (1 + rate)`
 1. Dessiner le *flowchart*.
 2. Compléter la *trace table* pour `priceHT = 100`, `rate = 0.21`.
 
-→ [Exercices](exercices_seance_01.html) § 1.B
+[Exercices](exercices_seance_01.html) § 1.B
 
 ## Exercice 1.C : Heures et minutes
 
@@ -278,7 +278,7 @@ OUTPUT hours, minutes
 1. Compléter la *trace table* (step, `totalMinutes`, `hours`, `minutes`, OUTPUT).
 2. Dessiner le *flowchart*.
 
-→ [Exercices](exercices_seance_01.html) § 1.C
+[Exercices](exercices_seance_01.html) § 1.C
 
 ## Exercice 1.D : Moyenne de deux notes
 
@@ -292,7 +292,7 @@ Formule : `average = (mark1 + mark2) / 2`
 1. Dessiner le *flowchart*.
 2. Compléter la *trace table* pour `mark1 = 12`, `mark2 = 15`.
 
-→ [Exercices](exercices_seance_01.html) § 1.D
+[Exercices](exercices_seance_01.html) § 1.D
 
 ## Exercice 1.E : Température Celsius → Fahrenheit
 
@@ -305,10 +305,10 @@ OUTPUT fahrenheit
 1. Compléter la *trace table* (step, `celsius`, `fahrenheit`, OUTPUT).
 2. Dessiner le *flowchart*.
 
-→ [Exercices](exercices_seance_01.html) § 1.E
+[Exercices](exercices_seance_01.html) § 1.E
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_01.html">Slides</a>
   <a href="quiz_seance_01.html">Quiz</a>
   <a href="exercices_seance_01.html">Exercices</a>
