@@ -12,7 +12,7 @@ footer: "[Accueil](../../index.html)"
 Boucles (1) : WHILE / REPEAT … UNTIL
 
 [Quiz](quiz_seance_03.html)
-[→ Syllabus](syllabus_seance_03.html)
+[Syllabus](syllabus_seance_03.html)
 [Exercices](exercices_seance_03.html)
 
 ---
