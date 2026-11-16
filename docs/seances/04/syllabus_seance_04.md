@@ -1,7 +1,7 @@
 # Séance 4 — Boucles (2) : FOR et boucles imbriquées
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_04.html">Slides</a>
   <a href="quiz_seance_04.html">Quiz</a>
   <a href="exercices_seance_04.html">Exercices</a>
@@ -379,7 +379,7 @@ Trace sur petit `N` : le meilleur filet de sécurité.
 
 Questions pour tester la compréhension du contenu de la séance.
 
-[→ Quiz](quiz_seance_04.html)
+[Quiz](quiz_seance_04.html)
 
 ## Exercice 4.A : `FOR` avec `STEP -1`
 
@@ -392,7 +392,7 @@ END FOR
 1. Compléter pour `N = 4` : quelles valeurs affichées, dans quel ordre ?
 2. Réécrire l'équivalent avec un `WHILE`.
 
-→ [Exercices](exercices_seance_04.html) § 4.A
+[Exercices](exercices_seance_04.html) § 4.A
 
 ## Exercice 4.B : Choisir le type de boucle
 
@@ -403,7 +403,7 @@ Pour chaque énoncé, choisir `FOR`, `WHILE` ou `REPEAT … UNTIL` :
 3. Sommer des valeurs jusqu'à la sentinelle `-1`.
 4. Répéter exactement 10 fois un message.
 
-→ [Exercices](exercices_seance_04.html) § 4.B
+[Exercices](exercices_seance_04.html) § 4.B
 
 ## Exercice 4.C : Table de multiplication
 
@@ -413,7 +413,7 @@ chaque ligne de la forme `i x j = produit`.
 
 Optionnel : esquisse du *flowchart* pour `N` petit.
 
-→ [Exercices](exercices_seance_04.html) § 4.C
+[Exercices](exercices_seance_04.html) § 4.C
 
 ## Exercice 4.D : Trace d'imbrication
 
@@ -427,7 +427,7 @@ END FOR
 
 Compléter la *trace table* pour `N = 3` : ordre exact des paires `(i, j)`.
 
-→ [Exercices](exercices_seance_04.html) § 4.D
+[Exercices](exercices_seance_04.html) § 4.D
 
 ## Exercice 4.E : Corriger les bornes
 
@@ -443,10 +443,10 @@ END FOR
 2. Corriger le `FOR`.
 3. Donner un jeu de test (`first = 2`, `last = 5`).
 
-→ [Exercices](exercices_seance_04.html) § 4.E
+[Exercices](exercices_seance_04.html) § 4.E
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_04.html">Slides</a>
   <a href="quiz_seance_04.html">Quiz</a>
   <a href="exercices_seance_04.html">Exercices</a>

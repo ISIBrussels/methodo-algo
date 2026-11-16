@@ -4,16 +4,16 @@ theme: isib
 title: "Séance 4 — Boucles (2) : FOR et boucles imbriquées"
 paginate: true
 header: "Méthodo Algo — Séance 4 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
-footer: "[← Retour à l'accueil](../../index.html)"
+footer: "[Accueil](../../index.html)"
 ---
 
 ## Séance 4
 
 Boucles (2) : FOR et boucles imbriquées
 
-[→ Quiz](quiz_seance_04.html)
+[Quiz](quiz_seance_04.html)
 [→ Syllabus](syllabus_seance_04.html)
-[→ Exercices](exercices_seance_04.html)
+[Exercices](exercices_seance_04.html)
 
 ---
 
@@ -425,7 +425,7 @@ Trace sur petit `N` : le meilleur filet de sécurité.
 
 Questions pour tester la compréhension du contenu de la séance.
 
-[→ Quiz](quiz_seance_04.html)
+[Quiz](quiz_seance_04.html)
 
 ---
 
@@ -440,7 +440,7 @@ END FOR
 1. Compléter pour `N = 4` : quelles valeurs affichées, dans quel ordre ?
 2. Réécrire l'équivalent avec un `WHILE`.
 
-→ [Exercices](exercices_seance_04.html) § 4.A
+[Exercices](exercices_seance_04.html) § 4.A
 
 ---
 
@@ -453,7 +453,7 @@ Pour chaque énoncé, choisir `FOR`, `WHILE` ou `REPEAT … UNTIL` :
 3. Sommer des valeurs jusqu'à la sentinelle `-1`.
 4. Répéter exactement 10 fois un message.
 
-→ [Exercices](exercices_seance_04.html) § 4.B
+[Exercices](exercices_seance_04.html) § 4.B
 
 ---
 
@@ -465,7 +465,7 @@ chaque ligne de la forme `i x j = produit`.
 
 Optionnel : esquisse du *flowchart* pour `N` petit.
 
-→ [Exercices](exercices_seance_04.html) § 4.C
+[Exercices](exercices_seance_04.html) § 4.C
 
 ---
 
@@ -481,7 +481,7 @@ END FOR
 
 Compléter la *trace table* pour `N = 3` : ordre exact des paires `(i, j)`.
 
-→ [Exercices](exercices_seance_04.html) § 4.D
+[Exercices](exercices_seance_04.html) § 4.D
 
 ---
 
@@ -499,4 +499,4 @@ END FOR
 2. Corriger le `FOR`.
 3. Donner un jeu de test (`first = 2`, `last = 5`).
 
-→ [Exercices](exercices_seance_04.html) § 4.E
+[Exercices](exercices_seance_04.html) § 4.E

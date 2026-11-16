@@ -1,7 +1,7 @@
 # Séance 5 — Tableaux (arrays)
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_05.html">Slides</a>
   <a href="quiz_seance_05.html">Quiz</a>
   <a href="exercices_seance_05.html">Exercices</a>
@@ -344,10 +344,10 @@ Avant de valider un parcours :
 
 Questions pour tester la compréhension du contenu de la séance.
 
-[→ Quiz](quiz_seance_05.html)
+[Quiz](quiz_seance_05.html)
 
 <nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="cours_seance_05.html">Slides</a>
   <a href="quiz_seance_05.html">Quiz</a>
   <a href="exercices_seance_05.html">Exercices</a>

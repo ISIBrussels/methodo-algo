@@ -4,16 +4,16 @@ theme: isib
 title: "Séance 5 — Tableaux (arrays)"
 paginate: true
 header: "Méthodo Algo — Séance 5 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
-footer: "[← Retour à l'accueil](../../index.html)"
+footer: "[Accueil](../../index.html)"
 ---
 
 ## Séance 5
 
 Tableaux (arrays)
 
-[→ Quiz](quiz_seance_05.html)
+[Quiz](quiz_seance_05.html)
 [→ Syllabus](syllabus_seance_05.html)
-[→ Exercices](exercices_seance_05.html)
+[Exercices](exercices_seance_05.html)
 
 ---
 
@@ -392,4 +392,4 @@ Avant de valider un parcours :
 
 Questions pour tester la compréhension du contenu de la séance.
 
-[→ Quiz](quiz_seance_05.html)
+[Quiz](quiz_seance_05.html)
