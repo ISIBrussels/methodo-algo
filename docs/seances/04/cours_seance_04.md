@@ -500,3 +500,22 @@ END FOR
 3. Donner un jeu de test (`first = 2`, `last = 5`).
 
 [Exercices](exercices_seance_04.html) § 4.E
+
+---
+
+## Exercice 4.F : Tracer un sapin
+
+Triangle d’étoiles **symétrique** (*centered*), hauteur `N`.
+
+Exemple pour `N = 4` :
+
+```text
+   *
+  ***
+ *****
+*******
+```
+
+Version 2 : ajouter un **tronc** `|` centré sous le triangle.
+
+[Exercices](exercices_seance_04.html) § 4.F

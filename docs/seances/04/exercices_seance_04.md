@@ -207,4 +207,104 @@ END FOR
 
 </details>
 
+---
+
+## 4.F : Tracer un sapin (triangle d’étoiles centré)
+
+### Version 1
+
+Afficher un **triangle symétrique** (*centered*) d’étoiles, centré sur la verticale, comme la silhouette d’un sapin (sans tronc).
+
+**Donnée :** un entier `N` (hauteur du feuillage, `N >= 1`).
+
+**À produire :** le *pseudocode* (boucles imbriquées `FOR`) qui lit `N` puis affiche le motif.
+
+Chaque ligne `row` (de 1 à `N`) contient :
+
+- des **espaces** à gauche pour centrer,
+- puis un nombre **impair** d’étoiles (`*`).
+
+Exemple pour `N = 4` :
+
+```text
+   *
+  ***
+ *****
+*******
+```
+
+1. Pour chaque ligne, combien d’espaces et combien d’étoiles en fonction de `row` et de `N` ?
+2. Écrire le *pseudocode* complet (`INPUT` / `OUTPUT`, boucles `FOR`).
+3. (Optionnel) Esquisse du *flowchart* pour un `N` petit.
+
+### Version 2
+
+Même motif, puis une ligne de **tronc** : un caractère `|` **centré** sous le triangle.
+
+Exemple pour `N = 4` :
+
+```text
+   *
+  ***
+ *****
+*******
+   |
+```
+
+Adapter le *pseudocode* de la version 1 pour afficher aussi le tronc.
+
+<details class="corrige">
+<summary>Corrigé</summary>
+
+**Version 1**
+
+Pour la ligne `row` (de 1 à `N`) :
+
+| Élément | Formule |
+| --- | --- |
+| Espaces à gauche | `N - row` |
+| Étoiles | `2 * row - 1` |
+
+Avec `N = 4` : `(3, 1)`, `(2, 3)`, `(1, 5)`, `(0, 7)`.
+
+```text
+INPUT N
+FOR row = 1 TO N DO
+  line = ""
+  FOR s = 1 TO N - row DO
+    line = line + " "
+  END FOR
+  FOR star = 1 TO 2 * row - 1 DO
+    line = line + "*"
+  END FOR
+  OUTPUT line
+END FOR
+```
+
+**Version 2**
+
+Après le feuillage, une ligne avec `N - 1` espaces puis `|` (même centrage que la première ligne d’étoiles).
+
+```text
+INPUT N
+FOR row = 1 TO N DO
+  line = ""
+  FOR s = 1 TO N - row DO
+    line = line + " "
+  END FOR
+  FOR star = 1 TO 2 * row - 1 DO
+    line = line + "*"
+  END FOR
+  OUTPUT line
+END FOR
+trunk = ""
+FOR s = 1 TO N - 1 DO
+  trunk = trunk + " "
+END FOR
+trunk = trunk + "|"
+OUTPUT trunk
+```
+
+</details>
+
 <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>

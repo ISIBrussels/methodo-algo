@@ -445,6 +445,23 @@ END FOR
 
 [Exercices](exercices_seance_04.html) § 4.E
 
+## Exercice 4.F : Tracer un sapin
+
+Triangle d’étoiles **symétrique** (*centered*), hauteur `N`.
+
+Exemple pour `N = 4` :
+
+```text
+   *
+  ***
+ *****
+*******
+```
+
+Version 2 : ajouter un **tronc** `|` centré sous le triangle.
+
+[Exercices](exercices_seance_04.html) § 4.F
+
 <nav class="page-nav">
   <a href="../../index.html">Accueil</a>
   <a href="cours_seance_04.html">Slides</a>
