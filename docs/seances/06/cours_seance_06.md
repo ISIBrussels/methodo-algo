@@ -12,7 +12,7 @@ footer: "[Accueil](../../index.html)"
 Fonctions et procédures
 
 [Quiz](quiz_seance_06.html)
-[→ Syllabus](syllabus_seance_06.html)
+[Syllabus](syllabus_seance_06.html)
 [Exercices](exercices_seance_06.html)
 
 ---
