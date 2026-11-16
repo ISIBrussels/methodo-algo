@@ -55,7 +55,7 @@ function buildSyllabus({ num, theme, body }) {
   const exoHref = `exercices_seance_${pad}.html`;
 
   const nav = `<nav class="page-nav">
-  <a href="../../index.html">← Retour à l'accueil</a>
+  <a href="../../index.html">Accueil</a>
   <a href="${slidesHref}">Slides</a>
   <a href="${quizHref}">Quiz</a>
   <a href="${exoHref}">Exercices</a>
