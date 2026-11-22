@@ -75,7 +75,7 @@ Vous y trouverez l'ensemble des ressources du cours :
 </tr>
 <tr>
 <td align="center">7</td>
-<td>Recherche, tri et efficacité</td>
+<td>Chaînes et caractères</td>
 <td align="center"><a href="seances/07/cours_seance_07.html">Slides</a></td>
 <td align="center"><a href="seances/07/syllabus_seance_07.html">Syllabus</a></td>
 <td align="center"><a href="seances/07/quiz_seance_07.html">Quiz</a></td>
