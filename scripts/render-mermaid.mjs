@@ -2390,22 +2390,29 @@ function alignLoopBodyColumn(svg) {
     const dy = d.bottom.y + GAP_BELOW_DIAMOND - bodyTop0.y;
 
     // FOR/WHILE: Yes → body (OUTPUT…) → increment rectangle → diamond tip.
-    // Align increment under the body bottom mid so OUTPUT→i++ is a straight drop
-    // (parallelogram lean makes top mid ≠ bottom mid; cascade alone zigzags).
+    // Park Yes on body TOP mid (clean stub→top entry). Keep OUTPUT→i++ as a
+    // straight drop via bottom mid. Wide parallelograms (ex. OUTPUT values[i])
+    // must sit fully left of the tip so the return climb does not cross the
+    // body — that crossing looked like a Yes-shaft merge / infinite OUTPUT↔i++.
     if (isIncrementReturn) {
       const yesSide = stubYesX <= d.cx ? "left" : "right";
       const yesStub = diamondExitStub(d, yesSide);
       const noSide = yesSide === "left" ? "right" : "left";
       const noStub = diamondExitStub(d, noSide);
+      const TIP_CLEAR = 14;
 
-      // Park the Yes column on the body BOTTOM mid (parallelogram lean:
-      // top mid ≠ bottom mid). Straight OUTPUT→increment, boxes look stacked.
-      const bodyBot0 =
-        nodeFacePort(body.inner, body.shape, "bottom") || bodyTop0;
       if ((incoming.get(bodyId) || []).length === 1) {
-        shiftNode(bodyId, yesStub.x - bodyBot0.x, dy);
+        shiftNode(bodyId, yesStub.x - bodyTop0.x, dy);
       } else {
         shiftNode(bodyId, 0, dy);
+      }
+      // Keep body right of tip climb channel clear (wide I/O labels).
+      {
+        const bodyNow = nodes.get(bodyId);
+        const rightPort = nodeFacePort(bodyNow.inner, bodyNow.shape, "right");
+        if (rightPort && rightPort.x > d.bottom.x - TIP_CLEAR) {
+          shiftNode(bodyId, d.bottom.x - TIP_CLEAR - rightPort.x, 0);
+        }
       }
       {
         const bodyNow = nodes.get(bodyId);
@@ -2502,21 +2509,31 @@ function alignLoopBodyColumn(svg) {
         { x: bodyBot2.x, y: bodyBot2.y },
         { x: bodyBot2.x, y: childTop2.y },
       ]);
-      // Return: bottom of increment → floor → under tip → straight up.
-      const CLEAR = 20;
-      const floorY = childBot2.y + CLEAR;
+      // Return (S3 WHILE style): mid-right of increment → channel under tip →
+      // straight up into diamond BOTTOM tip (never merge into the Yes shaft).
+      const childRight2 =
+        nodeFacePort(childFresh.inner, childFresh.shape, "right") || childBot2;
       const returnPts = dedupePoints([
-        { ...childBot2 },
-        { x: childBot2.x, y: floorY },
-        { x: d.bottom.x, y: floorY },
+        { ...childRight2 },
+        { x: d.bottom.x, y: childRight2.y },
         { ...d.bottom },
       ]);
-      const yesEdgePts = dedupePoints([
-        { ...d[yesSide] },
-        { ...yesStub },
-        { x: yesStub.x, y: bodyTop2.y },
-        { ...bodyTop2 },
-      ]);
+      // Yes: tip → stub → (optional jog at stub height) → vertical onto top mid.
+      // Prefer the drop on the body column so a left nudge never draws a
+      // horizontal along the parallelogram top edge.
+      const yesEdgePts =
+        Math.abs(yesStub.x - bodyTop2.x) <= 1.5
+          ? dedupePoints([
+              { ...d[yesSide] },
+              { ...yesStub },
+              { ...bodyTop2 },
+            ])
+          : dedupePoints([
+              { ...d[yesSide] },
+              { ...yesStub },
+              { x: bodyTop2.x, y: yesStub.y },
+              { ...bodyTop2 },
+            ]);
       // Direct No→END at stub height: tip → stub → END left mid.
       // Otherwise (No→OUTPUT…): tip → stub → drop onto No body top.
       const noEdgePts = directNoEnd && noLeft != null
