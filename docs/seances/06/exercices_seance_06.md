@@ -16,33 +16,34 @@ Dans les *flowcharts* : pas de littéraux numériques (les valeurs concrètes ap
 
 Pour chaque bloc, dire si c'est plutôt une **`FUNCTION`** ou une **`PROCEDURE`**, et pourquoi (une phrase).
 
-**Bloc 1**
+**Bloc 1 : prix TTC**
 
 ```text
-…(n : INTEGER)…
-  IF (n MOD 2) = 0 THEN
-    RETURN TRUE
+…(priceHT : REAL, rate : REAL)…
+  priceTTC = priceHT * (1 + rate)
+  RETURN priceTTC
+```
+
+**Bloc 2 : signal répété**
+
+```text
+…(times : INTEGER)…
+  i = 1
+  WHILE i <= times DO
+    OUTPUT "beep"
+    i = i + 1
+  END WHILE
+```
+
+**Bloc 3 : lettre de score**
+
+```text
+…(score : INTEGER)…
+  IF score >= 50 THEN
+    RETURN "P"
   ELSE
-    RETURN FALSE
+    RETURN "F"
   END IF
-```
-
-**Bloc 2**
-
-```text
-…(title : STRING)…
-  OUTPUT "===="
-  OUTPUT title
-  OUTPUT "===="
-```
-
-**Bloc 3**
-
-```text
-…(values : ARRAY, n : INTEGER, factor : INTEGER)…
-  FOR i = 0 TO n - 1 DO
-    values[i] = values[i] * factor
-  END FOR
 ```
 
 <details class="corrige">
@@ -50,191 +51,213 @@ Pour chaque bloc, dire si c'est plutôt une **`FUNCTION`** ou une **`PROCEDURE`*
 
 | Bloc | Choix | Pourquoi |
 | --- | --- | --- |
-| 1 | `FUNCTION` | Produit une valeur booléenne via `RETURN` |
-| 2 | `PROCEDURE` | Affiche seulement, pas de valeur à récupérer |
-| 3 | `PROCEDURE` | Modifie le tableau sur place (effet), sans `RETURN` de résultat |
+| 1 | `FUNCTION` | Calcule et **renvoie** un prix TTC |
+| 2 | `PROCEDURE` | Affiche seulement (`beep`), pas de valeur à récupérer |
+| 3 | `FUNCTION` | Renvoie une lettre (`"P"` / `"F"`) via `RETURN` |
 
 </details>
 
 ---
 
-## 6.B : `maxOf`
+## 6.B : `clamp`
 
-Écrire une fonction qui renvoie le **plus grand** de deux entiers.
+Écrire une fonction qui **borne** une valeur dans un intervalle fermé `[lo, hi]` (on suppose `lo <= hi`).
 
 ```text
-FUNCTION maxOf(a : INTEGER, b : INTEGER) : INTEGER
+FUNCTION clamp(x : INTEGER, lo : INTEGER, hi : INTEGER) : INTEGER
   …
 END FUNCTION
 ```
 
-**Données de trace :** appel `maxOf(4, 9)`.
+Règle :
 
-1. Écrire le corps complet (avec `RETURN`).
-2. Compléter la *trace* de l'appel : paramètres, branche choisie, valeur renvoyée.
-3. Que vaut `maxOf(7, 7)` ?
+- si `x < lo` → renvoyer `lo`
+- si `x > hi` → renvoyer `hi`
+- sinon → renvoyer `x`
+
+**Données de trace :** `clamp(-2, 0, 10)`, `clamp(4, 0, 10)`, `clamp(15, 0, 10)`.
+
+1. Écrire le corps complet.
+2. Donner les trois valeurs renvoyées.
+3. (Optionnel) Esquisse du *flowchart* de `clamp` seul (sans littéraux).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
 ```text
-FUNCTION maxOf(a : INTEGER, b : INTEGER) : INTEGER
-  IF a > b THEN
-    RETURN a
+FUNCTION clamp(x : INTEGER, lo : INTEGER, hi : INTEGER) : INTEGER
+  IF x < lo THEN
+    RETURN lo
+  ELSE IF x > hi THEN
+    RETURN hi
   ELSE
-    RETURN b
+    RETURN x
   END IF
 END FUNCTION
 ```
 
-Trace de `maxOf(4, 9)` :
+| Appel | Résultat |
+| --- | ---: |
+| `clamp(-2, 0, 10)` | `0` |
+| `clamp(4, 0, 10)` | `4` |
+| `clamp(15, 0, 10)` | `10` |
 
-| Étape | Détail |
-| --- | --- |
-| Entrée | `a = 4`, `b = 9` |
-| Test | `4 > 9` → No |
-| `RETURN` | `b` soit `9` |
-
-`maxOf(7, 7)` : `7 > 7` → No → `RETURN b` → **`7`** (les deux branches donnent la même valeur).
+```mermaid
+flowchart TB
+  A([START clamp]) --> B{x < lo}
+  B -->|Yes| C[/RETURN lo/]
+  B -->|No| D{x > hi}
+  D -->|Yes| E[/RETURN hi/]
+  D -->|No| F[/RETURN x/]
+```
 
 </details>
 
 ---
 
-## 6.C : `average` depuis un main
+## 6.C : `factorial`
 
-Écrire une fonction qui calcule la **moyenne** d'un tableau (indices `0..n-1`), puis un **main** qui :
+Écrire une fonction qui calcule `n!` pour un entier `n >= 0`  
+(`0! = 1`, `1! = 1`, `2! = 2`, `3! = 6`, …) avec une boucle (pas de récursivité).
 
-1. lit `n` et les `n` valeurs,
-2. appelle `average`,
-3. affiche le résultat.
+Puis un **main** qui lit `n`, appelle `factorial`, affiche le résultat.
 
-On suppose `n > 0`. Type de retour : `REAL` (ou préciser la division réelle).
+**Données de trace :** `n = 4`.
 
-**Données de trace :** `n = 4`, `values = [6, 8, 10, 4]`.
-
-1. Écrire `FUNCTION average(values, n)`.
-2. Écrire le main (squelette d'appels).
-3. Quelle moyenne affiche-t-on pour la trace ?
+1. Écrire `FUNCTION factorial(n : INTEGER) : INTEGER`.
+2. Écrire le main.
+3. Compléter une *trace* du corps pour `n = 4` (colonnes `i`, `result`).
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
 ```text
-FUNCTION average(values : ARRAY, n : INTEGER) : REAL
-  sum = 0
-  FOR i = 0 TO n - 1 DO
-    sum = sum + values[i]
+FUNCTION factorial(n : INTEGER) : INTEGER
+  result = 1
+  FOR i = 1 TO n DO
+    result = result * i
   END FOR
-  RETURN sum / n
+  RETURN result
 END FUNCTION
 
 // main
 INPUT n
-FOR i = 0 TO n - 1 DO
-  INPUT values[i]
-END FOR
-mean = average(values, n)
-OUTPUT mean
+value = factorial(n)
+OUTPUT value
 ```
 
-Trace : `sum = 28`, `28 / 4 = 7` → **OUTPUT 7**.
+Trace pour `n = 4` :
+
+| `i` | `result` après le tour |
+| ---: | ---: |
+| (init) | 1 |
+| 1 | 1 |
+| 2 | 2 |
+| 3 | 6 |
+| 4 | 24 |
+
+**OUTPUT 24**.  
+Si `n = 0`, le `FOR` ne tourne pas → `RETURN 1`.
 
 </details>
 
 ---
 
-## 6.D : `countAbove`
+## 6.D : `digitSum`
 
-Écrire une fonction qui compte combien d'éléments sont **strictement au-dessus** d'une limite.
+Écrire une fonction qui renvoie la **somme des chiffres** d’un entier `n >= 0`  
+(exemple : `n = 508` → `5 + 0 + 8 = 13`).
 
-```text
-FUNCTION countAbove(values : ARRAY, n : INTEGER, limit : INTEGER) : INTEGER
-  …
-END FUNCTION
-```
+Utiliser `DIV` et `MOD` (pas de tableau de chiffres).
 
-**Données de trace :** `n = 5`, `values = [3, 10, 7, 10, 2]`, `limit = 7`.
+**Données de trace :** `n = 508`.
 
-1. Écrire le corps.
-2. Compléter une *trace table* (`i`, `values[i]`, test, `count`).
-3. *Edge :* que renvoie la fonction si **aucune** valeur n'est au-dessus de `limit` ?
+1. Écrire `FUNCTION digitSum(n : INTEGER) : INTEGER`.
+2. Compléter une *trace table* (`n` courant, chiffre extrait, `sum`).
+3. Que vaut `digitSum(0)` ?
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-Au-dessus de `7` : `10` et `10` → **`2`**.
-
-| `i` | `values[i]` | `> limit` ? | `count` |
-| ---: | ---: | --- | ---: |
-| (init) | | | 0 |
-| 0 | 3 | No | 0 |
-| 1 | 10 | Yes | 1 |
-| 2 | 7 | No | 1 |
-| 3 | 10 | Yes | 2 |
-| 4 | 2 | No | 2 |
-
 ```text
-FUNCTION countAbove(values : ARRAY, n : INTEGER, limit : INTEGER) : INTEGER
-  count = 0
-  FOR i = 0 TO n - 1 DO
-    IF values[i] > limit THEN
-      count = count + 1
-    END IF
-  END FOR
-  RETURN count
+FUNCTION digitSum(n : INTEGER) : INTEGER
+  sum = 0
+  IF n = 0 THEN
+    RETURN 0
+  END IF
+  WHILE n > 0 DO
+    digit = n MOD 10
+    sum = sum + digit
+    n = n DIV 10
+  END WHILE
+  RETURN sum
 END FUNCTION
 ```
 
-Si aucune valeur ne dépasse `limit` : la boucle n'incrémente jamais → **`RETURN 0`**.
+Variante sans `IF` initial : le `WHILE` ne tourne pas si `n = 0`, `sum` reste `0`.
+
+Trace pour `508` :
+
+| `n` (début tour) | `digit` | `sum` | `n` après `DIV` |
+| ---: | ---: | ---: | ---: |
+| 508 | 8 | 8 | 50 |
+| 50 | 0 | 8 | 5 |
+| 5 | 5 | 13 | 0 |
+
+**RETURN 13**.  
+`digitSum(0)` → **`0`**.
 
 </details>
 
 ---
 
-## 6.E : Corriger un bug de *scope*
+## 6.E : Bug de *scope* (`best`)
 
-Le main veut afficher le total **avant** et **après** un traitement. L'extrait suivant est incorrect.
+Le main garde le **meilleur score** vu jusqu’ici. L’extrait est incorrect.
 
 ```text
-total = 100
+best = 12
 
-PROCEDURE resetTotal()
-  total = 0
+PROCEDURE updateBest(score : INTEGER)
+  best = score
 END PROCEDURE
 
-OUTPUT total
-CALL resetTotal()
-OUTPUT total
+OUTPUT best
+CALL updateBest(9)
+OUTPUT best
 ```
 
-1. Qu'affiche-t-on (dans l'ordre) avec cet extrait tel quel, si `total` est globale ?
-2. Quel est le problème de conception ?
-3. Proposer une correction qui **préserve** le `100` du main (par ex. variable locale, ou procédure qui ne touche pas `total`, ou renommage clair).
+Intention pédagogique du programmeur : afficher `12`, puis **garder** `12` si `9` n’est pas meilleur (donc n’écraser que si `score > best`).
+
+1. Qu’affiche-t-on **tel quel** (globale `best`) ?
+2. Quel est le défaut (portée + logique) ?
+3. Corriger : soit une `FUNCTION` qui **renvoie** le nouveau meilleur sans écraser à l’aveugle, soit une procédure avec la bonne condition. Le main doit finir avec `best = 12` pour cet appel.
 
 <details class="corrige">
 <summary>Corrigé</summary>
 
-1. Affichage : `100`, puis `0` (la procédure a écrasé la globale).
-2. Problème : effet de bord sur une **globale** partagée. Le nom `resetTotal` masque qu'on détruit la valeur du main.
-3. Correction possible (locale dans la procédure, le main inchangé) :
+1. Affichage : `12`, puis `9` (la procédure a **toujours** écrasé la globale).
+2. Défauts : effet de bord sur une **globale**, et pas de test `score > best`.
+3. Correction recommandée (`FUNCTION` + affectation explicite dans le main) :
 
 ```text
-total = 100
+FUNCTION better(bestSoFar : INTEGER, score : INTEGER) : INTEGER
+  IF score > bestSoFar THEN
+    RETURN score
+  ELSE
+    RETURN bestSoFar
+  END IF
+END FUNCTION
 
-PROCEDURE resetLocalDemo()
-  localTotal = 0
-  OUTPUT localTotal
-END PROCEDURE
-
-OUTPUT total
-CALL resetLocalDemo()
-OUTPUT total
+// main
+best = 12
+OUTPUT best
+best = better(best, 9)
+OUTPUT best
 ```
 
-Affichage : `100`, `0` (local), `100` (main intact).
-
-Autre piste : passer la valeur en paramètre **sans** réassigner une globale du même nom, ou faire renvoyer une nouvelle valeur par une `FUNCTION` que le main choisit d'affecter ou non.
+Affichage : `12`, `12`.  
+Avec `CALL`-style procédure, il faudrait au minimum `IF score > best THEN best = score` **et** une discipline claire sur qui possède `best` (idéalement le main seulement).
 
 </details>
 

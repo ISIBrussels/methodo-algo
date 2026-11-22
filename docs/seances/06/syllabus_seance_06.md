@@ -278,31 +278,31 @@ Questions pour tester la compréhension du contenu de la séance.
 
 ## Exercice 6.A : FUNCTION ou PROCEDURE ?
 
-Classer trois blocs : `FUNCTION` ou `PROCEDURE` ? Justifier en une phrase.
+Classer trois blocs inédits (prix TTC, signal répété, lettre de score).
 
 [Exercices](exercices_seance_06.html) § 6.A
 
-## Exercice 6.B : `maxOf`
+## Exercice 6.B : `clamp`
 
-Écrire `FUNCTION maxOf(a, b) RETURN …` puis tracer un appel.
+Borner `x` dans `[lo, hi]` : écrire `FUNCTION clamp` et tracer trois appels.
 
 [Exercices](exercices_seance_06.html) § 6.B
 
-## Exercice 6.C : `average`
+## Exercice 6.C : `factorial`
 
-Écrire `average(values, n)` et l'appeler depuis un main qui affiche le résultat.
+Écrire `factorial(n)` (`n >= 0`) avec une boucle, puis un main qui lit `n` et affiche `n!`.
 
 [Exercices](exercices_seance_06.html) § 6.C
 
-## Exercice 6.D : `countAbove`
+## Exercice 6.D : `digitSum`
 
-Écrire `countAbove(values, n, limit)` (strictement au-dessus de `limit`).
+Somme des chiffres d’un entier (`DIV` / `MOD`), sans tableau.
 
 [Exercices](exercices_seance_06.html) § 6.D
 
-## Exercice 6.E : Bug de *scope*
+## Exercice 6.E : Bug de *scope* (`best`)
 
-Corriger un extrait où une procédure écrase une variable du main.
+Corriger une procédure qui écrase le meilleur score du main.
 
 [Exercices](exercices_seance_06.html) § 6.E
 
