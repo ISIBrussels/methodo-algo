@@ -346,6 +346,63 @@ Questions pour tester la compréhension du contenu de la séance.
 
 [Quiz](quiz_seance_05.html)
 
+## Exercice 5.A : Parcours sélectif (indices pairs)
+
+Tableau `temps[0..N-1]`. Afficher **uniquement** les valeurs d’indices **pairs**.
+
+Données de trace : `N = 5`, `temps = [18, 21, 19, 22, 20]`.
+
+1. Quelles valeurs affichées, dans quel ordre ?
+2. Écrire le *pseudocode* (`STEP` ou test sur `i`).
+
+[Exercices](exercices_seance_05.html) § 5.A
+
+## Exercice 5.B : Somme des positifs seulement
+
+Tableau `deltas[0..N-1]`. Sommer les valeurs **strictement positives** seulement.
+
+Données de trace : `N = 6`, `deltas = [3, -2, 5, 0, -1, 4]`.
+
+1. *Trace table* (`i`, `deltas[i]`, test, `sum`).
+2. Écrire le *pseudocode*.
+
+[Exercices](exercices_seance_05.html) § 5.B
+
+## Exercice 5.C : Index du minimum
+
+Tableau `scores[0..N-1]`. Indice de la **plus petite** valeur (garder le **premier** en cas d’égalité).
+
+Données de trace : `N = 5`, `scores = [7, 3, 9, 3, 5]`.
+
+1. *Trace table* (init + boucle dès `i = 1`).
+2. *Pseudocode* avec `minIndex`.
+3. Effet de `<=` au lieu de `<` ?
+
+[Exercices](exercices_seance_05.html) § 5.C
+
+## Exercice 5.D : Compter dans un intervalle
+
+Tableau `marks[0..N-1]`, bornes `low` et `high`. Compter les notes dans `[low, high]` (inclus).
+
+Données de trace : `N = 6`, `marks = [8, 12, 15, 9, 11, 14]`, `low = 10`, `high = 14`.
+
+1. Valeur finale de `count` ?
+2. *Pseudocode*.
+3. *Edge :* `N = 0` ?
+
+[Exercices](exercices_seance_05.html) § 5.D
+
+## Exercice 5.E : Copie filtrée
+
+Copier de `src` vers `dst` les valeurs **`< threshold`**, tassées dès l’indice `0`. Remplir le reste de `dst` avec `0`. Afficher `k`.
+
+Données de trace : `N = 5`, `src = [4, 9, 2, 7, 1]`, `threshold = 5`.
+
+1. `dst` final et `k` ?
+2. *Pseudocode* (indices `i` et `k`).
+
+[Exercices](exercices_seance_05.html) § 5.E
+
 <nav class="page-nav">
   <a href="../../index.html">Accueil</a>
   <a href="cours_seance_05.html">Slides</a>
