@@ -12,8 +12,13 @@
         --color-text: #212121;
         --color-border: #e0e0e0;
         --color-row-alt: #f5f5f5;
+        --color-error: #f23646;
       }
-      * { box-sizing: border-box; }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         max-width: 920px;
         margin: 0 auto;
@@ -23,6 +28,7 @@
         color: var(--color-text);
         background: var(--color-bg);
       }
+
       h1 {
         margin: 0 0 1.25rem;
         font-size: 1.85rem;
@@ -31,19 +37,31 @@
         padding-bottom: 0.6rem;
         border-bottom: 2px solid var(--color-primary);
       }
+
       h2 {
-        margin: 2rem 0 0.75rem;
-        font-size: 1.15rem;
+        margin: 0 0 0.75rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--color-secondary);
       }
-      p { margin: 0 0 1rem; color: var(--color-secondary); }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
       .page-nav {
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
-        margin: 1.25rem 0 1.75rem;
+        margin: 0 0 1.25rem;
       }
+
       .page-nav a {
         display: inline-block;
         padding: 0.3rem 0.7rem;
@@ -51,18 +69,147 @@
         font-weight: 600;
         color: var(--color-primary);
         text-decoration: none;
+        background: transparent;
         border: 1px solid var(--color-primary);
       }
+
       .page-nav a:hover {
         background: var(--color-primary);
         color: #ffffff;
+        text-decoration: none;
       }
-      .placeholder {
-        background: var(--color-row-alt);
+
+      .progress {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        color: var(--color-secondary);
+      }
+
+      .question {
         border: 1px solid var(--color-border);
-        padding: 1.25rem 1.5rem;
-        margin: 1.5rem 0;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: var(--color-bg);
       }
+
+      .answers {
+        display: grid;
+        gap: 0;
+        margin: 1rem 0 0;
+        border: 1px solid var(--color-border);
+      }
+
+      .answers label {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+        cursor: pointer;
+      }
+
+      .answers label:last-child {
+        border-bottom: none;
+      }
+
+      .answers label:nth-child(even) {
+        background: var(--color-row-alt);
+      }
+
+      .answers label.correct {
+        background: var(--color-row-alt);
+        color: var(--color-primary);
+      }
+
+      .answers label.wrong {
+        color: var(--color-error);
+        text-decoration: line-through;
+      }
+
+      .answers label.checked-mode {
+        cursor: default;
+      }
+
+
+      .option-letter {
+        font-weight: 600;
+      }
+      .option-tag {
+        display: inline-block;
+        margin-left: 0.35rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-secondary);
+      }
+
+      button {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid var(--color-primary);
+        background: transparent;
+        color: var(--color-primary);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        background: var(--color-primary);
+        color: #ffffff;
+      }
+
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1.25rem;
+      }
+
+      #reset-btn {
+        margin-left: auto;
+      }
+
+      .result {
+        font-weight: 600;
+        margin-top: 1rem;
+      }
+
+      .ok {
+        color: var(--color-primary);
+      }
+
+      .ko {
+        color: var(--color-error);
+      }
+
+      .muted {
+        color: var(--color-secondary);
+      }
+
+      .question-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .status {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.88em;
+        background: var(--color-row-alt);
+        color: var(--color-secondary);
+        padding: 0.1em 0.35em;
+      }
+
+      em {
+        font-style: italic;
+      }
+
       .site-footer {
         margin-top: 2.5rem;
         padding-top: 1rem;
@@ -71,11 +218,16 @@
         font-size: 0.9rem;
         color: var(--color-secondary);
       }
+
       .site-footer a {
         color: var(--color-secondary);
         text-decoration: underline;
+        font-weight: 400;
       }
-      .site-footer a:hover { color: var(--color-primary); }
+
+      .site-footer a:hover {
+        color: var(--color-primary);
+      }
     </style>
   </head>
   <body>
@@ -87,11 +239,359 @@
       <a href="exercices_seance_07.html">Exercices</a>
       <a href="../../index.html">Accueil</a>
     </nav>
-    <div class="placeholder">
-      Coming soon...
+    <p class="muted">10 questions sur le cours de la séance 7.</p>
+    <p class="progress" id="progress"></p>
+    <div id="quiz"></div>
+
+    <div class="actions">
+      <button id="check-btn" type="button">Valider les réponses</button>
+      <button id="reset-btn" type="button">Réinitialiser</button>
     </div>
-    <footer class="site-footer">
-      <a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a>
-    </footer>
+    <p class="status" id="status" aria-live="polite"></p>
+    <div id="summary" class="result" aria-live="polite"></div>
+
+    <script>
+      const storageKey = "quiz_seance_07_answers_v1";
+      const checkedKey = "quiz_seance_07_checked_v1";
+
+      const questions = [
+        {
+          id: "q1",
+          text: "En pseudocode du cours, une variable de type <code>STRING</code> contient…",
+          options: [
+            "uniquement un entier entre guillemets",
+            "une suite ordonnée de caractères (éventuellement vide)",
+            "uniquement un seul caractère, jamais plus",
+            "un tableau d'entiers indexé à partir de 1",
+          ],
+          correct: 1,
+          feedback: "Une chaîne est une suite ordonnée de caractères. <code>\"\"</code> est valide (longueur 0). Un caractère isolé est juste une chaîne de longueur 1.",
+        },
+        {
+          id: "q2",
+          text: "Pour <code>word = \"robot\"</code>, que vaut <code>LENGTH(word)</code> ?",
+          options: [
+            "4",
+            "5",
+            "6",
+            "0",
+          ],
+          correct: 1,
+          feedback: "<code>r o b o t</code> : cinq caractères. <code>LENGTH</code> compte les caractères, pas les indices « utiles » exclusifs.",
+        },
+        {
+          id: "q3",
+          text: "Avec <code>text = \"code\"</code> (<code>n = 4</code>), que vaut <code>text[2]</code> ?",
+          options: [
+            "<code>\"c\"</code>",
+            "<code>\"o\"</code>",
+            "<code>\"d\"</code>",
+            "<code>\"e\"</code>",
+          ],
+          correct: 2,
+          feedback: "Indices 0-based : <code>0→c</code>, <code>1→o</code>, <code>2→d</code>, <code>3→e</code>. L'indice 2 est le contenu, pas le chiffre « 2 ».",
+        },
+        {
+          id: "q4",
+          text: "Si <code>n = LENGTH(text)</code> et <code>n ≥ 1</code>, le dernier caractère valide est…",
+          options: [
+            "<code>text[n]</code>",
+            "<code>text[n - 1]</code>",
+            "<code>text[0]</code> uniquement",
+            "<code>text[n + 1]</code>",
+          ],
+          correct: 1,
+          feedback: "Comme pour un tableau S5 : indices de <code>0</code> à <code>n - 1</code>. <code>text[n]</code> est hors bornes.",
+        },
+        {
+          id: "q5",
+          text: "Pour parcourir chaque caractère de <code>text</code> une fois, on écrit typiquement…",
+          options: [
+            "<code>FOR i = 0 TO n</code>",
+            "<code>FOR i = 1 TO n</code>",
+            "<code>FOR i = 0 TO n - 1</code>",
+            "<code>FOR i = n TO 0</code> sans <code>STEP</code>",
+          ],
+          correct: 2,
+          feedback: "Après <code>n = LENGTH(text)</code>, la plage inclusive est <code>0 .. n - 1</code>. <code>TO n</code> tente <code>text[n]</code> (*index out of bounds*).",
+        },
+        {
+          id: "q6",
+          text: "Avec <code>text = \"pepper\"</code> et <code>target = \"p\"</code>, un compteur correctement initialisé puis incrémenté à chaque égalité donne…",
+          options: [
+            "2",
+            "3",
+            "4",
+            "6",
+          ],
+          correct: 1,
+          feedback: "Positions des <code>p</code> : indices 0, 2 et 3 → trois occurrences. Pattern : <code>count = 0</code>, puis <code>IF text[i] = target</code>.",
+        },
+        {
+          id: "q7",
+          text: "Après <code>msg = \"Hi\" + \", \" + \"Bob\"</code>, la valeur de <code>msg</code> est…",
+          options: [
+            "<code>\"HiBob\"</code>",
+            "<code>\"Hi, Bob\"</code>",
+            "<code>\"Bob, Hi\"</code>",
+            "<code>\"Hi ,Bob\"</code>",
+          ],
+          correct: 1,
+          feedback: "La concaténation <code>+</code> colle les morceaux dans l'ordre écrit, espaces et virgule inclus dans le littéral du milieu.",
+        },
+        {
+          id: "q8",
+          text: "Pour construire une nouvelle chaîne caractère par caractère, on part en général de…",
+          options: [
+            "<code>result = text[0]</code> sans boucle",
+            "<code>result = \"\"</code>, puis <code>result = result + …</code> dans la boucle",
+            "<code>result = LENGTH(text)</code>",
+            "<code>result = NULL</code> puis on remplace à chaque tour",
+          ],
+          correct: 1,
+          feedback: "Accumulateur texte : chaîne vide au départ, puis ajout à la fin. Même idée que <code>sum = 0</code> pour une somme.",
+        },
+        {
+          id: "q9",
+          text: "Pour tester si <code>text</code> est un palindrome avec deux pointeurs, on compare typiquement…",
+          options: [
+            "<code>text[0]</code> à <code>text[1]</code> seulement",
+            "<code>text[left]</code> à <code>text[right]</code> en avançant <code>left</code> et en reculant <code>right</code>",
+            "uniquement <code>LENGTH(text)</code> à <code>0</code>",
+            "<code>text</code> à <code>\"\"</code> sans parcours",
+          ],
+          correct: 1,
+          feedback: "<code>left = 0</code>, <code>right = n - 1</code>, puis tant que <code>left &lt; right</code> on compare les bouts. Dès qu'une paire diffère → pas palindrome.",
+        },
+        {
+          id: "q10",
+          text: "Avec l'algo à deux pointeurs, pour <code>text = \"rotor\"</code> le résultat est…",
+          options: [
+            "FALSE, car la longueur est impaire",
+            "TRUE : les paires de bouts coïncident jusqu'au centre",
+            "FALSE, car <code>\"r\"</code> ≠ <code>\"t\"</code> au milieu",
+            "indéfini : une chaîne de longueur 5 ne peut pas être palindrome",
+          ],
+          correct: 1,
+          feedback: "<code>r=r</code>, puis <code>o=o</code>, puis <code>left = right</code> sur le <code>t</code> central : on s'arrête, <code>isPal</code> reste TRUE. Une longueur impaire n'empêche pas un palindrome.",
+        },
+      ];
+
+      const quizEl = document.getElementById("quiz");
+      const progressEl = document.getElementById("progress");
+      const statusEl = document.getElementById("status");
+      const summaryEl = document.getElementById("summary");
+      const checkBtn = document.getElementById("check-btn");
+      const resetBtn = document.getElementById("reset-btn");
+
+      let checked = false;
+      const answers = {};
+
+      /** Display order = shuffled source indices; letters A–D stay positional. */
+      const optionOrder = {};
+
+      function shuffleInPlace(arr) {
+        for (let i = arr.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+        }
+        return arr;
+      }
+
+      /** Shuffle source indices; display letters A–D are always positional. */
+      function orderedOptions(question) {
+        if (!optionOrder[question.id]) {
+          optionOrder[question.id] = shuffleInPlace(
+            question.options.map((_, index) => index)
+          );
+        }
+        return optionOrder[question.id].map((sourceIndex, i) => {
+          const letter = String.fromCharCode(65 + i);
+          return {
+            letter,
+            value: letter,
+            label: question.options[sourceIndex],
+            isCorrect: sourceIndex === question.correct,
+          };
+        });
+      }
+
+      function correctLetter(question) {
+        const shown = orderedOptions(question);
+        const hit = shown.find((option) => option.isCorrect);
+        return hit ? hit.value : null;
+      }
+
+      function reshuffleOptions() {
+        for (const key of Object.keys(optionOrder)) {
+          delete optionOrder[key];
+        }
+      }
+
+      function loadState() {
+        const rawAnswers = localStorage.getItem(storageKey);
+        const rawChecked = localStorage.getItem(checkedKey);
+
+        if (rawAnswers) {
+          try {
+            Object.assign(answers, JSON.parse(rawAnswers));
+          } catch {
+            localStorage.removeItem(storageKey);
+          }
+        }
+
+        checked = rawChecked === "1";
+      }
+
+      function saveState() {
+        localStorage.setItem(storageKey, JSON.stringify(answers));
+        localStorage.setItem(checkedKey, checked ? "1" : "0");
+      }
+
+      function answeredCount() {
+        return questions.filter((question) => answers[question.id]).length;
+      }
+
+      function updateProgress() {
+        progressEl.textContent = `${answeredCount()} / ${questions.length} réponse(s) cochée(s)`;
+      }
+
+      function renderQuiz() {
+        quizEl.innerHTML = questions
+          .map((question, index) => {
+            const selected = answers[question.id] || null;
+            let feedbackHtml = "";
+
+            if (checked) {
+              const isCorrect = selected === correctLetter(question);
+              const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
+              const verdictText = !selected
+                ? "Non répondue."
+                : isCorrect
+                  ? `Correct. ${question.feedback}`
+                  : `Incorrect. ${question.feedback}`;
+              feedbackHtml = `<p class="question-feedback ${verdictClass}">${verdictText}</p>`;
+            }
+
+            const optionsHtml = orderedOptions(question)
+              .map((option) => {
+                const isCorrect = option.isCorrect;
+                const isChosen = option.value === selected;
+                const classes = [];
+                if (checked) classes.push("checked-mode");
+                if (checked && isCorrect) classes.push("correct");
+                if (checked && isChosen && !isCorrect) classes.push("wrong");
+
+                let tag = "";
+                if (checked && isCorrect) tag = '<span class="option-tag">bonne réponse</span>';
+                else if (checked && isChosen) tag = '<span class="option-tag">réponse sélectionnée</span>';
+
+                return `
+                  <label class="${classes.join(" ")}">
+                    <input
+                      type="radio"
+                      name="${question.id}"
+                      value="${option.value}"
+                      data-correct="${option.isCorrect ? "1" : "0"}"
+                      ${selected === option.value ? "checked" : ""}
+                      ${checked ? "disabled" : ""}
+                    />
+                    <span class="option-letter">${option.letter}.</span> ${option.label}${tag}
+                  </label>
+                `;
+              })
+              .join("");
+
+            return `
+              <section class="question" data-question-id="${question.id}">
+                <h2>Question ${index + 1}</h2>
+                <p><strong>${question.text}</strong></p>
+                <div class="answers">${optionsHtml}</div>
+                ${feedbackHtml}
+              </section>
+            `;
+          })
+          .join("");
+
+        if (!checked) {
+          quizEl.querySelectorAll('input[type="radio"]').forEach((input) => {
+            input.addEventListener("change", () => {
+              answers[input.name] = input.value;
+              statusEl.textContent = "";
+              statusEl.className = "status";
+              summaryEl.innerHTML = "";
+              summaryEl.className = "result";
+              saveState();
+              updateProgress();
+            });
+          });
+        }
+
+        checkBtn.hidden = checked;
+        updateProgress();
+
+        if (checked) {
+          renderSummary();
+        } else {
+          summaryEl.innerHTML = "";
+          summaryEl.className = "result";
+        }
+      }
+
+      function renderSummary() {
+        let score = 0;
+        questions.forEach((question) => {
+          if (answers[question.id] === correctLetter(question)) score += 1;
+        });
+
+        summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;
+        summaryEl.className = "result";
+      }
+
+      function checkAll() {
+        const unanswered = questions.filter((question) => !answers[question.id]);
+        if (unanswered.length > 0) {
+          statusEl.textContent = `Il reste ${unanswered.length} question(s) sans réponse.`;
+          statusEl.className = "status ko";
+          const firstMissing = quizEl.querySelector(
+            `[data-question-id="${unanswered[0].id}"]`
+          );
+          if (firstMissing) firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        checked = true;
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        saveState();
+        renderQuiz();
+        summaryEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function resetQuiz() {
+        for (const key of Object.keys(answers)) {
+          delete answers[key];
+        }
+        reshuffleOptions();
+        checked = false;
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(checkedKey);
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        summaryEl.innerHTML = "";
+        summaryEl.className = "result";
+        renderQuiz();
+      }
+
+      checkBtn.addEventListener("click", checkAll);
+      resetBtn.addEventListener("click", resetQuiz);
+
+      loadState();
+      renderQuiz();
+    </script>
+
+    <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>
   </body>
 </html>
