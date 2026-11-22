@@ -251,8 +251,8 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_05_answers_v3";
-      const checkedKey = "quiz_seance_05_checked_v3";
+      const storageKey = "quiz_seance_05_answers_v4";
+      const checkedKey = "quiz_seance_05_checked_v4";
 
       const questions = [
         {
@@ -269,15 +269,15 @@
         },
         {
           id: "q2",
-          text: "Pour le tableau <code>[12, 7, 15, 9, 11]</code> (indices 0..4), que vaut <code>values[2]</code> ?",
+          text: "Avec <code>data = [6, 14, 8, 14, 3]</code>, que vaut <code>data[data[0] - 3]</code> ?",
           options: [
-            "2",
-            "7",
-            "15",
-            "11",
+            "6",
+            "8",
+            "14",
+            "3",
           ],
           correct: 2,
-          feedback: "L'indice 2 désigne la troisième case : contenu <code>15</code>. Ne pas confondre indice et valeur.",
+          feedback: "<code>data[0] = 6</code>, donc l'indice demandé est <code>6 - 3 = 3</code>. Puis <code>data[3] = 14</code>. L'indice n'est pas la valeur lue.",
         },
         {
           id: "q3",
@@ -329,15 +329,15 @@
         },
         {
           id: "q7",
-          text: "Avec <code>values = [4, 9, 2, 9, 5]</code> et un test strict <code>&gt;</code> (garder le premier max), <code>maxIndex</code> final vaut…",
+          text: "Avec <code>values = [5, 2, 8, 8, 1]</code> et un test strict <code>&gt;</code> (garder le premier max), <code>maxIndex</code> final vaut…",
           options: [
             "0",
-            "1",
+            "2",
             "3",
             "4",
           ],
           correct: 1,
-          feedback: "Le premier 9 est à l'indice 1. Le second 9 (indice 3) n'est pas strictement plus grand, donc <code>maxIndex</code> reste 1.",
+          feedback: "Init <code>maxIndex = 0</code>. À <code>i = 2</code>, <code>8 &gt; 5</code> → <code>maxIndex = 2</code>. À <code>i = 3</code>, <code>8 &gt; 8</code> est faux : on garde le premier max (indice 2).",
         },
         {
           id: "q8",

@@ -12,8 +12,13 @@
         --color-text: #212121;
         --color-border: #e0e0e0;
         --color-row-alt: #f5f5f5;
+        --color-error: #f23646;
       }
-      * { box-sizing: border-box; }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
         max-width: 920px;
         margin: 0 auto;
@@ -23,6 +28,7 @@
         color: var(--color-text);
         background: var(--color-bg);
       }
+
       h1 {
         margin: 0 0 1.25rem;
         font-size: 1.85rem;
@@ -31,19 +37,31 @@
         padding-bottom: 0.6rem;
         border-bottom: 2px solid var(--color-primary);
       }
+
       h2 {
-        margin: 2rem 0 0.75rem;
-        font-size: 1.15rem;
+        margin: 0 0 0.75rem;
+        font-size: 1.2rem;
         font-weight: 600;
         color: var(--color-secondary);
       }
-      p { margin: 0 0 1rem; color: var(--color-secondary); }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
       .page-nav {
         display: flex;
         gap: 0.75rem;
         flex-wrap: wrap;
-        margin: 1.25rem 0 1.75rem;
+        margin: 0 0 1.25rem;
       }
+
       .page-nav a {
         display: inline-block;
         padding: 0.3rem 0.7rem;
@@ -51,18 +69,147 @@
         font-weight: 600;
         color: var(--color-primary);
         text-decoration: none;
+        background: transparent;
         border: 1px solid var(--color-primary);
       }
+
       .page-nav a:hover {
         background: var(--color-primary);
         color: #ffffff;
+        text-decoration: none;
       }
-      .placeholder {
-        background: var(--color-row-alt);
+
+      .progress {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        color: var(--color-secondary);
+      }
+
+      .question {
         border: 1px solid var(--color-border);
-        padding: 1.25rem 1.5rem;
-        margin: 1.5rem 0;
+        padding: 1rem;
+        margin-top: 1rem;
+        background: var(--color-bg);
       }
+
+      .answers {
+        display: grid;
+        gap: 0;
+        margin: 1rem 0 0;
+        border: 1px solid var(--color-border);
+      }
+
+      .answers label {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-border);
+        cursor: pointer;
+      }
+
+      .answers label:last-child {
+        border-bottom: none;
+      }
+
+      .answers label:nth-child(even) {
+        background: var(--color-row-alt);
+      }
+
+      .answers label.correct {
+        background: var(--color-row-alt);
+        color: var(--color-primary);
+      }
+
+      .answers label.wrong {
+        color: var(--color-error);
+        text-decoration: line-through;
+      }
+
+      .answers label.checked-mode {
+        cursor: default;
+      }
+
+
+      .option-letter {
+        font-weight: 600;
+      }
+      .option-tag {
+        display: inline-block;
+        margin-left: 0.35rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-secondary);
+      }
+
+      button {
+        padding: 0.6rem 0.9rem;
+        border: 1px solid var(--color-primary);
+        background: transparent;
+        color: var(--color-primary);
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      button:hover:not(:disabled) {
+        background: var(--color-primary);
+        color: #ffffff;
+      }
+
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1.25rem;
+      }
+
+      #reset-btn {
+        margin-left: auto;
+      }
+
+      .result {
+        font-weight: 600;
+        margin-top: 1rem;
+      }
+
+      .ok {
+        color: var(--color-primary);
+      }
+
+      .ko {
+        color: var(--color-error);
+      }
+
+      .muted {
+        color: var(--color-secondary);
+      }
+
+      .question-feedback {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .status {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.88em;
+        background: var(--color-row-alt);
+        color: var(--color-secondary);
+        padding: 0.1em 0.35em;
+      }
+
+      em {
+        font-style: italic;
+      }
+
       .site-footer {
         margin-top: 2.5rem;
         padding-top: 1rem;
@@ -71,11 +218,16 @@
         font-size: 0.9rem;
         color: var(--color-secondary);
       }
+
       .site-footer a {
         color: var(--color-secondary);
         text-decoration: underline;
+        font-weight: 400;
       }
-      .site-footer a:hover { color: var(--color-primary); }
+
+      .site-footer a:hover {
+        color: var(--color-primary);
+      }
     </style>
   </head>
   <body>
@@ -87,11 +239,359 @@
       <a href="exercices_seance_06.html">Exercices</a>
       <a href="../../index.html">Accueil</a>
     </nav>
-    <div class="placeholder">
-      Coming soon...
+    <p class="muted">10 questions sur le cours de la séance 6.</p>
+    <p class="progress" id="progress"></p>
+    <div id="quiz"></div>
+
+    <div class="actions">
+      <button id="check-btn" type="button">Valider les réponses</button>
+      <button id="reset-btn" type="button">Réinitialiser</button>
     </div>
-    <footer class="site-footer">
-      <a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a>
-    </footer>
+    <p class="status" id="status" aria-live="polite"></p>
+    <div id="summary" class="result" aria-live="polite"></div>
+
+    <script>
+      const storageKey = "quiz_seance_06_answers_v1";
+      const checkedKey = "quiz_seance_06_checked_v1";
+
+      const questions = [
+        {
+          id: "q1",
+          text: "Un sous-programme qui calcule une valeur et la rend au programme appelant doit être…",
+          options: [
+            "une <code>PROCEDURE</code> sans <code>RETURN</code>",
+            "une <code>FUNCTION</code> avec <code>RETURN</code>",
+            "uniquement un bloc dans le main, jamais un sous-programme",
+            "une <code>PROCEDURE</code> appelée à droite d'un <code>=</code>",
+          ],
+          correct: 1,
+          feedback: "Besoin d'une valeur → <code>FUNCTION</code> + <code>RETURN</code>. Une <code>PROCEDURE</code> produit un effet (afficher, remplir…), pas une valeur récupérable.",
+        },
+        {
+          id: "q2",
+          text: "Pour lancer une <code>PROCEDURE</code> nommée <code>reportLine</code>, on écrit typiquement…",
+          options: [
+            "<code>line = reportLine(\"ok\")</code>",
+            "<code>RETURN reportLine</code>",
+            "<code>CALL reportLine(\"ok\")</code>",
+            "<code>FUNCTION reportLine(\"ok\")</code>",
+          ],
+          correct: 2,
+          feedback: "Les procédures s'appellent avec <code>CALL</code>. Les écrire à droite d'un <code>=</code> est incorrect (pas de valeur de retour).",
+        },
+        {
+          id: "q3",
+          text: "Dans <code>FUNCTION cube(n : INTEGER) : INTEGER</code> appelé par <code>y = cube(4)</code>, le terme <code>4</code> est…",
+          options: [
+            "un paramètre (nom dans la définition)",
+            "un argument (valeur fournie à l'appel)",
+            "une variable locale du main nommée <code>n</code>",
+            "le type de retour de la fonction",
+          ],
+          correct: 1,
+          feedback: "Paramètre = nom dans la définition (<code>n</code>). Argument = valeur à l'appel (<code>4</code>). À l'entrée, <code>n</code> reçoit <code>4</code>.",
+        },
+        {
+          id: "q4",
+          text: "Parmi ces usages, lequel est correct pour une <code>FUNCTION</code> <code>area(w, h)</code> qui renvoie un entier ?",
+          options: [
+            "<code>CALL area(3, 5)</code> puis lire une globale <code>result</code> obligatoire",
+            "<code>area = 3, 5</code> sans parenthèses",
+            "<code>IF area(3, 5) &gt; 10 THEN …</code>",
+            "<code>PROCEDURE area(3, 5)</code> à la place de l'appel",
+          ],
+          correct: 2,
+          feedback: "Une fonction s'utilise comme une valeur : affectation, <code>OUTPUT</code>, ou test dans un <code>IF</code>. Pas besoin d'une globale « magique » pour récupérer le résultat.",
+        },
+        {
+          id: "q5",
+          text: "Après <code>y = double(6)</code> où <code>double</code> déclare une locale <code>temp</code>, le main peut-il lire <code>temp</code> ?",
+          options: [
+            "oui, dès que <code>RETURN</code> a eu lieu",
+            "oui, si on a écrit <code>CALL double(6)</code>",
+            "non : <code>temp</code> n'existe que pendant l'exécution de <code>double</code>",
+            "oui, car toute variable est globale par défaut",
+          ],
+          correct: 2,
+          feedback: "Portée (*scope*) locale : une variable déclarée dans la fonction disparaît après le retour. Le main ne récupère que la valeur renvoyée (<code>y</code>), pas les locales internes.",
+        },
+        {
+          id: "q6",
+          text: "Risque typique si une <code>PROCEDURE</code> écrit dans une variable aussi utilisée par le main, sans la passer en paramètre ?",
+          options: [
+            "aucun : les procédures ne peuvent jamais modifier de données",
+            "elle peut écraser la globale du main sans que l'appel le rende évident",
+            "le compilateur refuse toujours toute variable hors de la procédure",
+            "seul <code>RETURN</code> peut modifier le main",
+          ],
+          correct: 1,
+          feedback: "Piège des globales : une procédure peut modifier une variable du main « en silence ». Préférer paramètres + retour (ou paramètres explicites) pour rendre les dépendances visibles.",
+        },
+        {
+          id: "q7",
+          text: "Pour une fonction qui parcourt <code>values[0..n-1]</code>, pourquoi passer aussi <code>n</code> en paramètre ?",
+          options: [
+            "parce que <code>n</code> remplace les indices (on n'utilise plus <code>i</code>)",
+            "parce que la taille utile n'est pas forcément déduite du seul nom du tableau en pseudocode du cours",
+            "parce que <code>n</code> doit toujours valoir <code>values[0]</code>",
+            "parce qu'une fonction ne peut recevoir qu'un seul paramètre tableau",
+          ],
+          correct: 1,
+          feedback: "En pseudocode du cours, on passe le tableau <em>et</em> sa taille <code>n</code> pour borner le <code>FOR</code> (<code>0 .. n - 1</code>). Le main fournit les deux à l'appel.",
+        },
+        {
+          id: "q8",
+          text: "Soit <code>FUNCTION absDiff(a, b)</code> qui renvoie <code>a - b</code> si <code>a &gt;= b</code>, sinon <code>b - a</code>. Que vaut <code>absDiff(4, 11)</code> ?",
+          options: [
+            "4",
+            "7",
+            "11",
+            "-7",
+          ],
+          correct: 1,
+          feedback: "<code>4 &gt;= 11</code> est faux → on renvoie <code>11 - 4 = 7</code>. Trace d'appel : lier les arguments, exécuter le corps, <code>RETURN</code>, reprendre dans le main.",
+        },
+        {
+          id: "q9",
+          text: "Dans une conception modulaire typique, le rôle principal du <em>main program</em> est…",
+          options: [
+            "recopier le corps de chaque sous-programme à chaque besoin",
+            "orchestrer : lire les données, appeler les sous-programmes, afficher",
+            "déclarer toutes les variables comme globales modifiées partout",
+            "interdire tout <code>CALL</code> pour rester « simple »",
+          ],
+          correct: 1,
+          feedback: "Le main orchestre. Les détails (calcul, parcours, affichage dédié) vont dans des <code>FUNCTION</code> / <code>PROCEDURE</code> réutilisables.",
+        },
+        {
+          id: "q10",
+          text: "On a <code>FUNCTION avg3(a, b, c) : REAL</code> qui renvoie <code>(a + b + c) / 3</code>. Quel appel est cohérent ?",
+          options: [
+            "<code>CALL avg3(2, 4, 6)</code> puis afficher une locale de <code>avg3</code> depuis le main",
+            "<code>mean = avg3(2, 4, 6)</code> puis <code>OUTPUT mean</code>",
+            "<code>avg3 = 2 + 4 + 6</code> sans appeler la fonction",
+            "<code>PROCEDURE avg3(2, 4, 6)</code> à la place de la définition",
+          ],
+          correct: 1,
+          feedback: "On récupère le retour par affectation (ou directement dans <code>OUTPUT</code> / un test). On ne lit pas les locales internes de la fonction depuis le main.",
+        },
+      ];
+
+      const quizEl = document.getElementById("quiz");
+      const progressEl = document.getElementById("progress");
+      const statusEl = document.getElementById("status");
+      const summaryEl = document.getElementById("summary");
+      const checkBtn = document.getElementById("check-btn");
+      const resetBtn = document.getElementById("reset-btn");
+
+      let checked = false;
+      const answers = {};
+
+      /** Display order = shuffled source indices; letters A–D stay positional. */
+      const optionOrder = {};
+
+      function shuffleInPlace(arr) {
+        for (let i = arr.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = tmp;
+        }
+        return arr;
+      }
+
+      /** Shuffle source indices; display letters A–D are always positional. */
+      function orderedOptions(question) {
+        if (!optionOrder[question.id]) {
+          optionOrder[question.id] = shuffleInPlace(
+            question.options.map((_, index) => index)
+          );
+        }
+        return optionOrder[question.id].map((sourceIndex, i) => {
+          const letter = String.fromCharCode(65 + i);
+          return {
+            letter,
+            value: letter,
+            label: question.options[sourceIndex],
+            isCorrect: sourceIndex === question.correct,
+          };
+        });
+      }
+
+      function correctLetter(question) {
+        const shown = orderedOptions(question);
+        const hit = shown.find((option) => option.isCorrect);
+        return hit ? hit.value : null;
+      }
+
+      function reshuffleOptions() {
+        for (const key of Object.keys(optionOrder)) {
+          delete optionOrder[key];
+        }
+      }
+
+      function loadState() {
+        const rawAnswers = localStorage.getItem(storageKey);
+        const rawChecked = localStorage.getItem(checkedKey);
+
+        if (rawAnswers) {
+          try {
+            Object.assign(answers, JSON.parse(rawAnswers));
+          } catch {
+            localStorage.removeItem(storageKey);
+          }
+        }
+
+        checked = rawChecked === "1";
+      }
+
+      function saveState() {
+        localStorage.setItem(storageKey, JSON.stringify(answers));
+        localStorage.setItem(checkedKey, checked ? "1" : "0");
+      }
+
+      function answeredCount() {
+        return questions.filter((question) => answers[question.id]).length;
+      }
+
+      function updateProgress() {
+        progressEl.textContent = `${answeredCount()} / ${questions.length} réponse(s) cochée(s)`;
+      }
+
+      function renderQuiz() {
+        quizEl.innerHTML = questions
+          .map((question, index) => {
+            const selected = answers[question.id] || null;
+            let feedbackHtml = "";
+
+            if (checked) {
+              const isCorrect = selected === correctLetter(question);
+              const verdictClass = !selected ? "ko" : isCorrect ? "ok" : "ko";
+              const verdictText = !selected
+                ? "Non répondue."
+                : isCorrect
+                  ? `Correct. ${question.feedback}`
+                  : `Incorrect. ${question.feedback}`;
+              feedbackHtml = `<p class="question-feedback ${verdictClass}">${verdictText}</p>`;
+            }
+
+            const optionsHtml = orderedOptions(question)
+              .map((option) => {
+                const isCorrect = option.isCorrect;
+                const isChosen = option.value === selected;
+                const classes = [];
+                if (checked) classes.push("checked-mode");
+                if (checked && isCorrect) classes.push("correct");
+                if (checked && isChosen && !isCorrect) classes.push("wrong");
+
+                let tag = "";
+                if (checked && isCorrect) tag = '<span class="option-tag">bonne réponse</span>';
+                else if (checked && isChosen) tag = '<span class="option-tag">réponse sélectionnée</span>';
+
+                return `
+                  <label class="${classes.join(" ")}">
+                    <input
+                      type="radio"
+                      name="${question.id}"
+                      value="${option.value}"
+                      data-correct="${option.isCorrect ? "1" : "0"}"
+                      ${selected === option.value ? "checked" : ""}
+                      ${checked ? "disabled" : ""}
+                    />
+                    <span class="option-letter">${option.letter}.</span> ${option.label}${tag}
+                  </label>
+                `;
+              })
+              .join("");
+
+            return `
+              <section class="question" data-question-id="${question.id}">
+                <h2>Question ${index + 1}</h2>
+                <p><strong>${question.text}</strong></p>
+                <div class="answers">${optionsHtml}</div>
+                ${feedbackHtml}
+              </section>
+            `;
+          })
+          .join("");
+
+        if (!checked) {
+          quizEl.querySelectorAll('input[type="radio"]').forEach((input) => {
+            input.addEventListener("change", () => {
+              answers[input.name] = input.value;
+              statusEl.textContent = "";
+              statusEl.className = "status";
+              summaryEl.innerHTML = "";
+              summaryEl.className = "result";
+              saveState();
+              updateProgress();
+            });
+          });
+        }
+
+        checkBtn.hidden = checked;
+        updateProgress();
+
+        if (checked) {
+          renderSummary();
+        } else {
+          summaryEl.innerHTML = "";
+          summaryEl.className = "result";
+        }
+      }
+
+      function renderSummary() {
+        let score = 0;
+        questions.forEach((question) => {
+          if (answers[question.id] === correctLetter(question)) score += 1;
+        });
+
+        summaryEl.innerHTML = `<p class="${score === questions.length ? "ok" : "ko"}">Score : ${score} / ${questions.length}</p>`;
+        summaryEl.className = "result";
+      }
+
+      function checkAll() {
+        const unanswered = questions.filter((question) => !answers[question.id]);
+        if (unanswered.length > 0) {
+          statusEl.textContent = `Il reste ${unanswered.length} question(s) sans réponse.`;
+          statusEl.className = "status ko";
+          const firstMissing = quizEl.querySelector(
+            `[data-question-id="${unanswered[0].id}"]`
+          );
+          if (firstMissing) firstMissing.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        checked = true;
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        saveState();
+        renderQuiz();
+        summaryEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function resetQuiz() {
+        for (const key of Object.keys(answers)) {
+          delete answers[key];
+        }
+        reshuffleOptions();
+        checked = false;
+        localStorage.removeItem(storageKey);
+        localStorage.removeItem(checkedKey);
+        statusEl.textContent = "";
+        statusEl.className = "status";
+        summaryEl.innerHTML = "";
+        summaryEl.className = "result";
+        renderQuiz();
+      }
+
+      checkBtn.addEventListener("click", checkAll);
+      resetBtn.addEventListener("click", resetQuiz);
+
+      loadState();
+      renderQuiz();
+    </script>
+
+    <footer class="site-footer"><a href="mailto:shuraux@he2b.be">Sylvain Huraux - HE2B - ISIB</a></footer>
   </body>
 </html>
