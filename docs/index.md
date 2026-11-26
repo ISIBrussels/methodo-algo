@@ -67,7 +67,7 @@ Vous y trouverez l'ensemble des ressources du cours :
 </tr>
 <tr>
 <td align="center">6</td>
-<td>Chaînes et caractères</td>
+<td>Chaînes de caractères</td>
 <td align="center"><a href="seances/06/cours_seance_06.html">Slides</a></td>
 <td align="center"><a href="seances/06/syllabus_seance_06.html">Syllabus</a></td>
 <td align="center"><a href="seances/06/quiz_seance_06.html">Quiz</a></td>

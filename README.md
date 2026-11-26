@@ -22,7 +22,7 @@ Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) 
 | 3 | 1 h 30 | Boucles (1) : WHILE / REPEAT … UNTIL |
 | 4 | 1 h 30 | Boucles (2) : FOR et boucles imbriquées |
 | 5 | 1 h 30 | Tableaux (arrays) |
-| 6 | 1 h 30 | Chaînes et caractères |
+| 6 | 1 h 30 | Chaînes de caractères |
 | 7 | 1 h 30 | Fonctions et procédures |
 
 ## Séances
@@ -32,7 +32,7 @@ Dépôt du cours **Méthodologie algorithmique** (amphithéâtre, grand groupe) 
 - **Séance 3 — Boucles (1) : WHILE / REPEAT … UNTIL** : [Slides](docs/seances/03/cours_seance_03.md) · [Syllabus](docs/seances/03/syllabus_seance_03.md) · [Quiz](docs/seances/03/quiz_seance_03.html) · [Exercices](docs/seances/03/exercices_seance_03.md)
 - **Séance 4 — Boucles (2) : FOR et boucles imbriquées** : [Slides](docs/seances/04/cours_seance_04.md) · [Syllabus](docs/seances/04/syllabus_seance_04.md) · [Quiz](docs/seances/04/quiz_seance_04.html) · [Exercices](docs/seances/04/exercices_seance_04.md)
 - **Séance 5 — Tableaux (arrays)** : [Slides](docs/seances/05/cours_seance_05.md) · [Syllabus](docs/seances/05/syllabus_seance_05.md) · [Quiz](docs/seances/05/quiz_seance_05.html) · [Exercices](docs/seances/05/exercices_seance_05.md)
-- **Séance 6 — Chaînes et caractères** : [Slides](docs/seances/06/cours_seance_06.md) · [Syllabus](docs/seances/06/syllabus_seance_06.md) · [Quiz](docs/seances/06/quiz_seance_06.html) · [Exercices](docs/seances/06/exercices_seance_06.md)
+- **Séance 6 — Chaînes de caractères** : [Slides](docs/seances/06/cours_seance_06.md) · [Syllabus](docs/seances/06/syllabus_seance_06.md) · [Quiz](docs/seances/06/quiz_seance_06.html) · [Exercices](docs/seances/06/exercices_seance_06.md)
 - **Séance 7 — Fonctions et procédures** : [Slides](docs/seances/07/cours_seance_07.md) · [Syllabus](docs/seances/07/syllabus_seance_07.md) · [Quiz](docs/seances/07/quiz_seance_07.html) · [Exercices](docs/seances/07/exercices_seance_07.md)
 
 ## Structure du dépôt

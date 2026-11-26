@@ -1,4 +1,4 @@
-# Séance 6 — Chaînes et caractères
+# Séance 6 — Chaînes de caractères
 
 <nav class="page-nav">
   <a href="../../index.html">Accueil</a>

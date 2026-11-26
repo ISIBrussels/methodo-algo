@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: isib
-title: "Séance 6 — Chaînes et caractères"
+title: "Séance 6 — Chaînes de caractères"
 paginate: true
 header: "Méthodo Algo — Séance 6 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[Accueil](../../index.html)"
@@ -9,7 +9,7 @@ footer: "[Accueil](../../index.html)"
 
 ## Séance 6
 
-Chaînes et caractères
+Chaînes de caractères
 
 [Quiz](quiz_seance_06.html)
 [Syllabus](syllabus_seance_06.html)

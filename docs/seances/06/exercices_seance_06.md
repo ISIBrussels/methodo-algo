@@ -1,6 +1,6 @@
 # Séance 6 — Exercices
 
-**Thème :** Chaînes et caractères  
+**Thème :** Chaînes de caractères  
 **Support :** *pseudocode* (`LENGTH`, indices, parcours, concaténation) + *trace table* (texte FR, *pseudocode* et *flowcharts* EN)
 
 Dans les *flowcharts* : pas de littéraux numériques ni de chaînes concrètes (les valeurs apparaissent **uniquement** dans la *trace table*).
