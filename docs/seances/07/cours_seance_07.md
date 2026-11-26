@@ -1,7 +1,7 @@
 ---
 marp: true
 theme: isib
-title: "Séance 7 — Chaînes et caractères"
+title: "Séance 7 — Fonctions et procédures"
 paginate: true
 header: "Méthodo Algo — Séance 7 [Sylvain Huraux - HE2B - ISIB](mailto:shuraux@he2b.be)"
 footer: "[Accueil](../../index.html)"
@@ -9,7 +9,7 @@ footer: "[Accueil](../../index.html)"
 
 ## Séance 7
 
-Chaînes et caractères
+Fonctions et procédures
 
 [Quiz](quiz_seance_07.html)
 [Syllabus](syllabus_seance_07.html)
@@ -17,274 +17,188 @@ Chaînes et caractères
 
 ---
 
-## Pourquoi les chaînes ?
+## Pourquoi découper ?
 
-Jusqu'ici : nombres, booléens, tableaux de nombres.
+Jusqu'ici : un seul bloc qui fait **tout** (lire, calculer, afficher).
 
-Besoin fréquent : manipuler du **texte** :
+Quand l'algo grandit :
 
-- un mot, un nom, un message,
-- un code saisi au clavier,
-- une suite de symboles à inspecter un par un.
+- on **copie-colle** le même parcours de chaîne (S6) ou de tableau (S5),
+- on mélange détails et intention,
+- on peaufine un endroit et on **casse** un autre.
 
-Une **chaîne** (*string*) est une suite ordonnée de **caractères** (*characters*).
-
----
-
-## Type `STRING`
-
-Déjà vu en S1 : `STRING` = texte entre guillemets.
-
-```text
-DECLARE word : STRING
-word = "algo"
-```
-
-| Exemple | Longueur | Caractères |
-| --- | ---: | --- |
-| `"algo"` | 4 | `a`, `l`, `g`, `o` |
-| `"ISIB"` | 4 | `I`, `S`, `I`, `B` |
-| `""` | 0 | (chaîne vide) |
-
-Un caractère isolé se traite comme une chaîne de longueur **1** (ex. `"a"`).
+Idée : découper en **sous-programmes** réutilisables (*modular design*).
 
 ---
 
-## Longueur (*length*)
+## Conception modulaire (*modular design*)
 
-`LENGTH(text)` renvoie le **nombre de caractères**.
+Un gros problème → plusieurs **petits** rôles clairs.
 
-```text
-word = "algo"
-n = LENGTH(word)   // n = 4
-```
+| Sous-programme | Rôle typique |
+| --- | --- |
+| lire / remplir | obtenir les données |
+| calculer | produire un résultat |
+| afficher / rapporter | présenter sans recalculer |
 
-- `n` sert de **taille**, comme pour un tableau
-- Indices utiles : de **0** à **n - 1**
-- Chaîne vide : `LENGTH("") = 0`
-
-Sans la longueur, on ne sait pas où s'arrête le parcours.
+Le programme principal (*main program*) **orchestre** : il appelle, il ne réécrit pas tout.
 
 ---
 
-## Indices 0-based
+## Deux familles
 
-Comme un tableau : chaque caractère a une **position**.
-
-Exemple : `text = "algo"` (`n = 4`)
-
-| Indice | 0 | 1 | 2 | 3 |
-| ---: | :---: | :---: | :---: | :---: |
-| Caractère | `a` | `l` | `g` | `o` |
-
-- Premier : `text[0]`
-- Dernier : `text[n - 1]` (ici `text[3]`)
-- Hors bornes (`text[4]`, `text[-1]`) : **interdit** (même idée que *index out of bounds* S5)
-
----
-
-## Accéder à un caractère
-
-`text[i]` = caractère à l'indice `i` (lecture).
-
-```text
-text = "algo"
-ch = text[2]    // ch = "g"
-OUTPUT text[0]  // affiche a
-```
-
-Deux notions distinctes :
-
-| Notion | Exemple | Sens |
+| Mot-clé | Produit une valeur ? | Usage typique |
 | --- | --- | --- |
-| **Indice** | `2` | position |
-| **Caractère** | `text[2]` | contenu à cette position |
+| `FUNCTION` | **oui** (`RETURN`) | calcul, test, transformation |
+| `PROCEDURE` | **non** | afficher, remplir, modifier un effet |
 
-Comparer un caractère : `IF text[i] = target THEN …`
+Les deux se lancent avec `CALL` (ou en expression pour une fonction).
 
 ---
 
-## Parcourir avec `FOR`
-
-**Parcourir** = passer sur **chaque** caractère, dans l'ordre.
+## `FUNCTION` : syntaxe
 
 ```text
-n = LENGTH(text)
-FOR i = 0 TO n - 1 DO
-  OUTPUT text[i]
-END FOR
+FUNCTION square(x : INTEGER) : INTEGER
+  result = x * x
+  RETURN result
+END FUNCTION
 ```
 
-- `i` parcourt les **indices**
-- Corps : on lit `text[i]` (afficher, compter, recopier…)
-- Plage inclusive : `0` … `n - 1`
+- Nom + **paramètres** typés
+- Type de la **valeur de retour**
+- `RETURN` quitte et **rend** une valeur
 
-Même squelette que le parcours de tableau S5.
-
----
-
-## Parcours en *flowchart*
-
-Même structure qu'un `FOR` : init, test, corps, incrément.
-
-<div class="two-cols">
-
-<div>
-
-- Losange : `i < n`
-- **Yes** → traiter `text[i]`, puis `i = i + 1`
-- **No** → fin du parcours
-
-Bornes : `i` de **0** à **n - 1**.
-
-</div>
-
-<div class="max-mermaid-lg">
-
-```mermaid
-flowchart TB
-  A([START]) --> B["i = 0"]
-  B --> C{i < n}
-  C -->|Yes| D[/OUTPUT text[i]/]
-  D --> E["i = i + 1"]
-  E --> C
-  C -->|No| F([END])
-```
-
-</div>
-
-</div>
-
----
-
-## Compter un caractère
-
-Combien de fois `target` apparaît dans `text` ?
+Appel :
 
 ```text
-n = LENGTH(text)
-count = 0
-FOR i = 0 TO n - 1 DO
-  IF text[i] = target THEN
-    count = count + 1
-  END IF
-END FOR
-OUTPUT count
+y = square(5)
+OUTPUT y
 ```
 
-Exemple : `text = "banana"`, `target = "a"` → `count = 3`.
-
-Pattern *counter* S3, appliqué aux caractères.
-
 ---
 
-## Construire / concaténer
-
-On **construit** une nouvelle chaîne en ajoutant des morceaux (`+`).
+## `PROCEDURE` : syntaxe
 
 ```text
-greeting = "Hi"
-name = "Ada"
-msg = greeting + ", " + name
-OUTPUT msg    // Hi, Ada
+PROCEDURE printLabel(label : STRING)
+  OUTPUT label
+END PROCEDURE
 ```
 
-Recopie caractère par caractère :
+- Pas de type de retour
+- Pas de `RETURN` de valeur (on peut seulement **finir**)
+- Effet : affichage, saisie, mise à jour…
+
+Appel :
 
 ```text
-result = ""
-n = LENGTH(text)
-FOR i = 0 TO n - 1 DO
-  result = result + text[i]
-END FOR
+CALL printLabel("done")
 ```
 
-- `""` = départ vide
-- `result = result + …` **ajoute à la fin**
-- Ordre des `+` = ordre final des caractères
-
 ---
 
-## Palindrome : idée
+## Paramètres et arguments
 
-Un **palindrome** se lit pareil à l'endroit et à l'envers  
-(ex. `"kayak"`, `"radar"`, `"noon"`).
+| Terme | Sens |
+| --- | --- |
+| **Paramètre** | nom dans la **définition** (`x` dans `square(x)`) |
+| **Argument** | valeur fournie à l'**appel** (`5` dans `square(5)`) |
 
-Deux approches simples :
-
-1. **Deux pointeurs** : comparer les bouts, puis se rapprocher
-2. **Inverser** puis comparer à l'original
-
-On détaille d'abord les **deux pointeurs** (pas besoin d'une 2ᵉ chaîne).
-
----
-
-## Palindrome : deux pointeurs
+À l'appel, chaque argument est **lié** au paramètre correspondant (ordre).
 
 ```text
-n = LENGTH(text)
-left = 0
-right = n - 1
-isPal = TRUE
-WHILE left < right AND isPal DO
-  IF text[left] <> text[right] THEN
-    isPal = FALSE
-  ELSE
-    left = left + 1
-    right = right - 1
-  END IF
-END WHILE
-OUTPUT isPal
+FUNCTION sumOf(a : INTEGER, b : INTEGER) : INTEGER
+  RETURN a + b
+END FUNCTION
+
+total = sumOf(3, 4)   // a ← 3, b ← 4
 ```
 
-- `left` avance, `right` recule
-- Dès qu'une paire diffère → **pas** palindrome
-- Chaîne vide ou 1 caractère → palindrome (`left < right` faux tout de suite)
-
 ---
 
-## Trace : `"kayak"`
+## Utiliser la valeur de retour
 
-`n = 5` · indices `0..4` · caractères `k a y a k`
-
-| Étape | `left` | `right` | Comparaison | `isPal` |
-| ---: | ---: | ---: | --- | --- |
-| 1 | 0 | 4 | `k` = `k` | TRUE |
-| 2 | 1 | 3 | `a` = `a` | TRUE |
-| 3 | 2 | 2 | (stop : `left < right` faux) | TRUE |
-
-Résultat : **TRUE**.
-
-Contre-exemple `"abc"` (`n = 3`) : dès la 1ʳᵉ paire, `a` ≠ `c` → `isPal = FALSE`.
-
----
-
-## Variante : inverser puis comparer
+Une fonction **s'utilise comme une valeur** :
 
 ```text
-n = LENGTH(text)
-rev = ""
-FOR i = n - 1 TO 0 STEP -1 DO
-  rev = rev + text[i]
-END FOR
-IF text = rev THEN
-  OUTPUT TRUE
-ELSE
-  OUTPUT FALSE
+total = sumOf(10, 20)
+OUTPUT sumOf(1, 2)
+IF sumOf(x, y) > limit THEN
+  …
 END IF
 ```
 
-- On **construit** l'envers dans `rev`
-- Puis comparaison globale `text = rev`
-- Utile si on a **aussi** besoin de la chaîne inversée
+Une procédure **ne s'écrit pas** à droite d'un `=` :
 
-Deux pointeurs : souvent plus direct si on veut seulement un booléen.
+```text
+CALL printLabel("ok")   // correct
+msg = printLabel("ok")  // incorrect
+```
 
 ---
 
-## Option : encapsuler en `FUNCTION`
+## Portée (*scope*) : local
 
-Rappel S6 : si on **renvoie** une valeur → `FUNCTION`.
+Variables **déclarées dans** la fonction / procédure : **locales**.
+
+```text
+FUNCTION double(n : INTEGER) : INTEGER
+  temp = n * 2
+  RETURN temp
+END FUNCTION
+```
+
+`temp` n'existe **que** pendant l'exécution de `double`.  
+Après le `RETURN`, on ne peut plus lire `temp` depuis le main.
+
+---
+
+## Portée : global (piège)
+
+Une variable du **main** (ou « globale ») est visible partout si on n'y prend pas garde.
+
+Risque : une procédure **écrase** une globale sans qu'on s'en rende compte.
+
+Bonne pratique débutant :
+
+- préférer **paramètres** + **retour**,
+- limiter les globales,
+- nommer clairement ce qui est local.
+
+---
+
+## Exemple : fonction simple
+
+```text
+FUNCTION minOf(a : INTEGER, b : INTEGER) : INTEGER
+  IF a < b THEN
+    RETURN a
+  ELSE
+    RETURN b
+  END IF
+END FUNCTION
+```
+
+`minOf(8, 3)` → `3`.  
+`minOf` **calcule** : c'est une `FUNCTION`.
+
+---
+
+## Exemple : procédure simple
+
+```text
+PROCEDURE showPair(left : INTEGER, right : INTEGER)
+  OUTPUT left, right
+END PROCEDURE
+```
+
+`CALL showPair(2, 9)` affiche les deux valeurs.  
+Aucun résultat à récupérer : c'est une `PROCEDURE`.
+
+---
+
+## Fonction sur chaîne : compter un caractère
 
 ```text
 FUNCTION countChar(text : STRING, target : STRING) : INTEGER
@@ -299,30 +213,97 @@ FUNCTION countChar(text : STRING, target : STRING) : INTEGER
 END FUNCTION
 ```
 
-Appel : `hits = countChar("banana", "a")` → `hits = 3`.
-
-Même idée possible pour `isPalindrome(text)`.
+- `LENGTH` + indices **0-based** (comme en S6)
+- Le main **réutilise** `countChar` sans recopier la boucle
+- Exemple : `countChar("banana", "a")` → `3`
 
 ---
 
-## Pièges fréquents
+## Fonction sur chaîne : palindrome ?
 
-1. Oublier `n = LENGTH(text)` avant le `FOR`
-2. Bornes : `TO n` au lieu de `TO n - 1` (hors bornes)
-3. Confondre **indice** et **caractère** (`i` vs `text[i]`)
-4. Concaténation : partir de `""`, pas d'une valeur « magique »
-5. Palindrome : s'arrêter quand `left >= right` (ne pas croiser sans test)
-6. Sensibilité à la casse : `"A"` ≠ `"a"` (sauf consigne contraire)
+```text
+FUNCTION isPalindrome(text : STRING) : BOOLEAN
+  n = LENGTH(text)
+  left = 0
+  right = n - 1
+  WHILE left < right DO
+    IF text[left] <> text[right] THEN
+      RETURN FALSE
+    END IF
+    left = left + 1
+    right = right - 1
+  END WHILE
+  RETURN TRUE
+END FUNCTION
+```
+
+Même idée que le palindrome S6, **encapsulé** : le main reçoit un booléen.
+
+---
+
+## Squelette : main + functions
+
+```text
+FUNCTION countChar(text : STRING, target : STRING) : INTEGER
+  …
+END FUNCTION
+
+FUNCTION isPalindrome(text : STRING) : BOOLEAN
+  …
+END FUNCTION
+
+// main
+INPUT word
+INPUT target
+hits = countChar(word, target)
+ok = isPalindrome(word)
+OUTPUT hits, ok
+```
+
+Le main **lit**, **appelle**, **affiche**.
+
+---
+
+## Trace d'un appel
+
+```text
+y = minOf(8, 3)
+```
+
+| Étape | Détail |
+| --- | --- |
+| Entrée | `a = 8`, `b = 3` |
+| Test | `8 < 3` → No |
+| `RETURN` | `b` soit `3` |
+| Retour au main | `y = 3` |
+
+Le corps de `minOf` s'exécute, puis le fil **reprend** juste après l'appel.
+
+---
+
+## Idée en *flowchart* (appel)
+
+Le main descend vers un sous-programme, puis **revient**.
+
+```mermaid
+flowchart TB
+  A([START main]) --> B["y = minOf(a, b)"]
+  B --> C[/OUTPUT y/]
+  C --> D([END main])
+```
+
+Le détail de `minOf` est **ailleurs** (autre flowchart / autre bloc *pseudocode*).  
+Ne pas tout dessiner dans le même losange.
 
 ---
 
 ## Checklist
 
-1. Ai-je la **longueur** `n` ?
-2. Indices de **0** à **n - 1** inclus ?
-3. Est-ce un **parcours** (`FOR`), un **compte**, une **construction** ?
-4. Pour un palindrome : deux pointeurs **ou** reverse + compare ?
-5. Faut-il une `FUNCTION` (valeur) ou un bloc dans le main ?
+1. Ai-je besoin d'une **valeur** → `FUNCTION` + `RETURN` ?
+2. Seulement un **effet** (afficher, remplir) → `PROCEDURE` + `CALL` ?
+3. Paramètres typés, arguments dans le **bon ordre** ?
+4. Locals vs globals : qui peut **modifier** quoi ?
+5. Chaînes : passer `text`, utiliser `LENGTH` et indices `0..n-1` ?
 
 ---
 
@@ -330,13 +311,12 @@ Même idée possible pour `isPalindrome(text)`.
 
 | Idée | À retenir |
 | --- | --- |
-| `STRING` | suite ordonnée de caractères |
-| `LENGTH` | taille `n`, indices `0..n-1` |
-| `text[i]` | caractère à la position `i` |
-| Parcours | `FOR i = 0 TO n - 1` |
-| Compter | compteur + `IF text[i] = target` |
-| Construire | `result = ""` puis `result = result + …` |
-| Palindrome | deux pointeurs, ou reverse + compare |
+| Modulariser | un rôle = un sous-programme |
+| `FUNCTION` | calcule et `RETURN` une valeur |
+| `PROCEDURE` | effet, pas de valeur de retour |
+| `CALL` / arguments | lancer avec les bonnes valeurs |
+| *Scope* | local préférable aux globales fragiles |
+| Main | orchestre : lit, appelle, affiche |
 
 ---
 
@@ -348,50 +328,40 @@ Questions pour tester la compréhension du contenu de la séance.
 
 ---
 
-## Exercice 7.A : Compter les voyelles
+## Exercice 7.A : FUNCTION ou PROCEDURE ?
 
-Chaîne `word`. Compter les voyelles `a e i o u` (minuscules seulement).
-
-Données de trace : `word = "education"`.
+Classer trois blocs inédits (prix TTC, signal répété, lettre de score).
 
 [Exercices](exercices_seance_07.html) § 7.A
 
 ---
 
-## Exercice 7.B : Inverser une chaîne
+## Exercice 7.B : `clamp`
 
-Construire `rev`, l'envers de `text`, caractère par caractère.
-
-Données de trace : `text = "method"`.
+Borner `x` dans `[lo, hi]` : écrire `FUNCTION clamp` et tracer trois appels.
 
 [Exercices](exercices_seance_07.html) § 7.B
 
 ---
 
-## Exercice 7.C : Palindrome (trace)
+## Exercice 7.C : `factorial`
 
-Tracer l'algo à deux pointeurs sur une chaîne donnée. Dire si c'est un palindrome.
-
-Données de trace : `text = "level"`, puis `text = "lemma"`.
+Écrire `factorial(n)` (`n >= 0`) avec une boucle, puis un main qui lit `n` et affiche `n!`.
 
 [Exercices](exercices_seance_07.html) § 7.C
 
 ---
 
-## Exercice 7.D : Filtrer les chiffres
+## Exercice 7.D : `countChar`
 
-À partir de `raw`, construire `digits` avec **uniquement** les caractères `'0'`…`'9'`.
-
-Données de trace : `raw = "a1b23c"`.
+Compter les occurrences d’un caractère dans une `STRING` (rappel S6 encapsulé).
 
 [Exercices](exercices_seance_07.html) § 7.D
 
 ---
 
-## Exercice 7.E : Construire un message
+## Exercice 7.E : Bug de *scope* (`best`)
 
-Lire `title` et `n`. Afficher une ligne de `n` étoiles, puis `title`, puis encore `n` étoiles.
-
-Données de trace : `title = "ISIB"`, `n = 5`.
+Corriger une procédure qui écrase le meilleur score du main.
 
 [Exercices](exercices_seance_07.html) § 7.E

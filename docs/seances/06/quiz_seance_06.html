@@ -232,7 +232,7 @@
   </head>
   <body>
     <h1>Séance 6 — Quiz</h1>
-    <p><strong>Thème :</strong> Fonctions et procédures</p>
+    <p><strong>Thème :</strong> Chaînes et caractères</p>
     <nav class="page-nav">
       <a href="cours_seance_06.html">Cours</a>
       <a href="syllabus_seance_06.html">Syllabus</a>
@@ -251,129 +251,129 @@
     <div id="summary" class="result" aria-live="polite"></div>
 
     <script>
-      const storageKey = "quiz_seance_06_answers_v1";
-      const checkedKey = "quiz_seance_06_checked_v1";
+      const storageKey = "quiz_seance_06_answers_v3";
+      const checkedKey = "quiz_seance_06_checked_v3";
 
       const questions = [
         {
           id: "q1",
-          text: "Un sous-programme qui calcule une valeur et la rend au programme appelant doit être…",
+          text: "En pseudocode du cours, une variable de type <code>STRING</code> contient…",
           options: [
-            "une <code>PROCEDURE</code> sans <code>RETURN</code>",
-            "une <code>FUNCTION</code> avec <code>RETURN</code>",
-            "uniquement un bloc dans le main, jamais un sous-programme",
-            "une <code>PROCEDURE</code> appelée à droite d'un <code>=</code>",
+            "uniquement un entier entre guillemets",
+            "une suite ordonnée de caractères (éventuellement vide)",
+            "uniquement un seul caractère, jamais plus",
+            "un tableau d'entiers indexé à partir de 1",
           ],
           correct: 1,
-          feedback: "Besoin d'une valeur → <code>FUNCTION</code> + <code>RETURN</code>. Une <code>PROCEDURE</code> produit un effet (afficher, remplir…), pas une valeur récupérable.",
+          feedback: "Une chaîne est une suite ordonnée de caractères. <code>\"\"</code> est valide (longueur 0). Un caractère isolé est juste une chaîne de longueur 1.",
         },
         {
           id: "q2",
-          text: "Pour lancer une <code>PROCEDURE</code> nommée <code>reportLine</code>, on écrit typiquement…",
+          text: "Après <code>s = \"ab\" + \"c\"</code>, que vaut <code>LENGTH(s)</code> ?",
           options: [
-            "<code>line = reportLine(\"ok\")</code>",
-            "<code>RETURN reportLine</code>",
-            "<code>CALL reportLine(\"ok\")</code>",
-            "<code>FUNCTION reportLine(\"ok\")</code>",
+            "2",
+            "3",
+            "4",
+            "0",
           ],
-          correct: 2,
-          feedback: "Les procédures s'appellent avec <code>CALL</code>. Les écrire à droite d'un <code>=</code> est incorrect (pas de valeur de retour).",
+          correct: 1,
+          feedback: "Concaténation puis longueur : <code>\"abc\"</code> a trois caractères. <code>LENGTH</code> compte les caractères de la chaîne résultante.",
         },
         {
           id: "q3",
-          text: "Dans <code>FUNCTION cube(n : INTEGER) : INTEGER</code> appelé par <code>y = cube(4)</code>, le terme <code>4</code> est…",
+          text: "Avec <code>word = \"stack\"</code> et <code>n = LENGTH(word)</code>, que vaut <code>word[n - 1]</code> ?",
           options: [
-            "un paramètre (nom dans la définition)",
-            "un argument (valeur fournie à l'appel)",
-            "une variable locale du main nommée <code>n</code>",
-            "le type de retour de la fonction",
+            "<code>\"s\"</code>",
+            "<code>\"t\"</code>",
+            "<code>\"a\"</code>",
+            "<code>\"k\"</code>",
           ],
-          correct: 1,
-          feedback: "Paramètre = nom dans la définition (<code>n</code>). Argument = valeur à l'appel (<code>4</code>). À l'entrée, <code>n</code> reçoit <code>4</code>.",
+          correct: 3,
+          feedback: "<code>n = 5</code>, donc <code>n - 1 = 4</code>. Dernier caractère : <code>word[4] = \"k\"</code>. Ne pas lire <code>word[n]</code> (hors bornes).",
         },
         {
           id: "q4",
-          text: "Parmi ces usages, lequel est correct pour une <code>FUNCTION</code> <code>area(w, h)</code> qui renvoie un entier ?",
+          text: "Si <code>n = LENGTH(text)</code> et <code>n ≥ 1</code>, le dernier caractère valide est…",
           options: [
-            "<code>CALL area(3, 5)</code> puis lire une globale <code>result</code> obligatoire",
-            "<code>area = 3, 5</code> sans parenthèses",
-            "<code>IF area(3, 5) &gt; 10 THEN …</code>",
-            "<code>PROCEDURE area(3, 5)</code> à la place de l'appel",
+            "<code>text[n]</code>",
+            "<code>text[n - 1]</code>",
+            "<code>text[0]</code> uniquement",
+            "<code>text[n + 1]</code>",
           ],
-          correct: 2,
-          feedback: "Une fonction s'utilise comme une valeur : affectation, <code>OUTPUT</code>, ou test dans un <code>IF</code>. Pas besoin d'une globale « magique » pour récupérer le résultat.",
+          correct: 1,
+          feedback: "Comme pour un tableau S5 : indices de <code>0</code> à <code>n - 1</code>. <code>text[n]</code> est hors bornes.",
         },
         {
           id: "q5",
-          text: "Après <code>y = double(6)</code> où <code>double</code> déclare une locale <code>temp</code>, le main peut-il lire <code>temp</code> ?",
+          text: "Pour parcourir chaque caractère de <code>text</code> une fois, on écrit typiquement…",
           options: [
-            "oui, dès que <code>RETURN</code> a eu lieu",
-            "oui, si on a écrit <code>CALL double(6)</code>",
-            "non : <code>temp</code> n'existe que pendant l'exécution de <code>double</code>",
-            "oui, car toute variable est globale par défaut",
+            "<code>FOR i = 0 TO n</code>",
+            "<code>FOR i = 1 TO n</code>",
+            "<code>FOR i = 0 TO n - 1</code>",
+            "<code>FOR i = n TO 0</code> sans <code>STEP</code>",
           ],
           correct: 2,
-          feedback: "Portée (*scope*) locale : une variable déclarée dans la fonction disparaît après le retour. Le main ne récupère que la valeur renvoyée (<code>y</code>), pas les locales internes.",
+          feedback: "Après <code>n = LENGTH(text)</code>, la plage inclusive est <code>0 .. n - 1</code>. <code>TO n</code> tente <code>text[n]</code> (*index out of bounds*).",
         },
         {
           id: "q6",
-          text: "Risque typique si une <code>PROCEDURE</code> écrit dans une variable aussi utilisée par le main, sans la passer en paramètre ?",
+          text: "Avec <code>text = \"mississippi\"</code> et <code>target = \"s\"</code>, un compteur correctement initialisé puis incrémenté à chaque égalité donne…",
           options: [
-            "aucun : les procédures ne peuvent jamais modifier de données",
-            "elle peut écraser la globale du main sans que l'appel le rende évident",
-            "le compilateur refuse toujours toute variable hors de la procédure",
-            "seul <code>RETURN</code> peut modifier le main",
+            "2",
+            "4",
+            "5",
+            "11",
           ],
           correct: 1,
-          feedback: "Piège des globales : une procédure peut modifier une variable du main « en silence ». Préférer paramètres + retour (ou paramètres explicites) pour rendre les dépendances visibles.",
+          feedback: "Les <code>s</code> sont aux indices 2, 3, 5 et 6 → quatre occurrences. Pattern : <code>count = 0</code>, puis <code>IF text[i] = target</code>.",
         },
         {
           id: "q7",
-          text: "Pour une fonction qui parcourt <code>values[0..n-1]</code>, pourquoi passer aussi <code>n</code> en paramètre ?",
+          text: "Après <code>tag = \"end\"</code> et <code>msg = \"The \" + tag + \".\"</code>, la valeur de <code>msg</code> est…",
           options: [
-            "parce que <code>n</code> remplace les indices (on n'utilise plus <code>i</code>)",
-            "parce que la taille utile n'est pas forcément déduite du seul nom du tableau en pseudocode du cours",
-            "parce que <code>n</code> doit toujours valoir <code>values[0]</code>",
-            "parce qu'une fonction ne peut recevoir qu'un seul paramètre tableau",
+            "<code>\"Theend.\"</code>",
+            "<code>\"The end.\"</code>",
+            "<code>\"end.The \"</code>",
+            "<code>\"The  end.\"</code>",
           ],
           correct: 1,
-          feedback: "En pseudocode du cours, on passe le tableau <em>et</em> sa taille <code>n</code> pour borner le <code>FOR</code> (<code>0 .. n - 1</code>). Le main fournit les deux à l'appel.",
+          feedback: "Ordre des <code>+</code> = ordre final. L'espace est dans <code>\"The \"</code>, le point dans <code>\".\"</code> → <code>\"The end.\"</code>.",
         },
         {
           id: "q8",
-          text: "Soit <code>FUNCTION absDiff(a, b)</code> qui renvoie <code>a - b</code> si <code>a &gt;= b</code>, sinon <code>b - a</code>. Que vaut <code>absDiff(4, 11)</code> ?",
+          text: "Pour construire une nouvelle chaîne caractère par caractère, on part en général de…",
           options: [
-            "4",
-            "7",
-            "11",
-            "-7",
+            "<code>result = text[0]</code> sans boucle",
+            "<code>result = \"\"</code>, puis <code>result = result + …</code> dans la boucle",
+            "<code>result = LENGTH(text)</code>",
+            "<code>result = NULL</code> puis on remplace à chaque tour",
           ],
           correct: 1,
-          feedback: "<code>4 &gt;= 11</code> est faux → on renvoie <code>11 - 4 = 7</code>. Trace d'appel : lier les arguments, exécuter le corps, <code>RETURN</code>, reprendre dans le main.",
+          feedback: "Accumulateur texte : chaîne vide au départ, puis ajout à la fin. Même idée que <code>sum = 0</code> pour une somme.",
         },
         {
           id: "q9",
-          text: "Dans une conception modulaire typique, le rôle principal du <em>main program</em> est…",
+          text: "Pour tester si <code>text</code> est un palindrome avec deux pointeurs, on compare typiquement…",
           options: [
-            "recopier le corps de chaque sous-programme à chaque besoin",
-            "orchestrer : lire les données, appeler les sous-programmes, afficher",
-            "déclarer toutes les variables comme globales modifiées partout",
-            "interdire tout <code>CALL</code> pour rester « simple »",
+            "<code>text[0]</code> à <code>text[1]</code> seulement",
+            "<code>text[left]</code> à <code>text[right]</code> en avançant <code>left</code> et en reculant <code>right</code>",
+            "uniquement <code>LENGTH(text)</code> à <code>0</code>",
+            "<code>text</code> à <code>\"\"</code> sans parcours",
           ],
           correct: 1,
-          feedback: "Le main orchestre. Les détails (calcul, parcours, affichage dédié) vont dans des <code>FUNCTION</code> / <code>PROCEDURE</code> réutilisables.",
+          feedback: "<code>left = 0</code>, <code>right = n - 1</code>, puis tant que <code>left &lt; right</code> on compare les bouts. Dès qu'une paire diffère → pas palindrome.",
         },
         {
           id: "q10",
-          text: "On a <code>FUNCTION avg3(a, b, c) : REAL</code> qui renvoie <code>(a + b + c) / 3</code>. Quel appel est cohérent ?",
+          text: "Avec l'algo à deux pointeurs, pour <code>text = \"abca\"</code> le résultat est…",
           options: [
-            "<code>CALL avg3(2, 4, 6)</code> puis afficher une locale de <code>avg3</code> depuis le main",
-            "<code>mean = avg3(2, 4, 6)</code> puis <code>OUTPUT mean</code>",
-            "<code>avg3 = 2 + 4 + 6</code> sans appeler la fonction",
-            "<code>PROCEDURE avg3(2, 4, 6)</code> à la place de la définition",
+            "TRUE, car les extrémités <code>a</code> et <code>a</code> coïncident",
+            "FALSE : après les bouts, la paire <code>b</code>/<code>c</code> diffère",
+            "TRUE, car la longueur est paire",
+            "FALSE uniquement parce que la longueur est paire",
           ],
           correct: 1,
-          feedback: "On récupère le retour par affectation (ou directement dans <code>OUTPUT</code> / un test). On ne lit pas les locales internes de la fonction depuis le main.",
+          feedback: "Paire 0/3 : <code>a = a</code>. Puis 1/2 : <code>b ≠ c</code> → <code>isPal = FALSE</code>. Des extrémités égales ne suffisent pas : il faut toutes les paires.",
         },
       ];
 
